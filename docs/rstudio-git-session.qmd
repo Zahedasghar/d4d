@@ -1,8 +1,8 @@
 ---
-title: "Getting Started with R"
-subtitle: "RStudio, Projects, and Version Control with Git"
-author: "Markus Freitag"
-institute: "Geschwister Scholl Institute of Political Science, LMU"
+title: "R, RStudio, and Git for Research Workflows"
+subtitle: "Data for Development Workshop Series: SDPI, NL and UNFPA"
+author: "Zahid Asghar"
+institute: "School of Economics, Quaid-i-Azam University, Islamabad"
 date: today
 format:
   revealjs:
