@@ -1,0 +1,95 @@
+/* Additional custom styles for Quarto presentation */
+
+/* Ensure background color is applied */
+.reveal-viewport {
+  background-color: #f6f3f2;
+}
+
+/* Enable scrollable slides */
+.reveal .slides {
+  overflow: visible !important;
+}
+
+.reveal .slides section {
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  max-height: 100vh;
+}
+
+/* Slide background with top border */
+.reveal .slides section {
+  background-color: #f6f3f2;
+  border-top: 80px solid #415564;
+  padding: 1em 2em;
+}
+
+/* Remove border for inverse slides */
+.reveal .slides section.inverse {
+  border-top: none;
+}
+
+/* Title slide specific styling */
+.reveal .slides section.title-slide {
+  border-top: 80px solid #f6f3f2;
+}
+
+.reveal .slides section.title-slide h1 {
+  color: #415564;
+  font-size: 40px;
+  font-weight: 600;
+  margin-top: 80px;
+}
+
+.reveal .slides section.title-slide h2 {
+  color: #415564;
+  font-size: 35px;
+  font-weight: 300;
+  margin-top: 55px;
+}
+
+/* Footer styling */
+.reveal .footer {
+  color: #415564;
+  font-size: 0.8em;
+}
+
+/* Notes styling */
+.notes {
+  font-size: 0.9em;
+  color: #777;
+}
+
+/* Center content helper */
+.center {
+  text-align: center;
+}
+
+/* Pull left and right for two-column layouts */
+.pull-left {
+  float: left;
+  width: 47%;
+}
+
+.pull-right {
+  float: right;
+  width: 47%;
+}
+
+/* Clear floats */
+.pull-right + * {
+  clear: both;
+}
+
+/* Example box */
+.ex {
+  background: #556441;
+  color: #f6f3f2;
+  padding: 0.3em;
+  font-weight: 600;
+  border-radius: 3px;
+}
+
+/* Scale image macro equivalent */
+img[alt*="scale"] {
+  max-width: 100%;
+}

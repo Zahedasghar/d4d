@@ -1,0 +1,1394 @@
+---
+title: "Getting Started with R"
+subtitle: "RStudio, Projects, and Version Control with Git"
+author: "Markus Freitag"
+institute: "Geschwister Scholl Institute of Political Science, LMU"
+date: today
+format:
+  revealjs:
+    theme: [default, custom-theme.scss]
+    slide-number: true
+    chalkboard: true
+    preview-links: auto
+    transition: fade
+    navigation-mode: vertical
+    controls: true
+    progress: true
+    scrollable: true
+    overflow: scroll
+---
+
+## Welcome! {.center}
+
+### Today's Focus
+
+::: {.incremental}
+- Why R and why it matters for research
+- Setting up a productive workflow with RStudio
+- Understanding R Projects
+- Version control basics with Git and GitHub
+:::
+
+::: {.notes}
+This session covers foundational tools that will make your research life easier. We'll focus on practical skills you'll use every day.
+:::
+
+# Why R?
+
+## R in Academic Research {.smaller}
+
+**R is purpose-built for statistical computing**
+
+::: {.columns}
+::: {.column width="50%"}
+**Strengths:**
+
+- Designed by statisticians for statistics
+- Massive ecosystem of specialized packages
+- Industry-leading data visualization (ggplot2)
+- Active academic development community
+- Excellent reproducibility tools
+- Free and open source
+:::
+
+::: {.column width="50%"}
+**Perfect for:**
+
+- Data analysis and statistics
+- Scientific visualization
+- Reproducible research
+- Academic publishing
+- Teaching and collaboration
+:::
+:::
+
+## R vs. Other Languages {.smaller}
+
+Different tools for different jobs:
+
+| Language | Best For | Speed | Learning Curve |
+|----------|----------|-------|----------------|
+| **R** | Statistics, data science, visualization | Moderate | Gentle |
+| Python | General programming, ML, automation | Fast | Gentle |
+| Julia | High-performance computing | Very Fast | Moderate |
+| Stata | Economics, panel data | Moderate | Gentle |
+| MATLAB | Engineering, simulations | Fast | Moderate |
+
+::: {.callout-tip}
+## Pro Tip
+Most researchers use multiple tools. R excels at statistical analysis and creating publication-quality figures.
+:::
+
+## What You Can Create with R
+
+::: {.panel-tabset}
+
+### Visualizations
+- Publication-quality static graphics (ggplot2)
+- Interactive plots (plotly, leaflet)
+- Maps and spatial data visualization
+- Statistical diagrams and networks
+
+### Documents
+- Research papers (Quarto/RMarkdown)
+- Presentations (like this one!)
+- Books and websites
+- Dashboards and apps
+
+### Analysis
+- Statistical modeling
+- Machine learning
+- Causal inference
+- Survey experiments
+- Time series analysis
+
+:::
+
+## Example: Data Visualization
+
+```{r}
+#| echo: true
+#| output-location: column
+#| fig-width: 6
+#| fig-height: 4
+
+library(ggplot2)
+
+ggplot(mtcars, aes(x = wt, y = mpg)) +
+  geom_point(aes(color = factor(cyl)), 
+             size = 3, alpha = 0.7) +
+  geom_smooth(method = "lm", 
+              se = FALSE, 
+              color = "darkblue") +
+  labs(title = "Car Weight vs. Fuel Efficiency",
+       x = "Weight (1000 lbs)",
+       y = "Miles per Gallon",
+       color = "Cylinders") +
+  theme_minimal(base_size = 12)
+```
+
+# IDEs for R
+
+## What is an IDE?
+
+**IDE = Integrated Development Environment**
+
+An IDE brings together all the tools you need:
+
+::: {.incremental}
+- Code editor with syntax highlighting
+- Console for running code interactively  
+- Environment/variable viewer
+- Plot and visualization display
+- Package management
+- Debugging tools
+- Version control integration
+- Help documentation
+:::
+
+## Two Popular IDEs for R {.smaller}
+
+::: {.columns}
+::: {.column width="50%"}
+### RStudio
+
+**The Traditional Choice**
+
+- Industry standard since 2011
+- Mature and feature-rich
+- Excellent for R-specific workflows
+- Strong package development tools
+- Free and open source
+- Great documentation and community
+
+**Best for:**
+- Pure R projects
+- R package development
+- Teaching R
+- Traditional workflows
+:::
+
+::: {.column width="50%"}
+### Positron (New!)
+
+**The Modern Alternative**
+
+- Built by Posit (makers of RStudio)
+- Launched in 2024
+- Based on VS Code architecture
+- Multi-language support (R, Python)
+- Modern interface
+- Lightning fast
+- Still in beta
+
+**Best for:**
+- Multi-language projects (R + Python)
+- Users familiar with VS Code
+- Modern development workflows
+- Those wanting cutting-edge features
+:::
+:::
+
+::: {.callout-note}
+## For This Course
+We'll primarily use **RStudio** for demos, but everything works in Positron too! Choose what feels comfortable.
+:::
+
+## RStudio Interface {.smaller}
+
+::: {.columns}
+::: {.column width="50%"}
+**Four Main Panes:**
+
+1. **Source** (top-left)
+   - Write and edit scripts
+   - RMarkdown/Quarto documents
+
+2. **Console** (bottom-left)
+   - Execute commands
+   - See output
+
+3. **Environment** (top-right)
+   - View loaded data/objects
+   - Command history
+:::
+
+::: {.column width="50%"}
+4. **Files/Plots/Help** (bottom-right)
+   - File browser
+   - Plot viewer
+   - Package manager
+   - Help documentation
+
+::: {.callout-note}
+You can customize pane layout in `Tools > Global Options > Pane Layout`
+:::
+:::
+:::
+
+## Getting Positron (Optional) {.smaller}
+
+**Want to try the new IDE?**
+
+::: {.columns}
+::: {.column width="50%"}
+**Download:**
+
+- Visit [github.com/posit-dev/positron](https://github.com/posit-dev/positron)
+- Click "Releases" on the right
+- Download for your OS
+- Install like any other app
+
+**Key Features:**
+
+- Same core functionality as RStudio
+- VS Code extensions compatibility
+- Better performance
+- Modern UI/UX
+:::
+
+::: {.column width="50%"}
+**Interface:**
+
+- Similar panes to RStudio
+- Command palette (`Ctrl/Cmd + Shift + P`)
+- Integrated terminal
+- Git support built-in
+- Multiple language support
+
+**Status:**
+
+- Currently in beta
+- Actively developed
+- Free and open source
+- Growing community
+:::
+:::
+
+::: {.callout-tip}
+## Recommendation
+Stick with RStudio for learning, explore Positron once comfortable. Both are excellent!
+:::
+
+::: {.callout-tip}
+## Recommendation
+Stick with RStudio for learning, explore Positron once comfortable. Both are excellent!
+:::
+
+## RStudio vs Positron: Quick Comparison {.smaller}
+
+| Feature | RStudio | Positron |
+|---------|---------|----------|
+| **Maturity** | Stable (10+ years) | Beta (2024+) |
+| **Languages** | Primarily R | R + Python + more |
+| **Learning Curve** | Gentle | Gentle (familiar if you know VS Code) |
+| **R Package Dev** | Excellent tools | Good, improving |
+| **Extensions** | R-specific | VS Code marketplace |
+| **Performance** | Good | Faster |
+| **Community** | Large, established | Growing |
+| **Documentation** | Extensive | Developing |
+| **Best Use Case** | Pure R projects | Multi-language projects |
+
+::: {.callout-note}
+Both are made by Posit (formerly RStudio Inc.) and both are free! Your choice depends on your workflow and preferences.
+:::
+
+## RStudio Tips
+
+**Keyboard Shortcuts** (save your wrists!)
+
+| Action | Windows/Linux | Mac |
+|--------|---------------|-----|
+| Run current line | `Ctrl + Enter` | `Cmd + Enter` |
+| Assignment operator `<-` | `Alt + -` | `Option + -` |
+| Pipe operator `%>%` | `Ctrl + Shift + M` | `Cmd + Shift + M` |
+| Comment/uncomment | `Ctrl + Shift + C` | `Cmd + Shift + C` |
+
+::: {.callout-tip}
+Type `Alt + Shift + K` (Windows) or `Option + Shift + K` (Mac) to see all shortcuts
+:::
+
+# Scripts and Documents
+
+## Two Ways to Write Code
+
+::: {.columns}
+::: {.column width="50%"}
+### R Scripts (`.R`)
+
+```r
+# Pure code files
+# Comments with #
+
+library(tidyverse)
+
+data <- read_csv("data.csv")
+
+model <- lm(y ~ x, data = data)
+
+summary(model)
+```
+
+**Use for:**
+
+- Data processing pipelines
+- Function definitions
+- Quick analyses
+:::
+
+::: {.column width="50%"}
+### Quarto Documents (`.qmd`)
+
+````markdown
+# My Analysis
+
+Here's what I found:
+
+```{{r}}
+library(tidyverse)
+data <- read_csv("data.csv")
+```
+
+The results show...
+````
+
+**Use for:**
+
+- Reports and papers
+- Presentations
+- Documented analyses
+- Tutorials
+:::
+:::
+
+## Why Quarto/RMarkdown?
+
+**Reproducible Research Made Easy**
+
+::: {.incremental}
+1. **Code + Text in One Place**
+   - No copy-paste errors
+   - Analysis and writeup together
+
+2. **Multiple Output Formats**
+   - PDF (via LaTeX)
+   - HTML (with interactive elements)
+   - Word (for collaboration)
+   - Presentations (like this!)
+
+3. **Truly Reproducible**
+   - Re-run entire analysis with one click
+   - Changes automatically propagate
+   - Perfect for revisions
+:::
+
+## Quarto Document Structure
+
+````markdown
+---
+title: "My Analysis"
+author: "Your Name"
+format: html
+---
+
+## Introduction
+
+This study examines...
+
+```{{r}}
+#| label: load-data
+#| echo: false
+
+library(tidyverse)
+data <- read_csv("data.csv")
+```
+
+## Results
+
+The analysis reveals...
+````
+
+::: {.callout-important}
+YAML header (between `---`) controls document metadata and output format
+:::
+
+# R Projects
+
+## The Problem with Working Directories
+
+::: {.callout-warning}
+## Don't Do This ❌
+
+```r
+setwd("C:/Users/YourName/Documents/My Research/Project 1/Data")
+data <- read.csv("survey.csv")
+```
+
+**Why this is bad:**
+
+- Won't work on anyone else's computer
+- Won't work when you move files
+- Breaks reproducibility
+- Makes collaboration impossible
+:::
+
+## R Projects to the Rescue ✅
+
+**R Projects solve path problems**
+
+When you open an `.Rproj` file:
+
+::: {.incremental}
+1. RStudio starts fresh R session
+2. Working directory automatically set to project folder
+3. Use relative paths that work anywhere:
+   ```r
+   data <- read_csv("data/survey.csv")
+   ggsave("figures/plot1.png")
+   ```
+4. Project-specific settings saved
+5. Easy to zip and share entire project
+:::
+
+## Creating an R Project
+
+**Three common ways:**
+
+::: {.panel-tabset}
+
+### New Project
+1. `File > New Project > New Directory`
+2. Choose project type
+3. Select location
+4. Click "Create Project"
+
+### Existing Folder
+1. `File > New Project > Existing Directory`
+2. Navigate to folder
+3. Click "Create Project"
+
+### From Git (Best!)
+1. `File > New Project > Version Control > Git`
+2. Paste repository URL
+3. Choose location
+4. Click "Create Project"
+
+:::
+
+## Organizing Your Project {.smaller}
+
+**Recommended structure:**
+
+```
+my-project/
+├── my-project.Rproj
+├── README.md
+├── data/
+│   ├── raw/
+│   └── processed/
+├── scripts/
+│   ├── 01-clean-data.R
+│   └── 02-analyze.R
+├── documents/
+│   └── paper.qmd
+├── figures/
+└── output/
+```
+
+::: {.callout-tip}
+## Pro Tips
+- Use meaningful names
+- Number scripts in order
+- Keep raw data separate (never edit!)
+- Document everything in README
+:::
+
+# Version Control with Git
+
+::: {.callout-note}
+## Workshop Schedule Note
+Today we're introducing Git/GitHub concepts and basic setup. We'll do a **deep dive into Git workflows** on **Day 2/3** of the workshop with hands-on practice and advanced techniques.
+:::
+
+## What is Version Control?
+
+**Track every change to your project over time**
+
+::: {.columns}
+::: {.column width="50%"}
+**Without version control:**
+
+```
+thesis_final.docx
+thesis_final_v2.docx
+thesis_final_FINAL.docx
+thesis_final_FINAL_revised.docx
+thesis_final_actual_final.docx
+```
+
+😱 Which one is current?  
+😱 What changed between versions?  
+😱 Who made what changes?
+:::
+
+::: {.column width="50%"}
+**With version control:**
+
+```
+thesis.docx
+```
+
+✅ Complete history saved  
+✅ See all changes  
+✅ Revert to any version  
+✅ Multiple people can work  
+✅ Track who did what
+:::
+:::
+
+## Git Basics
+
+**Git = Distributed Version Control System**
+
+::: {.incremental}
+- Tracks changes to files over time
+- Works locally on your computer
+- Creates "snapshots" (commits) of your project
+- Lets you explore different versions
+- Enables collaboration
+- Industry standard for code projects
+:::
+
+::: {.callout-note}
+Git is powerful but has a learning curve. We'll focus on essential operations.
+:::
+
+## GitHub vs. Git
+
+::: {.columns}
+::: {.column width="50%"}
+### Git
+- Version control software
+- Runs on your computer
+- Tracks file changes
+- Command-line tool
+- Works offline
+:::
+
+::: {.column width="50%"}
+### GitHub
+- Online platform
+- Built on top of Git
+- Cloud storage for repositories
+- Web interface
+- Collaboration features
+- Social coding platform
+:::
+:::
+
+::: {.callout-tip}
+Think of Git as your local diary, GitHub as publishing that diary online
+:::
+
+## Why Use Git for Research?
+
+::: {.incremental}
+1. **Never lose work**
+   - Complete project history
+   - Restore any previous version
+   - Experiment safely
+
+2. **Understand what changed**
+   - See exact changes between versions
+   - Trace when bugs introduced
+   - Document decision process
+
+3. **Collaborate effectively**
+   - Multiple people work simultaneously
+   - Merge contributions automatically
+   - Clear attribution of work
+
+4. **Publish and share**
+   - Make research reproducible
+   - Share code publicly
+   - Get feedback and contributions
+:::
+
+# Getting Started with Git
+
+## Initial Setup
+
+**First time only:**
+
+```bash
+# Tell Git who you are
+git config --global user.name "Your Name"
+git config --global user.email "your.email@example.com"
+
+# Check settings
+git config --list
+```
+
+::: {.callout-note}
+Use the same email as your GitHub account!
+:::
+
+## Create Your First Repository
+
+**On GitHub:**
+
+1. Go to [github.com/new](https://github.com/new)
+2. Name your repository (e.g., "test-project")
+3. Choose public or private
+4. ✅ Check "Add a README file"
+5. Click "Create repository"
+
+::: {.callout-important}
+Initialize with README so repository isn't empty
+:::
+
+## Clone Repository to Your Computer
+
+**In RStudio:**
+
+1. `File > New Project > Version Control > Git`
+2. Paste repository URL from GitHub
+3. Choose where to save
+4. Click "Create Project"
+
+**You now have:**
+
+- Local copy on your computer
+- Connected to GitHub (remote)
+- Ready to start working!
+
+# The Git Workflow
+
+::: {.callout-important}
+## Today: Overview Only
+We're covering Git fundamentals today. **Day 2/3 will include:**
+
+- Detailed workflow demonstrations
+- Hands-on practice with your projects
+- Troubleshooting common issues
+- Advanced collaboration techniques
+- Branch management strategies
+
+For now, focus on understanding the concepts!
+:::
+
+## Four Essential Operations
+
+::: {.columns}
+::: {.column width="50%"}
+### 1. Stage (Add)
+Select which changes to save
+
+### 2. Commit
+Save staged changes with message
+
+### 3. Pull
+Download changes from GitHub
+
+### 4. Push
+Upload your commits to GitHub
+:::
+
+::: {.column width="50%"}
+```{mermaid}
+graph TD
+    A[Edit Files] --> B[Stage]
+    B --> C[Commit]
+    C --> D{Collaborating?}
+    D -->|Yes| E[Pull First]
+    D -->|No| F[Push]
+    E --> F
+    F --> A
+```
+:::
+:::
+
+## The Commit Cycle
+
+::: {.panel-tabset}
+
+### Step 1: Make Changes
+Edit your files as normal
+
+```r
+# analysis.R
+library(tidyverse)
+
+data <- read_csv("data/survey.csv")
+
+# New analysis
+model <- lm(outcome ~ treatment, data = data)
+```
+
+### Step 2: Stage
+Click checkboxes next to changed files in Git pane
+
+### Step 3: Commit
+Click "Commit", write message:
+
+```
+Add linear regression analysis
+
+- Import survey data
+- Run treatment effect model
+- TODO: Add control variables
+```
+
+### Step 4: Push
+Click "Push" to sync with GitHub
+
+:::
+
+## Writing Good Commit Messages {.smaller}
+
+::: {.columns}
+::: {.column width="50%"}
+### ❌ Bad Messages
+
+```
+update
+fixed stuff
+asdf
+final version
+changes
+more changes
+```
+
+**Problems:**
+
+- Not descriptive
+- Future you won't understand
+- Can't search history
+:::
+
+::: {.column width="50%"}
+### ✅ Good Messages
+
+```
+Add regression models for main analysis
+
+Fix missing data handling in cleaning script
+
+Update Figure 2 with reviewer comments
+
+Remove deprecated ggplot2 syntax
+```
+
+**Why better:**
+
+- Explains what changed
+- Explains why (if needed)
+- Searchable
+- Professional
+:::
+:::
+
+## RStudio Git Interface
+
+**In the Git pane you can:**
+
+::: {.incremental}
+- 📋 See which files changed (Status column)
+- ☑️ Stage/unstage files (checkboxes)
+- 💬 Commit changes (Commit button)
+- 📥 Pull from GitHub (Pull button)
+- 📤 Push to GitHub (Push button)
+- 🌿 Create/switch branches (branch dropdown)
+- 📊 View history (History button)
+- ⚙️ Advanced operations (gear menu)
+:::
+
+::: {.callout-tip}
+Keep the Git pane open while working
+:::
+
+# Important Git Concepts
+
+## The Sacred Order
+
+::: {.callout-warning}
+## Always: Stage → Commit → Pull → Push
+
+**Never skip the commit before pulling!**
+:::
+
+::: {.incremental}
+1. **Stage** your changes
+2. **Commit** with good message
+3. **Pull** to get remote changes
+4. **Push** your commits
+
+**Why this order?**
+
+- Pulling after committing preserves your work
+- Git can merge changes intelligently
+- If conflicts arise, you can resolve them
+- Your work is never lost
+:::
+
+## Merge Conflicts
+
+**What causes conflicts?**
+
+Two people edit the same lines in the same file
+
+**Example scenario:**
+
+::: {.incremental}
+1. You: Edit line 10 of `analysis.R`, commit
+2. Collaborator: Edit line 10 of `analysis.R`, push to GitHub
+3. You: Try to push → Conflict!
+4. You: Pull → Git says "fix conflicts"
+5. You: Open file, see conflict markers:
+   ```r
+   <<<<<<< HEAD
+   model <- lm(y ~ x1 + x2, data = data)  # Your version
+   =======
+   model <- glm(y ~ x1, data = data, family = binomial)  # Their version
+   >>>>>>> abc123
+   ```
+6. You: Choose which to keep (or combine), save, commit, push
+:::
+
+## Handling Conflicts
+
+::: {.panel-tabset}
+
+### 1. Don't Panic
+Conflicts are normal! They're just Git asking you to make a decision.
+
+### 2. Open the File
+Conflict markers show both versions:
+
+```r
+<<<<<<< HEAD
+your_code()
+=======
+their_code()
+>>>>>>> branch
+```
+
+### 3. Decide What to Keep
+- Keep yours
+- Keep theirs  
+- Combine both
+- Write something new
+
+### 4. Remove Markers
+Delete `<<<<<<<`, `=======`, `>>>>>>>` lines
+
+### 5. Stage, Commit, Push
+:::
+
+## Branches (Optional but Powerful)
+
+**Branches let you work on features independently**
+
+```{mermaid}
+gitGraph
+   commit
+   commit
+   branch feature
+   checkout feature
+   commit
+   commit
+   checkout main
+   commit
+   merge feature
+   commit
+```
+
+::: {.incremental}
+- `main` branch = stable version
+- Create feature branch for experiments
+- Work freely without breaking main
+- Merge back when ready (or delete if failed)
+:::
+
+# Collaboration with GitHub
+
+## Inviting Collaborators
+
+**For private repositories:**
+
+1. Go to repository on GitHub
+2. Click "Settings"
+3. Click "Collaborators"
+4. Click "Add people"
+5. Enter their GitHub username
+6. They'll receive invitation email
+
+**For public repositories:**
+
+- Anyone can see and fork
+- Control who can directly push
+
+## Collaborative Workflow
+
+::: {.columns}
+::: {.column width="50%"}
+**Good practices:**
+
+✅ Communicate about who's working on what  
+✅ Pull before starting work  
+✅ Commit small, logical changes  
+✅ Push regularly  
+✅ Write clear commit messages  
+✅ Review each other's code  
+✅ Use branches for big changes  
+:::
+
+::: {.column width="50%"}
+**Avoid:**
+
+❌ Both editing same file simultaneously  
+❌ Committing large files (>100MB)  
+❌ Waiting days between pushes  
+❌ Vague commit messages  
+❌ Pushing broken code to main  
+❌ Force pushing (unless you know why)  
+:::
+:::
+
+## Working Solo? Still Use Git!
+
+**You're collaborating with future you**
+
+::: {.incremental}
+- Track your thought process
+- Experiment without fear
+- Document decisions in commits
+- Build portfolio of work
+- Practice good habits
+- Publish your research code
+:::
+
+::: {.callout-tip}
+Start with private repos until comfortable, then make research public
+:::
+
+# Common Git Scenarios
+
+## Scenario 1: Made Changes by Mistake
+
+::: {.panel-tabset}
+
+### Not Committed Yet
+**Easy!** Right-click file in Git pane → Revert
+
+### Already Committed, Not Pushed
+```bash
+# Undo last commit, keep changes
+git reset --soft HEAD~1
+```
+
+### Already Pushed
+```bash
+# Create new commit that undoes changes
+git revert <commit-hash>
+```
+
+### Nuclear Option
+Just clone fresh copy of repo (loses local work!)
+
+:::
+
+## Scenario 2: Want to Try Something Risky
+
+**Use a branch!**
+
+1. Create new branch: `experimental-analysis`
+2. Make changes, commit as usual
+3. If it works → merge to main
+4. If it fails → delete branch
+
+**You preserved the working main branch**
+
+## Scenario 3: Forgot to Pull Before Committing
+
+::: {.incremental}
+1. Don't panic
+2. Try to pull anyway
+3. Git will usually merge automatically
+4. If conflicts → resolve them
+5. Commit the merge
+6. Push
+
+**Lesson learned:** Pull → Commit → Push
+:::
+
+## Scenario 4: Accidentally Committed Sensitive Data
+
+::: {.callout-danger}
+## Sensitive Data Includes:
+- Passwords
+- API keys
+- Personal information (emails, addresses)
+- Confidential data
+:::
+
+**Prevention:**
+
+- Use `.gitignore` file
+- Never commit passwords (use environment variables)
+- Keep sensitive data separate
+
+**If you did commit:**
+
+- Change passwords immediately!
+- Rewrite Git history (advanced) or just make repo private
+
+# Advanced Topics (Brief Overview)
+
+## .gitignore File
+
+**Tell Git to ignore certain files:**
+
+```
+# R files
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+
+# Large data
+data/raw/*.csv
+data/raw/*.dta
+
+# Outputs (regenerate from code)
+figures/*.png
+output/*.html
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Sensitive
+config/passwords.txt
+.env
+```
+
+::: {.callout-tip}
+Every R project should have a `.gitignore` file
+:::
+
+## GitHub Features {.smaller}
+
+::: {.columns}
+::: {.column width="50%"}
+**Issues**
+
+- Track bugs
+- Plan features
+- Discuss ideas
+- Assign tasks
+
+**Pull Requests**
+
+- Propose changes
+- Code review
+- Discussion
+- Quality control
+:::
+
+::: {.column width="50%"}
+**Releases**
+
+- Tag versions (v1.0, v2.0)
+- Provide downloads
+- Document changes
+
+**GitHub Pages**
+
+- Free website hosting
+- Perfect for documentation
+- Publish research websites
+:::
+:::
+
+## Git with Large Files
+
+::: {.callout-warning}
+## GitHub Limits
+- Individual files: 100 MB max
+- Repository: 1 GB recommended max
+:::
+
+**Solutions:**
+
+- Don't commit large data files
+- Use data repositories (OSF, Dataverse)
+- Download data via script
+- Use Git LFS (Large File Storage) for essential large files
+- Store processed/aggregated data instead of raw
+
+## Command Line Git (Optional)
+
+**RStudio GUI covers 90% of needs, but CLI is powerful:**
+
+```bash
+git status              # See what changed
+git add file.R          # Stage a file
+git commit -m "message" # Commit
+git pull                # Pull from remote
+git push                # Push to remote
+git log                 # View history
+git diff                # See changes
+git branch new-feature  # Create branch
+git checkout main       # Switch branch
+```
+
+::: {.callout-note}
+Learn CLI gradually as you need advanced features
+:::
+
+# Putting It All Together
+
+## Your Complete Workflow
+
+::: {.incremental}
+1. **Setup (once)**
+   - Install R, RStudio, Git
+   - Create GitHub account
+   - Configure Git with your info
+
+2. **Start Project**
+   - Create repository on GitHub
+   - Clone to create R Project
+   - Set up directory structure
+   - Create .gitignore
+
+3. **Daily Work**
+   - Open .Rproj file
+   - Pull to sync
+   - Write code, analyze data
+   - Stage, commit regularly
+   - Push at end of session
+
+4. **Collaborate**
+   - Invite team members
+   - Communicate about tasks
+   - Review each other's work
+   - Resolve conflicts together
+:::
+
+## Best Practices Summary {.smaller}
+
+::: {.columns}
+::: {.column width="50%"}
+**R Projects**
+
+✅ Always use R Projects  
+✅ Use relative paths  
+✅ Never use `setwd()`  
+✅ Organize files logically  
+✅ Document in README  
+
+**Git Commits**
+
+✅ Commit often  
+✅ Write descriptive messages  
+✅ Commit logical units  
+✅ Pull before pushing  
+✅ Don't commit generated files  
+:::
+
+::: {.column width="50%"}
+**Collaboration**
+
+✅ Communicate clearly  
+✅ Use branches for features  
+✅ Review code together  
+✅ Resolve conflicts promptly  
+✅ Keep main branch stable  
+
+**Reproducibility**
+
+✅ Document dependencies  
+✅ Use relative paths  
+✅ Version control everything  
+✅ Make data acquisition reproducible  
+✅ Comment your code  
+:::
+:::
+
+## Common Mistakes to Avoid
+
+::: {.incremental}
+1. ❌ Using `setwd()` in scripts
+2. ❌ Not using R Projects
+3. ❌ Committing sensitive data
+4. ❌ Vague commit messages ("updated stuff")
+5. ❌ Pushing broken code to main
+6. ❌ Editing files on GitHub directly without pulling
+7. ❌ Waiting too long between commits
+8. ❌ Not backing up to remote (GitHub)
+9. ❌ Committing large data files
+10. ❌ Being afraid to experiment (that's what branches are for!)
+:::
+
+## Resources and Help
+
+::: {.panel-tabset}
+
+### R & RStudio
+- [RStudio Cheatsheets](https://www.rstudio.com/resources/cheatsheets/)
+- [R for Data Science](https://r4ds.had.co.nz/) (free online book)
+- [Posit Community](https://community.rstudio.com/)
+
+### Git & GitHub
+- [Happy Git with R](https://happygitwithr.com/) (excellent!)
+- [GitHub Docs](https://docs.github.com/)
+- [Git Cheatsheet](https://education.github.com/git-cheat-sheet-education.pdf)
+
+### Quarto
+- [Quarto Guide](https://quarto.org/docs/guide/)
+- [Quarto Gallery](https://quarto.org/docs/gallery/)
+
+### Getting Help
+- Stack Overflow (search first!)
+- RStudio Community
+- GitHub Issues for specific packages
+:::
+
+## Practice Exercise (Optional Preview) {.smaller}
+
+::: {.callout-note}
+## Don't Worry If This Seems Complex!
+This is a preview of what we'll practice in detail on Day 2/3. You're welcome to try now, but no pressure!
+:::
+
+**Complete workflow preview:**
+
+::: {.incremental}
+1. Create new repository on GitHub called "r-practice"
+2. Clone it and create R Project in RStudio
+3. Create file `analysis.R` with simple code:
+   ```r
+   # My first R project
+   x <- 1:10
+   y <- x^2
+   plot(x, y)
+   ```
+4. Stage, commit with message "Add first analysis"
+5. Push to GitHub
+6. Edit file, add: `print(summary(y))`
+7. Commit with message "Add summary statistics"
+8. Push again
+9. View your commit history on GitHub!
+:::
+
+::: {.callout-tip}
+**Alternative:** Just focus on creating the GitHub account and installing Git today. We'll practice the workflow together on Day 2/3!
+:::
+
+# Next Steps
+
+## Course Roadmap
+
+**What we've covered today:**
+
+- ✅ Why R for research
+- ✅ RStudio and Positron IDEs
+- ✅ R Projects for organization
+- ✅ Git/GitHub overview (concepts and setup)
+
+**Coming up next:**
+
+- **Day 2/3**: Deep dive into Git/GitHub workflows (hands-on practice!)
+- Base R fundamentals
+- Tidyverse approach
+- Data wrangling techniques
+- Creating visualizations
+- Writing functions
+- Reproducible research
+
+::: {.callout-note}
+## Git Learning Path
+**Today:** Understand what Git is and why it matters  
+**Day 2/3:** Master Git workflows with guided practice  
+**Beyond:** Use Git confidently in your research
+:::
+
+## Building Good Habits
+
+::: {.incremental}
+**Start small, be consistent:**
+
+- Use R Projects for everything (even small tasks)
+- Commit early, commit often
+- Write commit messages for future you
+- Organize files logically
+- Document as you go
+- Push regularly (don't lose work!)
+- Experiment on branches
+- Ask for help when stuck
+
+**These habits compound over time** 🚀
+:::
+
+## Your Action Items
+
+::: {.callout-important}
+## Before Next Session (Day 2/3)
+
+**Required:**
+
+1. ✅ Install R, RStudio, Git (if not done)
+2. ✅ Create GitHub account
+3. ✅ Configure Git with your name and email (see slides)
+
+**Optional:**
+
+4. ⭐ Try installing Positron if interested
+5. ⭐ Complete practice exercise (create repo, clone, commit, push)
+6. ⭐ Fork and clone course repository
+7. ⭐ Read Chapter 1-2 of "R for Data Science"
+
+**Save for Day 2/3:**
+
+- Deep Git/GitHub practice
+- Collaborative workflows
+- Troubleshooting together
+:::
+
+::: {.callout-tip}
+## Focus Today
+Get your tools installed and accounts created. We'll learn Git by doing on Day 2/3!
+:::
+
+## Questions? {.center}
+
+### Let's discuss any questions or concerns
+
+::: {.notes}
+Open floor for questions. Common topics:
+- Merge conflict concerns
+- When to commit
+- Public vs private repos
+- Command line vs GUI
+- Large file handling
+:::
+
+## Thank You! {.center}
+
+**Contact:**
+
+- 🌐 [Your Website]
+- 📧 [Your Email]
+- 🐦 [Twitter/X]
+- 💻 [GitHub Profile]
+
+**Course Materials:**
+
+- 📚 [Course Repository]
+- 💬 [Discussion Forum]
+
+::: {.fragment}
+### See you next session!
+:::
