@@ -2,12 +2,9 @@
 # COMPREHENSIVE HEALTH DATA ANALYSIS
 # Fertility, Mortality, and Child Health Analysis
 # ====================================================================
+if(!require(pacman)) install.packages("pacman")
+pacman::p_load(haven, dplyr, ggplot2, tidyr)
 
-# Load required libraries
-library(haven)
-library(dplyr)
-library(ggplot2)
-library(tidyr)
 
 # Set theme for all plots
 theme_set(theme_minimal())
@@ -152,33 +149,22 @@ mortality_summary <- fertility %>%
     mean_total_died = round(mean(BOYS_DIED + GIRLS_DIED, na.rm = TRUE), 2)
   )
 
-print(mortality_summary)
-# ====================================================================
-# Mortality summary from fertility file (child mortality context)
-# ====================================================================
-
 mortality_summary <- fertility %>%
+  mutate(
+    HAD_STILL_BIRHT_num = as.numeric(readr::parse_number(HAD_STILL_BIRHT))
+  ) %>%
   summarise(
-    total_women = n(),
-    
-    # % of women who experienced a stillbirth
-    pct_stillbirth = round(100 * mean(HAD_STILL_BIRHT == 1, na.rm = TRUE), 2),
-    
-    # Average number of male and female child deaths per woman
+    n = n(),
+    pct_stillbirth = round(100 * mean(HAD_STILL_BIRHT_num == 1, na.rm = TRUE), 2),
     mean_boys_died = round(mean(BOYS_DIED, na.rm = TRUE), 2),
     mean_girls_died = round(mean(GIRLS_DIED, na.rm = TRUE), 2),
-    
-    # Average total child deaths per woman
-    mean_total_died = round(mean(BOYS_DIED + GIRLS_DIED, na.rm = TRUE), 2),
-    
-    # % of women who lost at least one child
-    pct_women_child_loss = round(
-      100 * mean((BOYS_DIED + GIRLS_DIED) > 0, na.rm = TRUE), 2
-    )
+    mean_total_died = round(mean(BOYS_DIED + GIRLS_DIED, na.rm = TRUE), 2)
   )
 
-mortality_summary
 
+
+
+print(mortality_summary)
 
 # ====================================================================
 # 2. CHILD HEALTH ANALYSIS - Birth.sav
