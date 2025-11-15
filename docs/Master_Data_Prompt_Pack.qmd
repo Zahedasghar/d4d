@@ -1,0 +1,274 @@
+---
+title: "Master Data Prompt Pack"
+subtitle: "Demographic, NHANES, Survey, World-in-Data, Mapping & Modeling Prompts"
+author: "Prepared for 5-Day Workshop"
+date: today
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    number-sections: true
+    theme: cosmo
+  pdf:
+    toc: true
+    number-sections: true
+    geometry: margin=1in
+execute:
+  echo: false
+  warning: false
+  message: false
+---
+
+# 📦 MASTER DATA PROMPT PACK — Demographic & Survey Data Analysis (R + AI)
+
+For a 5-Day Workshop: NHANES, World-in-Data, Demographic Surveys, EDA, Modeling & Maps
+
+---
+
+# 1️⃣ Foundation Prompts — Starting Any Data Task
+
+## 🔹 Prompt 1: Understand My Dataset
+```
+You are a data analysis expert. I will upload a dataset. 
+Please examine its structure, variable types, missingness, and give me:
+1. Summary of dataset  
+2. Data quality issues  
+3. Potential analytic directions  
+4. Suggested plots and modeling steps  
+5. Which variables look demographic and which look health/socioeconomic  
+Use clear bullet points.
+```
+
+---
+
+## 🔹 Prompt 2: Generate a Full EDA Plan
+```
+Create a complete EDA plan for a demographic/health dataset.
+Include:
+- Descriptive statistics 
+- Missing data treatment options
+- Outlier detection methods
+- Grouped summaries (gender/age/income)
+- Plots (histogram, boxplot, barplot, correlations)
+- Survey-weight considerations (if applicable)
+- Recommendations for modeling
+Output in step-by-step format.
+```
+
+---
+
+# 2️⃣ Prompts for NHANES Analysis
+
+## 🔹 Prompt 3: NHANES Cleaning & Recoding
+```
+You are NHANES specialist.  
+I want to clean NHANES data and prepare it for analysis.  
+Give me R code for:
+- Recoding demographics (age groups, BMI categories, race)
+- Creating comorbidity indicators (hypertension, diabetes, obesity)
+- Handling missing survey weights
+- Preparing survey design object (svydesign)
+```
+
+## 🔹 Prompt 4: NHANES Risk Factor Index
+```
+Using NHANES variables, generate an R script to create a composite 
+health risk index (hypertension, obesity, diabetes, inactivity, smoking).  
+Include:
+- Binary indicators  
+- Row-sum risk score  
+- Distribution summary  
+- Visualization  
+```
+
+---
+
+# 3️⃣ Prompts for Demographic Survey Data (DHS/Custom Surveys)
+
+## 🔹 Prompt 5: Survey EDA + Weighting
+```
+You are a survey data modeling expert.
+I have a DHS-style demographic dataset.  
+Create R code to:
+- Apply sample weights  
+- Produce weighted frequencies and cross-tabs  
+- Generate fertility, mortality, and household indicators  
+- Visualize distributions  
+- Summarize key demographic trends  
+```
+
+## 🔹 Prompt 6: Complex Survey Modeling
+```
+Help me build survey-weighted regression models using R's survey package.
+Provide:
+- Logistic model example  
+- Poisson/negative binomial example  
+- Guidance on interpretation  
+- Goodness-of-fit diagnostics  
+- How to use strata and PSU variables  
+```
+
+---
+
+# 4️⃣ Prompts for World-in-Data + Global Datasets
+
+## 🔹 Prompt 7: Country-Level EDA (World in Data)
+```
+I want to analyze country-level demographic indicators using World in Data.
+Generate an R workflow that:
+- Downloads selected indicators (fertility, GDP per capita, life expectancy)  
+- Merges them  
+- Cleans and creates harmonized country-year panel  
+- Performs EDA, trends, and comparative analysis  
+- Highlights Pakistan vs regional peers  
+```
+
+## 🔹 Prompt 8: Cross-Country Modeling
+```
+Develop a cross-country demographic model using:
+- fertility rate
+- GDP per capita
+- female education
+- urbanization
+- health spending
+Provide R code for:
+- Panel regression setup  
+- Fixed vs random effects choice  
+- Diagnostics  
+- Interpretation in simple language  
+```
+
+---
+
+# 5️⃣ Prompts for Choropleth Maps (R)
+
+## 🔹 Prompt 9: Choropleth Map Creation
+```
+Act as a mapping expert in R. 
+Generate code to:
+- Load shapefiles (Pakistan districts or any country map)
+- Merge demographic indicators with spatial data
+- Create choropleth maps using tmap / ggplot2
+- Add titles, legends, and color scales
+- Produce high-resolution exportable maps
+```
+
+## 🔹 Prompt 10: Comparative Spatial Patterns
+```
+Create a side-by-side spatial comparison map for two demographic variables:
+example: literacy rate vs child mortality.
+Provide R code for:
+- Data merge  
+- Two-panel tmap layout  
+- Summary interpretation for policymakers  
+```
+
+---
+
+# 6️⃣ Prompts for Full AI-Driven Analysis Workflows
+
+## 🔹 Prompt 11: End-to-End AI-Guided Data Analysis
+```
+You are my AI data analyst.  
+Given this dataset, produce a full workflow:
+1. Understand dataset  
+2. Clean & preprocess  
+3. EDA visualizations  
+4. Feature engineering  
+5. Regression/classification/clustering  
+6. Model interpretation  
+7. Policy-relevant narrative  
+Generate R code and explanations.
+```
+
+---
+
+## 🔹 Prompt 12: “Vibe Coding” — Improve Diagnostics
+```
+Review my R code and “vibe it up.”  
+Improve:
+- efficiency  
+- readability  
+- narrative labeling  
+- interpretability  
+- comments for students  
+
+Suggest alternative plots and better coding style.
+```
+
+---
+
+## 🔹 Prompt 13: AI-Generated Storytelling for Data
+```
+Based on my dataset summary, write a short, simple, policy-friendly 
+story that explains the demographic trends and their implications.
+Tone: accessible, non-technical.
+```
+
+---
+
+# 7️⃣ Prompts Specific to the 5-Day Workshop Flow
+
+## Day 1 – Data Literacy & EDA
+```
+Create hands-on beginner exercises for demographic EDA:
+- Gender/age structure
+- Fertility patterns
+- Mortality indicators
+- Nutritional categories (BMI)
+Include R solutions and explanations.
+```
+
+## Day 2 – NHANES Deep-Dive
+```
+Design NHANES mini-projects for students with:
+- health disparities
+- age comparisons
+- risk scoring
+- survey-weighted models
+Include R code templates.
+```
+
+## Day 3 – Survey Data Modeling
+```
+I need 4 survey-modeling case studies:
+- Child health  
+- Women fertility  
+- Household deprivation  
+- Education outcomes  
+Provide R code and interpretation.
+```
+
+## Day 4 – World-in-Data & Country Analysis
+```
+Generate cross-country comparative exercises using WDI or OWID.
+Focus on Pakistan vs Vietnam, Bangladesh, India.
+Include simple interpretations.
+```
+
+## Day 5 – Mapping & Final Projects
+```
+Prepare final project ideas involving:
+- choropleth maps  
+- demographic trends  
+- NHANES risk models  
+- survey analysis  
+
+Provide clear instructions + outcomes expected.
+```
+
+---
+
+# ✔️ What This Prompt Pack Covers
+
+- EDA prompts  
+- NHANES prompts  
+- Survey modeling prompts  
+- Mapping prompts  
+- Vibe-coding prompts  
+- Full workflows  
+- Pakistan-focused cross-country prompts  
+
+---
+
+# End of Document

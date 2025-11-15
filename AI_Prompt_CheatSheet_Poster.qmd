@@ -1,0 +1,110 @@
+---
+title: "AI Prompt Cheat Sheet Poster"
+subtitle: "Graphical One-Page Reference"
+format:
+  html:
+    toc: false
+    theme: flatly
+  pdf:
+    geometry: "margin=0.5in"
+    fontsize: 11pt
+---
+
+# 🎨 AI Prompt Cheat Sheet Poster
+
+This file is designed as a **graphical-style one-page Quarto poster** summarizing key AI prompts for demographic data analysis.
+
+---
+
+## 🔍 EDA — Exploratory Data Analysis
+- Understand dataset structure  
+- Generate full EDA plan  
+- Provide summary insights  
+- Detect missingness/outliers  
+
+---
+
+## 📦 NHANES Data Analysis
+- Clean and recode NHANES  
+- Create composite risk indices  
+- Apply survey weights  
+- Fit weighted regression models  
+
+---
+
+## 🧮 Survey / DHS Data
+- Set up survey design (PSU, strata, weights)  
+- Create fertility, mortality, education indicators  
+- Weighted proportions and regressions  
+
+---
+
+## 🌍 World-in-Data / WDI
+- Download and clean development indicators  
+- Build country-year panels  
+- Compare Pakistan with regional peers  
+- Run panel regressions  
+
+---
+
+## 🗺️ Mapping & Spatial Analysis
+- Load shapefiles  
+- Merge district-level indicators  
+- Create choropleth maps  
+- Two-variable visual comparisons  
+
+---
+
+## 📊 Modeling
+- Fit linear/logistic regressions  
+- Time-series trends  
+- Interpret coefficients clearly  
+
+---
+
+## ✍️ Storytelling
+- Convert results into narrative  
+- Write LinkedIn summaries  
+- Produce policy briefs  
+
+---
+
+## 🪄 Vibe Coding
+- Rewrite R code cleanly  
+- Improve readability  
+- Add comments and structure  
+
+---
+
+## 🛠️ Debugging
+- Identify errors  
+- Fix broken R pipelines  
+- Diagnose weird outputs  
+
+---
+
+## 📚 Teaching Support
+- Simplify explanations  
+- Generate exercises  
+- Provide step-by-step learning aids  
+
+---
+
+# 📦 Master One-Line Prompts (Copy & Paste)
+
+```
+"Explain this dataset like I am new to data."
+"Generate a complete EDA workflow."
+"Clean and recode NHANES variables."
+"Fit survey-weighted logistic regression."
+"Create fertility and mortality indicators."
+"Fetch GDP, fertility, education from WDI."
+"Generate choropleth maps using tmap."
+"Explain model output in plain English."
+"Rewrite my R code with vibe."
+"Fix this R error and explain the cause."
+```
+
+---
+
+# ✅ End of Poster

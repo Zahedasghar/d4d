@@ -1,0 +1,201 @@
+---
+title: "Demographic Analysis in R using DHS Model Datasets"
+author: "Zahid Asghar"
+date: "2025-11-19"
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    theme: cosmo
+    code-fold: true
+execute:
+  echo: true
+  warning: false
+  message: false
+  freeze: auto 
+editor_options: 
+  chunk_output_type: console
+---
+
+# 🧭 Session 1: Introduction to DHS Data and R Setup
+
+## Objectives
+- Understand DHS data structure and variable naming
+- Load and explore a DHS model dataset
+- Prepare your R environment for analysis
+
+```{r}
+# Efficient package management using pacman (no pollster dependency)
+if(!require(pacman)) install.packages("pacman")
+
+pacman::p_load(
+  tidyverse, haven, here, labelled, survey, broom, corrplot,
+  naniar, gt, expss, xlsx
+)
+
+topline <- function(data, var, wt){
+  data %>%
+    dplyr::filter(!is.na({{ var }}), !is.na({{ wt }})) %>%
+    dplyr::count({{ var }}, wt = {{ wt }}, name = "weight") %>%
+    dplyr::mutate(weighted_pct = round(100 * weight / sum(weight), 2)) %>%
+    dplyr::rename(category = {{ var }}) %>%
+    dplyr::select(category, weighted_pct)
+}
+```
+
+## Step 2. Load the Model Dataset
+
+```{r}
+# Load the Women's (IR) file
+pkir <- read_dta(here("data", "PKIR71FL.dta"))
+
+# Save a copy for faster loading in future sessions
+save(pkir, file = "data/pkir.RData")
+
+# Reload saved version
+load("data/pkir.RData")
+
+# Explore structure and variables
+str(pkir)
+```
+
+## 🧩 Exercise 1
+Inspect one variable's category labels.
+```{r}
+print_labels(pkir$v106)  # Education level
+```
+
+# 🧩 Session 2: Recoding Variables
+
+```{r}
+print_labels(pkir$v313)  # Check method type codes
+
+pkir <- pkir %>%
+  mutate(modfp = case_when(
+    v313 == 3 ~ 1,
+    v313 < 3 ~ 0
+  )) %>%
+  set_value_labels(modfp = c("Yes" = 1, "No" = 0)) %>%
+  set_variable_labels(modfp = "Currently used any modern method")
+```
+
+```{r}
+pkir <- pkir %>%
+  mutate(age_child = v008 - b3_01,
+         ancvisits = case_when(
+           m14_1 == 0 ~ 0,
+           m14_1 == 1 ~ 1,
+           m14_1 %in% c(2,3) ~ 2,
+           m14_1 >= 4 & m14_1 <= 90 ~ 3,
+           TRUE ~ NA_real_
+         )) %>%
+  set_value_labels(ancvisits = c("None" = 0, "1" = 1, "2-3" = 2, "4+" = 3)) %>%
+  set_variable_labels(ancvisits = "Number of ANC visits")
+```
+
+# ⚖️ Session 3: Understanding and Applying Survey Weights
+
+## Why Use Weights?
+DHS employs complex sampling. Weights adjust for unequal selection probabilities and ensure representativeness.
+
+```{r}
+pkir <- pkir %>%
+  mutate(wt = v005 / 1e6)
+```
+
+```{r}
+topline(pkir, modfp, wt)
+```
+
+# 🧮 Session 4: Defining the Survey Design Object
+
+```{r}
+mysurvey <- svydesign(
+  id = pkir$v021,
+  strata = pkir$v022,
+  weights = pkir$wt,
+  data = pkir,
+  nest = TRUE
+)
+options(survey.lonely.psu = "adjust")
+```
+
+```{r}
+prop.table(svytable(~modfp, mysurvey))
+```
+
+# 📊 Session 5: Crosstabulations and Associations
+
+```{r}
+table_edu <- svyby(~modfp, by = ~v106, design = mysurvey, FUN = svymean, vartype = c("se", "ci"))
+table_edu
+
+svychisq(~modfp + v106, mysurvey)
+```
+
+# 📈 Session 6: Logistic Regression Analysis
+
+```{r}
+reg1 <- svyglm(modfp ~ v025, design = mysurvey, family = binomial(link = "logit"))
+summary(reg1)
+
+exp(reg1$coefficients)
+```
+
+```{r}
+reg2 <- svyglm(modfp ~ v025 + as.factor(v106) + as.factor(v013) + as.factor(v190),
+               design = mysurvey, family = binomial(link = "logit"))
+
+library(broom)
+tidy(reg2, exponentiate = TRUE, conf.int = TRUE)
+```
+
+# 🧮 Session 7: Correlation and Diagnostics
+
+```{r}
+cordata <- pkir %>% select(v025, v106, v013, v190)
+cor_matrix <- cor(cordata, use = "pairwise.complete.obs")
+
+corrplot(cor_matrix, method = "circle")
+```
+
+# 📤 Session 8: Exporting and Presenting Results
+
+```{r, eval=FALSE}
+write.xlsx(table_edu, "outputs/weighted_tables.xlsx", sheetName = "Education vs FP")
+```
+
+```{r}
+top_tbl <- topline(pkir, modfp, wt) %>%
+  mutate(category = as.character(category)) 
+
+# Convert from labelled to text
+
+
+
+gt_tbl <- gt::gt(top_tbl)
+
+gt_tbl <- gt::fmt_number(
+  data = gt_tbl,
+  columns = dplyr::vars(weighted_pct),
+  decimals = 2
+)
+
+gt_tbl <- gt::tab_header(
+  gt_tbl,
+  title = gt::md("**Modern Contraceptive Use among Women (Weighted)**")
+)
+
+gt_tbl
+```
+
+# 🎓 Wrap-Up and Reflection
+
+| Step | Concept | Function(s) |
+|------|----------|-------------|
+| Data loading | Importing DHS data | `read_dta()` |
+| Recoding | Creating new indicators | `mutate()`, `case_when()` |
+| Weighting | Adjust for complex survey | `v005 / 1e6` |
+| Design setup | Declare design | `svydesign()` |
+| Analysis | Weighted stats | `svymean()`, `svyby()`, `svyglm()` |
+| Export | Save outputs | `write.xlsx()`, `gt()` |

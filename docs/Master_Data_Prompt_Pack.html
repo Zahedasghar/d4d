@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.32">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Prepared for 5-Day Workshop">
+<meta name="dcterms.date" content="2025-11-15">
+
+<title>Master Data Prompt Pack</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="Master_Data_Prompt_Pack_files/libs/clipboard/clipboard.min.js"></script>
+<script src="Master_Data_Prompt_Pack_files/libs/quarto-html/quarto.js" type="module"></script>
+<script src="Master_Data_Prompt_Pack_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="Master_Data_Prompt_Pack_files/libs/quarto-html/popper.min.js"></script>
+<script src="Master_Data_Prompt_Pack_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="Master_Data_Prompt_Pack_files/libs/quarto-html/anchor.min.js"></script>
+<link href="Master_Data_Prompt_Pack_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="Master_Data_Prompt_Pack_files/libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="Master_Data_Prompt_Pack_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="Master_Data_Prompt_Pack_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="Master_Data_Prompt_Pack_files/libs/bootstrap/bootstrap-813c323200a87c37e262811031999de4.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+
+
+</head>
+
+<body class="quarto-light">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+  <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#master-data-prompt-pack-demographic-survey-data-analysis-r-ai" id="toc-master-data-prompt-pack-demographic-survey-data-analysis-r-ai" class="nav-link active" data-scroll-target="#master-data-prompt-pack-demographic-survey-data-analysis-r-ai"><span class="header-section-number">1</span> 📦 MASTER DATA PROMPT PACK — Demographic &amp; Survey Data Analysis (R + AI)</a></li>
+  <li><a href="#foundation-prompts-starting-any-data-task" id="toc-foundation-prompts-starting-any-data-task" class="nav-link" data-scroll-target="#foundation-prompts-starting-any-data-task"><span class="header-section-number">2</span> 1️⃣ Foundation Prompts — Starting Any Data Task</a>
+  <ul class="collapse">
+  <li><a href="#prompt-1-understand-my-dataset" id="toc-prompt-1-understand-my-dataset" class="nav-link" data-scroll-target="#prompt-1-understand-my-dataset"><span class="header-section-number">2.1</span> 🔹 Prompt 1: Understand My Dataset</a></li>
+  <li><a href="#prompt-2-generate-a-full-eda-plan" id="toc-prompt-2-generate-a-full-eda-plan" class="nav-link" data-scroll-target="#prompt-2-generate-a-full-eda-plan"><span class="header-section-number">2.2</span> 🔹 Prompt 2: Generate a Full EDA Plan</a></li>
+  </ul></li>
+  <li><a href="#prompts-for-nhanes-analysis" id="toc-prompts-for-nhanes-analysis" class="nav-link" data-scroll-target="#prompts-for-nhanes-analysis"><span class="header-section-number">3</span> 2️⃣ Prompts for NHANES Analysis</a>
+  <ul class="collapse">
+  <li><a href="#prompt-3-nhanes-cleaning-recoding" id="toc-prompt-3-nhanes-cleaning-recoding" class="nav-link" data-scroll-target="#prompt-3-nhanes-cleaning-recoding"><span class="header-section-number">3.1</span> 🔹 Prompt 3: NHANES Cleaning &amp; Recoding</a></li>
+  <li><a href="#prompt-4-nhanes-risk-factor-index" id="toc-prompt-4-nhanes-risk-factor-index" class="nav-link" data-scroll-target="#prompt-4-nhanes-risk-factor-index"><span class="header-section-number">3.2</span> 🔹 Prompt 4: NHANES Risk Factor Index</a></li>
+  </ul></li>
+  <li><a href="#prompts-for-demographic-survey-data-dhscustom-surveys" id="toc-prompts-for-demographic-survey-data-dhscustom-surveys" class="nav-link" data-scroll-target="#prompts-for-demographic-survey-data-dhscustom-surveys"><span class="header-section-number">4</span> 3️⃣ Prompts for Demographic Survey Data (DHS/Custom Surveys)</a>
+  <ul class="collapse">
+  <li><a href="#prompt-5-survey-eda-weighting" id="toc-prompt-5-survey-eda-weighting" class="nav-link" data-scroll-target="#prompt-5-survey-eda-weighting"><span class="header-section-number">4.1</span> 🔹 Prompt 5: Survey EDA + Weighting</a></li>
+  <li><a href="#prompt-6-complex-survey-modeling" id="toc-prompt-6-complex-survey-modeling" class="nav-link" data-scroll-target="#prompt-6-complex-survey-modeling"><span class="header-section-number">4.2</span> 🔹 Prompt 6: Complex Survey Modeling</a></li>
+  </ul></li>
+  <li><a href="#prompts-for-world-in-data-global-datasets" id="toc-prompts-for-world-in-data-global-datasets" class="nav-link" data-scroll-target="#prompts-for-world-in-data-global-datasets"><span class="header-section-number">5</span> 4️⃣ Prompts for World-in-Data + Global Datasets</a>
+  <ul class="collapse">
+  <li><a href="#prompt-7-country-level-eda-world-in-data" id="toc-prompt-7-country-level-eda-world-in-data" class="nav-link" data-scroll-target="#prompt-7-country-level-eda-world-in-data"><span class="header-section-number">5.1</span> 🔹 Prompt 7: Country-Level EDA (World in Data)</a></li>
+  <li><a href="#prompt-8-cross-country-modeling" id="toc-prompt-8-cross-country-modeling" class="nav-link" data-scroll-target="#prompt-8-cross-country-modeling"><span class="header-section-number">5.2</span> 🔹 Prompt 8: Cross-Country Modeling</a></li>
+  </ul></li>
+  <li><a href="#prompts-for-choropleth-maps-r" id="toc-prompts-for-choropleth-maps-r" class="nav-link" data-scroll-target="#prompts-for-choropleth-maps-r"><span class="header-section-number">6</span> 5️⃣ Prompts for Choropleth Maps (R)</a>
+  <ul class="collapse">
+  <li><a href="#prompt-9-choropleth-map-creation" id="toc-prompt-9-choropleth-map-creation" class="nav-link" data-scroll-target="#prompt-9-choropleth-map-creation"><span class="header-section-number">6.1</span> 🔹 Prompt 9: Choropleth Map Creation</a></li>
+  <li><a href="#prompt-10-comparative-spatial-patterns" id="toc-prompt-10-comparative-spatial-patterns" class="nav-link" data-scroll-target="#prompt-10-comparative-spatial-patterns"><span class="header-section-number">6.2</span> 🔹 Prompt 10: Comparative Spatial Patterns</a></li>
+  </ul></li>
+  <li><a href="#prompts-for-full-ai-driven-analysis-workflows" id="toc-prompts-for-full-ai-driven-analysis-workflows" class="nav-link" data-scroll-target="#prompts-for-full-ai-driven-analysis-workflows"><span class="header-section-number">7</span> 6️⃣ Prompts for Full AI-Driven Analysis Workflows</a>
+  <ul class="collapse">
+  <li><a href="#prompt-11-end-to-end-ai-guided-data-analysis" id="toc-prompt-11-end-to-end-ai-guided-data-analysis" class="nav-link" data-scroll-target="#prompt-11-end-to-end-ai-guided-data-analysis"><span class="header-section-number">7.1</span> 🔹 Prompt 11: End-to-End AI-Guided Data Analysis</a></li>
+  <li><a href="#prompt-12-vibe-coding-improve-diagnostics" id="toc-prompt-12-vibe-coding-improve-diagnostics" class="nav-link" data-scroll-target="#prompt-12-vibe-coding-improve-diagnostics"><span class="header-section-number">7.2</span> 🔹 Prompt 12: “Vibe Coding” — Improve Diagnostics</a></li>
+  <li><a href="#prompt-13-ai-generated-storytelling-for-data" id="toc-prompt-13-ai-generated-storytelling-for-data" class="nav-link" data-scroll-target="#prompt-13-ai-generated-storytelling-for-data"><span class="header-section-number">7.3</span> 🔹 Prompt 13: AI-Generated Storytelling for Data</a></li>
+  </ul></li>
+  <li><a href="#prompts-specific-to-the-5-day-workshop-flow" id="toc-prompts-specific-to-the-5-day-workshop-flow" class="nav-link" data-scroll-target="#prompts-specific-to-the-5-day-workshop-flow"><span class="header-section-number">8</span> 7️⃣ Prompts Specific to the 5-Day Workshop Flow</a>
+  <ul class="collapse">
+  <li><a href="#day-1-data-literacy-eda" id="toc-day-1-data-literacy-eda" class="nav-link" data-scroll-target="#day-1-data-literacy-eda"><span class="header-section-number">8.1</span> Day 1 – Data Literacy &amp; EDA</a></li>
+  <li><a href="#day-2-nhanes-deep-dive" id="toc-day-2-nhanes-deep-dive" class="nav-link" data-scroll-target="#day-2-nhanes-deep-dive"><span class="header-section-number">8.2</span> Day 2 – NHANES Deep-Dive</a></li>
+  <li><a href="#day-3-survey-data-modeling" id="toc-day-3-survey-data-modeling" class="nav-link" data-scroll-target="#day-3-survey-data-modeling"><span class="header-section-number">8.3</span> Day 3 – Survey Data Modeling</a></li>
+  <li><a href="#day-4-world-in-data-country-analysis" id="toc-day-4-world-in-data-country-analysis" class="nav-link" data-scroll-target="#day-4-world-in-data-country-analysis"><span class="header-section-number">8.4</span> Day 4 – World-in-Data &amp; Country Analysis</a></li>
+  <li><a href="#day-5-mapping-final-projects" id="toc-day-5-mapping-final-projects" class="nav-link" data-scroll-target="#day-5-mapping-final-projects"><span class="header-section-number">8.5</span> Day 5 – Mapping &amp; Final Projects</a></li>
+  </ul></li>
+  <li><a href="#what-this-prompt-pack-covers" id="toc-what-this-prompt-pack-covers" class="nav-link" data-scroll-target="#what-this-prompt-pack-covers"><span class="header-section-number">9</span> ✔️ What This Prompt Pack Covers</a></li>
+  <li><a href="#end-of-document" id="toc-end-of-document" class="nav-link" data-scroll-target="#end-of-document"><span class="header-section-number">10</span> End of Document</a></li>
+  </ul>
+<div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="Master_Data_Prompt_Pack.pdf"><i class="bi bi-file-pdf"></i>PDF</a></li></ul></div></nav>
+</div>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Master Data Prompt Pack</h1>
+<p class="subtitle lead">Demographic, NHANES, Survey, World-in-Data, Mapping &amp; Modeling Prompts</p>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Prepared for 5-Day Workshop </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">November 15, 2025</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="master-data-prompt-pack-demographic-survey-data-analysis-r-ai" class="level1" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> 📦 MASTER DATA PROMPT PACK — Demographic &amp; Survey Data Analysis (R + AI)</h1>
+<p>For a 5-Day Workshop: NHANES, World-in-Data, Demographic Surveys, EDA, Modeling &amp; Maps</p>
+<hr>
+</section>
+<section id="foundation-prompts-starting-any-data-task" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> 1️⃣ Foundation Prompts — Starting Any Data Task</h1>
+<section id="prompt-1-understand-my-dataset" class="level2" data-number="2.1">
+<h2 data-number="2.1" class="anchored" data-anchor-id="prompt-1-understand-my-dataset"><span class="header-section-number">2.1</span> 🔹 Prompt 1: Understand My Dataset</h2>
+<pre><code>You are a data analysis expert. I will upload a dataset. 
+Please examine its structure, variable types, missingness, and give me:
+1. Summary of dataset  
+2. Data quality issues  
+3. Potential analytic directions  
+4. Suggested plots and modeling steps  
+5. Which variables look demographic and which look health/socioeconomic  
+Use clear bullet points.</code></pre>
+<hr>
+</section>
+<section id="prompt-2-generate-a-full-eda-plan" class="level2" data-number="2.2">
+<h2 data-number="2.2" class="anchored" data-anchor-id="prompt-2-generate-a-full-eda-plan"><span class="header-section-number">2.2</span> 🔹 Prompt 2: Generate a Full EDA Plan</h2>
+<pre><code>Create a complete EDA plan for a demographic/health dataset.
+Include:
+- Descriptive statistics 
+- Missing data treatment options
+- Outlier detection methods
+- Grouped summaries (gender/age/income)
+- Plots (histogram, boxplot, barplot, correlations)
+- Survey-weight considerations (if applicable)
+- Recommendations for modeling
+Output in step-by-step format.</code></pre>
+<hr>
+</section>
+</section>
+<section id="prompts-for-nhanes-analysis" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> 2️⃣ Prompts for NHANES Analysis</h1>
+<section id="prompt-3-nhanes-cleaning-recoding" class="level2" data-number="3.1">
+<h2 data-number="3.1" class="anchored" data-anchor-id="prompt-3-nhanes-cleaning-recoding"><span class="header-section-number">3.1</span> 🔹 Prompt 3: NHANES Cleaning &amp; Recoding</h2>
+<pre><code>You are NHANES specialist.  
+I want to clean NHANES data and prepare it for analysis.  
+Give me R code for:
+- Recoding demographics (age groups, BMI categories, race)
+- Creating comorbidity indicators (hypertension, diabetes, obesity)
+- Handling missing survey weights
+- Preparing survey design object (svydesign)</code></pre>
+</section>
+<section id="prompt-4-nhanes-risk-factor-index" class="level2" data-number="3.2">
+<h2 data-number="3.2" class="anchored" data-anchor-id="prompt-4-nhanes-risk-factor-index"><span class="header-section-number">3.2</span> 🔹 Prompt 4: NHANES Risk Factor Index</h2>
+<pre><code>Using NHANES variables, generate an R script to create a composite 
+health risk index (hypertension, obesity, diabetes, inactivity, smoking).  
+Include:
+- Binary indicators  
+- Row-sum risk score  
+- Distribution summary  
+- Visualization  </code></pre>
+<hr>
+</section>
+</section>
+<section id="prompts-for-demographic-survey-data-dhscustom-surveys" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> 3️⃣ Prompts for Demographic Survey Data (DHS/Custom Surveys)</h1>
+<section id="prompt-5-survey-eda-weighting" class="level2" data-number="4.1">
+<h2 data-number="4.1" class="anchored" data-anchor-id="prompt-5-survey-eda-weighting"><span class="header-section-number">4.1</span> 🔹 Prompt 5: Survey EDA + Weighting</h2>
+<pre><code>You are a survey data modeling expert.
+I have a DHS-style demographic dataset.  
+Create R code to:
+- Apply sample weights  
+- Produce weighted frequencies and cross-tabs  
+- Generate fertility, mortality, and household indicators  
+- Visualize distributions  
+- Summarize key demographic trends  </code></pre>
+</section>
+<section id="prompt-6-complex-survey-modeling" class="level2" data-number="4.2">
+<h2 data-number="4.2" class="anchored" data-anchor-id="prompt-6-complex-survey-modeling"><span class="header-section-number">4.2</span> 🔹 Prompt 6: Complex Survey Modeling</h2>
+<pre><code>Help me build survey-weighted regression models using R's survey package.
+Provide:
+- Logistic model example  
+- Poisson/negative binomial example  
+- Guidance on interpretation  
+- Goodness-of-fit diagnostics  
+- How to use strata and PSU variables  </code></pre>
+<hr>
+</section>
+</section>
+<section id="prompts-for-world-in-data-global-datasets" class="level1" data-number="5">
+<h1 data-number="5"><span class="header-section-number">5</span> 4️⃣ Prompts for World-in-Data + Global Datasets</h1>
+<section id="prompt-7-country-level-eda-world-in-data" class="level2" data-number="5.1">
+<h2 data-number="5.1" class="anchored" data-anchor-id="prompt-7-country-level-eda-world-in-data"><span class="header-section-number">5.1</span> 🔹 Prompt 7: Country-Level EDA (World in Data)</h2>
+<pre><code>I want to analyze country-level demographic indicators using World in Data.
+Generate an R workflow that:
+- Downloads selected indicators (fertility, GDP per capita, life expectancy)  
+- Merges them  
+- Cleans and creates harmonized country-year panel  
+- Performs EDA, trends, and comparative analysis  
+- Highlights Pakistan vs regional peers  </code></pre>
+</section>
+<section id="prompt-8-cross-country-modeling" class="level2" data-number="5.2">
+<h2 data-number="5.2" class="anchored" data-anchor-id="prompt-8-cross-country-modeling"><span class="header-section-number">5.2</span> 🔹 Prompt 8: Cross-Country Modeling</h2>
+<pre><code>Develop a cross-country demographic model using:
+- fertility rate
+- GDP per capita
+- female education
+- urbanization
+- health spending
+Provide R code for:
+- Panel regression setup  
+- Fixed vs random effects choice  
+- Diagnostics  
+- Interpretation in simple language  </code></pre>
+<hr>
+</section>
+</section>
+<section id="prompts-for-choropleth-maps-r" class="level1" data-number="6">
+<h1 data-number="6"><span class="header-section-number">6</span> 5️⃣ Prompts for Choropleth Maps (R)</h1>
+<section id="prompt-9-choropleth-map-creation" class="level2" data-number="6.1">
+<h2 data-number="6.1" class="anchored" data-anchor-id="prompt-9-choropleth-map-creation"><span class="header-section-number">6.1</span> 🔹 Prompt 9: Choropleth Map Creation</h2>
+<pre><code>Act as a mapping expert in R. 
+Generate code to:
+- Load shapefiles (Pakistan districts or any country map)
+- Merge demographic indicators with spatial data
+- Create choropleth maps using tmap / ggplot2
+- Add titles, legends, and color scales
+- Produce high-resolution exportable maps</code></pre>
+</section>
+<section id="prompt-10-comparative-spatial-patterns" class="level2" data-number="6.2">
+<h2 data-number="6.2" class="anchored" data-anchor-id="prompt-10-comparative-spatial-patterns"><span class="header-section-number">6.2</span> 🔹 Prompt 10: Comparative Spatial Patterns</h2>
+<pre><code>Create a side-by-side spatial comparison map for two demographic variables:
+example: literacy rate vs child mortality.
+Provide R code for:
+- Data merge  
+- Two-panel tmap layout  
+- Summary interpretation for policymakers  </code></pre>
+<hr>
+</section>
+</section>
+<section id="prompts-for-full-ai-driven-analysis-workflows" class="level1" data-number="7">
+<h1 data-number="7"><span class="header-section-number">7</span> 6️⃣ Prompts for Full AI-Driven Analysis Workflows</h1>
+<section id="prompt-11-end-to-end-ai-guided-data-analysis" class="level2" data-number="7.1">
+<h2 data-number="7.1" class="anchored" data-anchor-id="prompt-11-end-to-end-ai-guided-data-analysis"><span class="header-section-number">7.1</span> 🔹 Prompt 11: End-to-End AI-Guided Data Analysis</h2>
+<pre><code>You are my AI data analyst.  
+Given this dataset, produce a full workflow:
+1. Understand dataset  
+2. Clean &amp; preprocess  
+3. EDA visualizations  
+4. Feature engineering  
+5. Regression/classification/clustering  
+6. Model interpretation  
+7. Policy-relevant narrative  
+Generate R code and explanations.</code></pre>
+<hr>
+</section>
+<section id="prompt-12-vibe-coding-improve-diagnostics" class="level2" data-number="7.2">
+<h2 data-number="7.2" class="anchored" data-anchor-id="prompt-12-vibe-coding-improve-diagnostics"><span class="header-section-number">7.2</span> 🔹 Prompt 12: “Vibe Coding” — Improve Diagnostics</h2>
+<pre><code>Review my R code and “vibe it up.”  
+Improve:
+- efficiency  
+- readability  
+- narrative labeling  
+- interpretability  
+- comments for students  
+
+Suggest alternative plots and better coding style.</code></pre>
+<hr>
+</section>
+<section id="prompt-13-ai-generated-storytelling-for-data" class="level2" data-number="7.3">
+<h2 data-number="7.3" class="anchored" data-anchor-id="prompt-13-ai-generated-storytelling-for-data"><span class="header-section-number">7.3</span> 🔹 Prompt 13: AI-Generated Storytelling for Data</h2>
+<pre><code>Based on my dataset summary, write a short, simple, policy-friendly 
+story that explains the demographic trends and their implications.
+Tone: accessible, non-technical.</code></pre>
+<hr>
+</section>
+</section>
+<section id="prompts-specific-to-the-5-day-workshop-flow" class="level1" data-number="8">
+<h1 data-number="8"><span class="header-section-number">8</span> 7️⃣ Prompts Specific to the 5-Day Workshop Flow</h1>
+<section id="day-1-data-literacy-eda" class="level2" data-number="8.1">
+<h2 data-number="8.1" class="anchored" data-anchor-id="day-1-data-literacy-eda"><span class="header-section-number">8.1</span> Day 1 – Data Literacy &amp; EDA</h2>
+<pre><code>Create hands-on beginner exercises for demographic EDA:
+- Gender/age structure
+- Fertility patterns
+- Mortality indicators
+- Nutritional categories (BMI)
+Include R solutions and explanations.</code></pre>
+</section>
+<section id="day-2-nhanes-deep-dive" class="level2" data-number="8.2">
+<h2 data-number="8.2" class="anchored" data-anchor-id="day-2-nhanes-deep-dive"><span class="header-section-number">8.2</span> Day 2 – NHANES Deep-Dive</h2>
+<pre><code>Design NHANES mini-projects for students with:
+- health disparities
+- age comparisons
+- risk scoring
+- survey-weighted models
+Include R code templates.</code></pre>
+</section>
+<section id="day-3-survey-data-modeling" class="level2" data-number="8.3">
+<h2 data-number="8.3" class="anchored" data-anchor-id="day-3-survey-data-modeling"><span class="header-section-number">8.3</span> Day 3 – Survey Data Modeling</h2>
+<pre><code>I need 4 survey-modeling case studies:
+- Child health  
+- Women fertility  
+- Household deprivation  
+- Education outcomes  
+Provide R code and interpretation.</code></pre>
+</section>
+<section id="day-4-world-in-data-country-analysis" class="level2" data-number="8.4">
+<h2 data-number="8.4" class="anchored" data-anchor-id="day-4-world-in-data-country-analysis"><span class="header-section-number">8.4</span> Day 4 – World-in-Data &amp; Country Analysis</h2>
+<pre><code>Generate cross-country comparative exercises using WDI or OWID.
+Focus on Pakistan vs Vietnam, Bangladesh, India.
+Include simple interpretations.</code></pre>
+</section>
+<section id="day-5-mapping-final-projects" class="level2" data-number="8.5">
+<h2 data-number="8.5" class="anchored" data-anchor-id="day-5-mapping-final-projects"><span class="header-section-number">8.5</span> Day 5 – Mapping &amp; Final Projects</h2>
+<pre><code>Prepare final project ideas involving:
+- choropleth maps  
+- demographic trends  
+- NHANES risk models  
+- survey analysis  
+
+Provide clear instructions + outcomes expected.</code></pre>
+<hr>
+</section>
+</section>
+<section id="what-this-prompt-pack-covers" class="level1" data-number="9">
+<h1 data-number="9"><span class="header-section-number">9</span> ✔️ What This Prompt Pack Covers</h1>
+<ul>
+<li>EDA prompts<br>
+</li>
+<li>NHANES prompts<br>
+</li>
+<li>Survey modeling prompts<br>
+</li>
+<li>Mapping prompts<br>
+</li>
+<li>Vibe-coding prompts<br>
+</li>
+<li>Full workflows<br>
+</li>
+<li>Pakistan-focused cross-country prompts</li>
+</ul>
+<hr>
+</section>
+<section id="end-of-document" class="level1" data-number="10">
+<h1 data-number="10"><span class="header-section-number">10</span> End of Document</h1>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

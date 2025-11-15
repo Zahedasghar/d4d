@@ -1,0 +1,146 @@
+---
+title: "Pre-Workshop : Demographic Anaylsis with R"
+subtitle: "SPDI D4D, Islamabad"
+author: "Zahid Asghar, School of Economics, QAU"
+date: today
+format:
+  # html:
+  #   toc: true
+  #   toc-depth: 3
+  #   toc-location: left
+  #   code-fold: false
+  #   code-tools: true
+  #   theme: cosmo
+  #   embed-resources: true
+  # pdf:
+  #   toc: true
+  #   number-sections: true
+  typst:
+    template-partials:
+      - typst-template.typ
+      - typst-show.typ
+
+
+#    number-sections: true
+#    papersize: "A4"     # Correct Quarto key (NOT page-layout)
+execute:
+  warning: false
+  message: false
+  echo: true
+editor: visual
+editor_options:
+  chunk_output_type: console
+---
+
+
+# 1. Start Here: The Modern Way of Data Analysis and Automatic Reporting  
+
+It is highly desirable to set up your R working environment before the workshop. This guide will help you get ready quickly. But in case you face any issues, it will not be a problem as we will go through these steps together at some point of the workshop. 
+
+## 1.1 Preparing Your R Working Space
+
+First, you need the language (**R**) and a good place to write the code (an IDE like **RStudio** or **Positron**).
+
+### A. R and RStudio/Positron
+
+R is the core computer language. RStudio and Positron are the best tools (like a text editor but smarter) that help you write and run R code easily.
+
+#### Step 1: Installing R
+
+1. Go to the official R website: [CRAN](https://cran.r-project.org)
+2. Choose the link for your computer (Windows, macOS, or Linux).
+3. Download and install it. Use the default settings.
+
+#### Step 2: Choosing Your IDE
+
+You need one of these to write code comfortably:
+
+* **RStudio (The Classic Choice):**
+  Get it here: [posit.co](https://posit.co)
+  It is the most popular tool and has many useful features.
+
+* **Positron (The New, Smart Choice):**
+  Get it here: [Positron GitHub](https://github.com/posit-dev/positron)
+  This is a newer tool, built like the VS Code editor.
+  It has AI helpers for code suggestions and can work with R and Python (polyglot).
+
+**Why Positron?**
+Positron is like the future data science editor. It has AI help for writing code and a modern look. It is good for:
+
+* Learning R faster with AI tips.
+* Working with very big data files.
+* Handling data projects that use different languages.
+
+### B. Installing Quarto
+
+Quarto is the new and better way to create documents from your R code. It supports many languages:
+
+1. Download it from [quarto.org](https://quarto.org/docs/get-started/)
+2. Install it on your computer.
+3. Check the install: open your terminal (or Command Prompt) and type:
+
+```bash
+quarto --version
+```
+
+#### Quarto is Better than Old R Markdown:
+
+* You can use it with R, Python, and other languages easily.
+* It is better at publishing to different formats (like PDF, HTML, and websites).
+
+## 1.3 Using AI to Help with Data Work
+
+Today, AI can make writing R code much faster.
+
+### AI Tools You Can Use
+
+* **GitHub Copilot:** An AI that writes code suggestions as you type (paid service).
+* **Positron AI:** Has built-in tools for code help and finding bugs.
+* **ChatGPT/Claude:** You can ask them questions in simple English, and they will give you R code.
+
+### Simple Rules for AI Use
+
+* Use AI for syntax help and boilerplate code.
+* Always read and understand the code the AI gives you. Do not just copy and paste!
+* Check that the AI-suggested statistical methods are correct for your data.
+* Use AI as a study partner, not a magic box.
+
+## 1.4 Installing and Using R Packages (The Pacman Way)
+
+Packages are like add-ons that give R more power. To make this process easier, we use the **pacman** package. The code below uses a smart check to ensure pacman is ready. If it is not installed, it installs it for you, and then uses it to load all the packages we need.
+
+```{r}
+#| include: true
+
+# This command checks if the 'pacman' package is installed. 
+# If it is NOT available, it runs install.packages("pacman") to get it.
+if(!require(pacman)) install.packages("pacman")
+
+# Load pacman (we must load it before using p_load)
+library(pacman) 
+
+# Use p_load() to install *and* load all other necessary packages in one step.
+pacman::p_load(
+  tidyverse,    # Data cleaning, manipulation, and visualization
+  gapminder,    # Example dataset
+  knitr,        # Report generation
+  kableExtra,   # Enhanced tables
+  plotly,       # Interactive plots
+  ggrepel,      # Better text labels in plots
+  scales ,       # Scale functions for visualization (e.g., percent, currency)
+  janitor        # Data cleaning functions
+)
+
+# Set options
+options(scipen = 999)   # This stops R from using scientific notation (like 1e+05)
+theme_set(theme_minimal()) # This sets a nice, clean default style for all plots
+```
+
+### What is the tidyverse?
+
+This is a main group of R packages. They all work together and make R code easy to read and fast to write. Key parts are:
+
+* **dplyr:** For simple data cleaning and changing.
+* **ggplot2:** For making amazing charts and graphs.
+* **tidyr:** For making sure your data is in the perfect shape.
+* **readr:** For loading data files easily.
