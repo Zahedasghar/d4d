@@ -1,0 +1,24 @@
+---
+format: 
+  revealjs:
+    chalkboard: true
+---
+
+
+## {background-image="my.png"}
+
+
+::: {.absolute left="55%" top="55%" style="font-size:1.1em; padding: 0.5em 1em; background-color: rgba(255, 255, 250, 0.5); backdrop-filter: blur(2px); box-shadow: 0 0 1.5rem 0 rgba(0, 0, 0, .5); border-radius: 5px;"}
+Always embrace the unexpected
+
+Comfortable being uncomfortable
+:::
+
+
+## {.center}
+
+::: r-fit-text
+This fits perfectly! 
+
+This fits perfectly!
+:::
