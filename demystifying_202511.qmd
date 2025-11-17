@@ -1,0 +1,262 @@
+---
+title: "From Survey to Insights: Results in Just Minutes"
+title-block-banner: true
+author: "Zahid Asghar"
+format: 
+  html:
+    theme: [default, custom-theme.scss]
+    toc: true
+    toc_depth: 2
+    toc_float: true
+    keep-md: false
+    highlight-style: dracula
+execute: 
+  warning: false
+  message: false
+  echo: false
+  error: true
+---
+
+```{r}
+# Load necessary packages
+library(tidyverse)
+library(googlesheets4)
+library(janitor)
+library(hrbrthemes)
+library(gendercoder)
+library(scales)
+library(stringr)
+library(tidygeocoder)
+library(leaflet)
+library(googlesheets4)
+
+# Authenticate using cached credentials
+gs4_auth(
+  email = "g.zahid@gmail.com",  # Replace with your email
+  cache = ".secrets"  # Store token here
+)
+
+# Authorize Google Sheets access
+
+gs4_auth("g.zahid@gmail.com", cache= FALSE)
+
+```
+
+```{css}
+body {
+  font-size: 18px;
+}
+```
+### Link new sheet and have codes for added questions as well
+
+```{r}
+# Set plotting theme
+theme_set(theme_ipsum(base_family = "Inter", axis_title_family = "Inter"))
+
+# Load and clean survey data
+survey_responses_today <- read_sheet("https://docs.google.com/spreadsheets/d/1efdmG4ubsDz6E3p6rrM9oxSC3C5ZXVqfnSYWKoe8ST8/edit?resourcekey=&gid=2111650398#gid=2111650398") %>% 
+  clean_names() %>% 
+  mutate(timestamp = as.Date(timestamp)) %>% 
+  filter(timestamp == as_date(now()))
+```
+
+# About our Respondents
+
+```{r}
+# General survey information
+number_of_responses <- nrow(survey_responses_today)
+today_pretty <- format(Sys.Date(), "%B %d, %Y")
+
+# Display survey date and number of respondents
+```
+
+We conducted a **survey** on `r today_pretty`. We received responses from `r number_of_responses` people.
+
+## Age
+
+```{r}
+# Calculate age stats: mean, min, max
+survey_responses_today <- survey_responses_today %>%
+  mutate(age = as.numeric(what_is_your_age_in_complete_years_in_digits))
+
+mean_age <- survey_responses_today %>%
+  summarize(mean_age = round(mean(age, na.rm = TRUE), 1)) %>%
+  pull(mean_age)
+
+min_age <- survey_responses_today %>%
+  summarize(min_age = min(age, na.rm = TRUE)) %>%
+  pull(min_age)
+
+max_age <- survey_responses_today %>%
+  summarize(max_age = max(age, na.rm = TRUE)) %>%
+  pull(max_age)
+```
+
+The youngest respondent was `r min_age` years old, and the oldest was `r max_age`. The mean age was `r mean_age` years.
+
+### Age Distribution
+
+```{r}
+# Age categories
+age_categorized <- survey_responses_today %>%
+  mutate(age_category = case_when(
+    age < 30 ~ "Less than 30",
+    age < 50 ~ "Between 30 and 50",
+    age >= 50 ~ "50 or older"
+  )) %>%
+  count(age_category) %>%
+  drop_na(age_category)
+
+# Plot age distribution
+ggplot(age_categorized, aes(fct_rev(factor(age_category, levels = c("Less than 30", "Between 30 and 50", "50 or older"))), n)) +
+  geom_col(fill = "#6CABDD") +
+  geom_text(aes(label = n), hjust = 1.2, color = "white") +
+  coord_flip() +
+  labs(title = "Age Distribution of Respondents", x = NULL, y = "Count") +
+  theme_minimal(base_family = "Inter")
+```
+
+## Education
+
+```{r fig.height=4}
+# Education levels
+survey_responses_today %>%
+  count(what_is_your_highest_qualification) %>%
+  drop_na() %>%
+  ggplot(aes(fct_rev(what_is_your_highest_qualification), n)) +
+  geom_col(fill = "#6CABDD") +
+  geom_text(aes(label = n), hjust = 1.2, color = "white") +
+  coord_flip() +
+  labs(title = "Highest Qualification of Respondents", x = NULL, y = "Count") +
+  theme_minimal(base_family = "Inter")
+```
+
+## Gender
+
+```{r}
+# Recode gender
+gender_data <- survey_responses_today %>%
+  drop_na(gender) %>%
+  mutate(gender_recoded = recode_gender(gender)) %>%
+  replace_na(list(gender_recoded = "Unable to recode"))
+
+# Show recoded gender
+gender_data %>%
+  count(gender_recoded) %>%
+  set_names("Gender", "Count")
+```
+
+
+## Locations
+
+Respondents listed the location of their primary residence. The map below shows their locations. 
+
+```{r geocode, fig.height=6}
+#| eval: true
+# Rename the long column name for simplicity
+survey_responses_today <- survey_responses_today %>%
+  rename(city_residence = what_is_the_city_of_your_primary_residence_please_enter_city_like_islamabad_jhelum_lahore)
+
+# Geocode the cities, with error handling for missing or invalid locations
+respondent_locations <- survey_responses_today %>%
+  drop_na(city_residence) %>%
+  geocode(address = city_residence, method = "osm", quiet = FALSE) %>%
+  filter(!is.na(lat) & !is.na(long)) %>%  # Filter out failed geocodes
+  select(city_residence, long, lat)
+
+
+# Plot the geocoded locations on a Leaflet map
+leaflet(respondent_locations) %>% 
+  addProviderTiles(providers$CartoDB.Positron) %>% 
+  addCircleMarkers(~long, ~lat,
+                   color = "#FF7400",
+                   stroke = FALSE, 
+                   fillOpacity = 0.7,
+                   popup = ~city_residence,
+                   clusterOptions = markerClusterOptions(showCoverageOnHover = FALSE))
+```
+
+
+## Familiarity with R/Python
+
+```{r}
+# Calculate mean familiarity with R/Python
+mean_familiarity <- survey_responses_today %>%
+  summarize(mean_familiarity = round(mean(how_familiar_you_are_with_r_or_python, na.rm = TRUE), 1)) %>%
+  pull(mean_familiarity)
+
+
+```
+
+Respondents rated their familiarity with R/Python as `r mean_familiarity` on a 5-point scale.
+
+### Familiarity by Education Level
+
+```{r fig.height = 4}
+# Familiarity with R/Python by education level
+survey_responses_today %>%
+  group_by(what_is_your_highest_qualification) %>%
+  summarize(mean_familiarity = round(mean(how_familiar_you_are_with_r_or_python, na.rm = TRUE), 1)) %>%
+  ggplot(aes(fct_rev(what_is_your_highest_qualification), mean_familiarity)) +
+  geom_col(fill = "#6CABDD") +
+  geom_text(aes(label = mean_familiarity), hjust = 1.2, color = "white") +
+  coord_flip() +
+  labs(title = "Familiarity with R/Python by Education Level", x = NULL, y = "Mean Familiarity") +
+  theme_minimal(base_family = "Inter")
+```
+
+## Interest in Learning R/Python
+
+```{r}
+# Calculate mean interest in learning R/Python
+mean_interest <- survey_responses_today %>%
+  summarize(mean_interest = round(mean(how_interested_are_you_in_learning_r_or_python, na.rm = TRUE), 1)) %>%
+  pull(mean_interest)
+
+```
+
+Respondents rated their interest in learning R/Python as `r mean_interest` on a 5-point scale.
+
+### Interest by Age and Education Level
+
+```{r fig.height=6}
+# Interest in learning R/Python by age and education level
+survey_responses_today %>%
+  mutate(age_category = case_when(
+    age < 30 ~ "Less than 30",
+    age < 50 ~ "Between 30 and 50",
+    age >= 50 ~ "50 or older"
+  )) %>%
+  group_by(what_is_your_highest_qualification, age_category) %>%
+  summarize(mean_interest = round(mean(how_interested_are_you_in_learning_r_or_python, na.rm = TRUE), 1)) %>%
+  ggplot(aes(age_category, mean_interest, fill = what_is_your_highest_qualification)) +
+  geom_col(position = "dodge") +
+  scale_fill_manual(values = c("#6CABDD", "#FF7400", "#FFC659", "red")) +
+  labs(title = "Interest in Learning R/Python by Age and Education", x = NULL, y = "Mean Interest") +
+  theme_minimal(base_family = "Inter")
+```
+
+## AI Usage and Productivity
+
+```{r fig.height=4}
+# Convert 'do_you_use_chat_gpt_or_other_ai' to a factor if it's not
+ai_productivity_impact <- survey_responses_today %>%
+  drop_na(how_much_it_has_increased_your_productivity, do_you_use_chat_gpt_or_other_ai) %>%
+  mutate(do_you_use_chat_gpt_or_other_ai = as.factor(do_you_use_chat_gpt_or_other_ai)) %>%  # Convert to factor
+  group_by(do_you_use_chat_gpt_or_other_ai) %>%
+  summarize(mean_productivity_increase = round(mean(how_much_it_has_increased_your_productivity, na.rm = TRUE), 1)) %>%
+  ungroup()
+
+
+
+# Plotting AI usage and its impact on productivity
+ggplot(ai_productivity_impact, aes(x = do_you_use_chat_gpt_or_other_ai, y = mean_productivity_increase)) +
+  geom_col(fill = "#6CABDD") +
+  geom_text(aes(label = mean_productivity_increase), hjust = 1.2, color = "white") +
+  coord_flip() +
+  labs(title = "Productivity Increase Due to AI Usage",
+       x = NULL,
+       y = "Average Productivity Increase") +
+  theme_minimal(base_family = "Inter")
+```
+

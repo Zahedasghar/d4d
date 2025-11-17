@@ -9,8 +9,8 @@
 <link href="demographic-analysis-nhanes_files/libs/quarto-html/quarto-syntax-highlighting-234273d1456647dabc34a594ac50e507.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
   <meta name="generator" content="quarto-1.7.32">
 
-  <meta name="author" content="Workshop on Demographic Data Analysis">
-  <meta name="dcterms.date" content="2025-11-11">
+  <meta name="author" content="Zahid Asghar, School of Economics, QAU">
+  <meta name="dcterms.date" content="2025-11-16">
   <title>Demographic Analysis Using R</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -205,12 +205,12 @@
 <div class="quarto-title-authors">
 <div class="quarto-title-author">
 <div class="quarto-title-author-name">
-Workshop on Demographic Data Analysis 
+Zahid Asghar, School of Economics, QAU 
 </div>
 </div>
 </div>
 
-  <p class="date">2025-11-11</p>
+  <p class="date">2025-11-16</p>
 </section>
 <section id="welcome-to-demographic-data-analysis" class="slide level2 center">
 <h2>Welcome to Demographic Data Analysis!</h2>
@@ -406,8 +406,8 @@ $ Poverty       &lt;dbl&gt; 1.36, 1.07, 1.91, 1.84, 2.33, 5.00, 2.20, 5.00, 2.20
 
     <script>
 
-      function styleCell_pbk7sv674ki2lsg3125x(i, j, css_id) {
-          var table = document.getElementById("tinytable_pbk7sv674ki2lsg3125x");
+      function styleCell_o8cgjzxtlzd43uxcp1ry(i, j, css_id) {
+          var table = document.getElementById("tinytable_o8cgjzxtlzd43uxcp1ry");
           var cell = table.querySelector(`[data-row="${i}"][data-col="${j}"]`);
           if (cell) {
               console.log(`Styling cell at (${i}, ${j}) with class ${css_id}`);
@@ -416,8 +416,8 @@ $ Poverty       &lt;dbl&gt; 1.36, 1.07, 1.91, 1.84, 2.33, 5.00, 2.20, 5.00, 2.20
               console.warn(`Cell at (${i}, ${j}) not found.`);
           }
       }
-      function spanCell_pbk7sv674ki2lsg3125x(i, j, rowspan, colspan) {
-        var table = document.getElementById("tinytable_pbk7sv674ki2lsg3125x");
+      function spanCell_o8cgjzxtlzd43uxcp1ry(i, j, rowspan, colspan) {
+        var table = document.getElementById("tinytable_o8cgjzxtlzd43uxcp1ry");
         const targetCell = table.querySelector(`[data-row="${i}"][data-col="${j}"]`);
         if (!targetCell) {
           console.warn(`Cell at (${i}, ${j}) not found.`);
@@ -448,15 +448,15 @@ $ Poverty       &lt;dbl&gt; 1.36, 1.07, 1.91, 1.84, 2.33, 5.00, 2.20, 5.00, 2.20
       window.addEventListener('load', function () {
           var cellsToStyle = [
             // tinytable style arrays after
-          { positions: [ { i: '56', j: 2 }, { i: '56', j: 1 }, { i: '56', j: 0 }, { i: '56', j: 3 }, { i: '56', j: 6 }, { i: '56', j: 5 }, { i: '56', j: 4 }, { i: '56', j: 7 },  ], css_id: 'tinytable_css_epzwupez2315d9f8se2k',}, 
-          { positions: [ { i: '9', j: 1 }, { i: '9', j: 0 }, { i: '9', j: 3 }, { i: '9', j: 2 }, { i: '9', j: 5 }, { i: '9', j: 4 }, { i: '9', j: 7 }, { i: '9', j: 6 },  ], css_id: 'tinytable_css_rl9p5za6b9b0w1a69l9m',}, 
-          { positions: [ { i: '0', j: 0 }, { i: '0', j: 3 }, { i: '0', j: 2 }, { i: '0', j: 1 }, { i: '0', j: 4 }, { i: '0', j: 7 }, { i: '0', j: 6 }, { i: '0', j: 5 },  ], css_id: 'tinytable_css_6rcnwj14gcqd19x2cqlk',}, 
+          { positions: [ { i: '56', j: 2 }, { i: '56', j: 1 }, { i: '56', j: 0 }, { i: '56', j: 3 }, { i: '56', j: 6 }, { i: '56', j: 5 }, { i: '56', j: 4 }, { i: '56', j: 7 },  ], css_id: 'tinytable_css_wou5vozuhac29fhciuvz',}, 
+          { positions: [ { i: '9', j: 1 }, { i: '9', j: 0 }, { i: '9', j: 3 }, { i: '9', j: 2 }, { i: '9', j: 5 }, { i: '9', j: 4 }, { i: '9', j: 7 }, { i: '9', j: 6 },  ], css_id: 'tinytable_css_grhuhttexxxchqa200bl',}, 
+          { positions: [ { i: '0', j: 0 }, { i: '0', j: 3 }, { i: '0', j: 2 }, { i: '0', j: 1 }, { i: '0', j: 4 }, { i: '0', j: 7 }, { i: '0', j: 6 }, { i: '0', j: 5 },  ], css_id: 'tinytable_css_8brwed5pp615zgh20w5i',}, 
           ];
 
           // Loop over the arrays to style the cells
           cellsToStyle.forEach(function (group) {
               group.positions.forEach(function (cell) {
-                  styleCell_pbk7sv674ki2lsg3125x(cell.i, cell.j, group.css_id);
+                  styleCell_o8cgjzxtlzd43uxcp1ry(cell.i, cell.j, group.css_id);
               });
           });
       });
@@ -464,12 +464,12 @@ $ Poverty       &lt;dbl&gt; 1.36, 1.07, 1.91, 1.84, 2.33, 5.00, 2.20, 5.00, 2.20
 
     <style>
       /* tinytable css entries after */
-      .table td.tinytable_css_epzwupez2315d9f8se2k, .table th.tinytable_css_epzwupez2315d9f8se2k { border-bottom: solid #d3d8dc 0.1em; }
-      .table td.tinytable_css_rl9p5za6b9b0w1a69l9m, .table th.tinytable_css_rl9p5za6b9b0w1a69l9m { border-top: solid black 0.1em; }
-      .table td.tinytable_css_6rcnwj14gcqd19x2cqlk, .table th.tinytable_css_6rcnwj14gcqd19x2cqlk { border-top: solid #d3d8dc 0.1em; border-bottom: solid #d3d8dc 0.05em; }
+      .table td.tinytable_css_wou5vozuhac29fhciuvz, .table th.tinytable_css_wou5vozuhac29fhciuvz { border-bottom: solid #d3d8dc 0.1em; }
+      .table td.tinytable_css_grhuhttexxxchqa200bl, .table th.tinytable_css_grhuhttexxxchqa200bl { border-top: solid black 0.1em; }
+      .table td.tinytable_css_8brwed5pp615zgh20w5i, .table th.tinytable_css_8brwed5pp615zgh20w5i { border-top: solid #d3d8dc 0.1em; border-bottom: solid #d3d8dc 0.05em; }
     </style>
     <div class="container">
-      <table class="table table-borderless" id="tinytable_pbk7sv674ki2lsg3125x" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing="true">
+      <table class="table table-borderless" id="tinytable_o8cgjzxtlzd43uxcp1ry" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing="true">
         <thead>
         
               <tr>
@@ -2175,20 +2175,18 @@ $ Poverty       &lt;dbl&gt; 1.36, 1.07, 1.91, 1.84, 2.33, 5.00, 2.20, 5.00, 2.20
 <div class="sourceCode cell-code" id="cb66"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb66-1"><a href="" aria-hidden="true" tabindex="-1"></a>cv_risk_data <span class="ot">&lt;-</span> nhanes_clean <span class="sc">%&gt;%</span></span>
 <span id="cb66-2"><a href="" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Age <span class="sc">&gt;=</span> <span class="dv">18</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb66-3"><a href="" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb66-4"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Define all risk factors</span></span>
-<span id="cb66-5"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="at">has_hypertension =</span> hypertension <span class="sc">==</span> <span class="st">"Yes"</span>,</span>
-<span id="cb66-6"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="at">has_obesity =</span> bmi_category <span class="sc">==</span> <span class="st">"Obese"</span>,</span>
-<span id="cb66-7"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="at">has_diabetes =</span> Diabetes <span class="sc">==</span> <span class="st">"Yes"</span>,</span>
-<span id="cb66-8"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="at">inactive =</span> PhysActive <span class="sc">==</span> <span class="st">"No"</span>,</span>
-<span id="cb66-9"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="at">current_smoker =</span> SmokeNow <span class="sc">==</span> <span class="st">"Yes"</span>,</span>
-<span id="cb66-10"><a href="" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb66-11"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Count risk factors</span></span>
-<span id="cb66-12"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="at">risk_count =</span> <span class="fu">rowSums</span>(</span>
-<span id="cb66-13"><a href="" aria-hidden="true" tabindex="-1"></a>      <span class="fu">select</span>(., has_hypertension, has_obesity, has_diabetes,</span>
-<span id="cb66-14"><a href="" aria-hidden="true" tabindex="-1"></a>             inactive, current_smoker),</span>
-<span id="cb66-15"><a href="" aria-hidden="true" tabindex="-1"></a>      <span class="at">na.rm =</span> <span class="cn">TRUE</span></span>
-<span id="cb66-16"><a href="" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb66-17"><a href="" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb66-4"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="at">has_hypertension =</span> hypertension <span class="sc">==</span> <span class="st">"Yes"</span>,</span>
+<span id="cb66-5"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="at">has_obesity =</span> bmi_category <span class="sc">==</span> <span class="st">"Obese"</span>,</span>
+<span id="cb66-6"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="at">has_diabetes =</span> Diabetes <span class="sc">==</span> <span class="st">"Yes"</span>,</span>
+<span id="cb66-7"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="at">inactive =</span> PhysActive <span class="sc">==</span> <span class="st">"No"</span>,</span>
+<span id="cb66-8"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="at">current_smoker =</span> SmokeNow <span class="sc">==</span> <span class="st">"Yes"</span>,</span>
+<span id="cb66-9"><a href="" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb66-10"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="at">risk_count =</span> <span class="fu">rowSums</span>(</span>
+<span id="cb66-11"><a href="" aria-hidden="true" tabindex="-1"></a>      <span class="fu">across</span>(<span class="fu">c</span>(has_hypertension, has_obesity, has_diabetes,</span>
+<span id="cb66-12"><a href="" aria-hidden="true" tabindex="-1"></a>               inactive, current_smoker), <span class="sc">~</span> <span class="fu">as.numeric</span>(.)),</span>
+<span id="cb66-13"><a href="" aria-hidden="true" tabindex="-1"></a>      <span class="at">na.rm =</span> <span class="cn">TRUE</span></span>
+<span id="cb66-14"><a href="" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb66-15"><a href="" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="step-2-calculate-risk-prevalence" class="slide level2">
@@ -2216,8 +2214,19 @@ $ Poverty       &lt;dbl&gt; 1.36, 1.07, 1.91, 1.84, 2.33, 5.00, 2.20, 5.00, 2.20
 <div class="sourceCode cell-code" id="cb68"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb68-1"><a href="" aria-hidden="true" tabindex="-1"></a>cv_risk_summary <span class="sc">%&gt;%</span></span>
 <span id="cb68-2"><a href="" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(age_group, Gender) <span class="sc">%&gt;%</span></span>
 <span id="cb68-3"><a href="" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>(<span class="dv">10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-error">
-<pre><code>Error: object 'cv_risk_summary' not found</code></pre>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 8 × 9
+  age_group Gender     n hypertension_pct obesity_pct diabetes_pct inactive_pct
+  &lt;fct&gt;     &lt;fct&gt;  &lt;dbl&gt;            &lt;dbl&gt;       &lt;dbl&gt;        &lt;dbl&gt;        &lt;dbl&gt;
+1 18-34     female   763              1.5        32.7          1.4         44.2
+2 18-34     male     748              4.7        28.7          2           32.2
+3 35-49     female   655              7.8        38.1          5.8         48.7
+4 35-49     male     635             14.3        36.9          6.6         43.9
+5 50-64     female   553             15          43.2         17.4         53  
+6 50-64     male     557             21.6        35.8         20.5         56  
+7 65+       female   510             37.7        37.6         23.6         67.8
+8 65+       male     414             31.4        32.9         26.3         56.5
+# ℹ 2 more variables: smoking_pct &lt;dbl&gt;, mean_risk_count &lt;dbl&gt;</code></pre>
 </div>
 </div>
 </section>
@@ -2238,7 +2247,7 @@ $ Poverty       &lt;dbl&gt; 1.36, 1.07, 1.91, 1.84, 2.33, 5.00, 2.20, 5.00, 2.20
 <span id="cb70-12"><a href="" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
 <span id="cb70-13"><a href="" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> age_group, <span class="at">y =</span> prevalence, </span>
 <span id="cb70-14"><a href="" aria-hidden="true" tabindex="-1"></a>             <span class="at">color =</span> risk_factor, <span class="at">group =</span> risk_factor)) <span class="sc">+</span></span>
-<span id="cb70-15"><a href="" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb70-15"><a href="" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
 <span id="cb70-16"><a href="" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
 <span id="cb70-17"><a href="" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>Gender) <span class="sc">+</span></span>
 <span id="cb70-18"><a href="" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
@@ -2252,11 +2261,9 @@ $ Poverty       &lt;dbl&gt; 1.36, 1.07, 1.91, 1.84, 2.33, 5.00, 2.20, 5.00, 2.20
 <span id="cb70-26"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="at">legend.position =</span> <span class="st">"bottom"</span>,</span>
 <span id="cb70-27"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">45</span>, <span class="at">hjust =</span> <span class="dv">1</span>)</span>
 <span id="cb70-28"><a href="" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-error">
-<pre><code>Error: object 'cv_risk_summary' not found</code></pre>
+
 </div>
-</div>
-</section></section>
+<img data-src="demographic-analysis-nhanes_files/figure-revealjs/unnamed-chunk-46-1.png" class="quarto-figure quarto-figure-center r-stretch" width="1056"></section></section>
 <section>
 <section id="resources-next-steps" class="title-slide slide level1 inverse center">
 <h1>Resources &amp; Next Steps</h1>
@@ -2386,7 +2393,7 @@ $ Poverty       &lt;dbl&gt; 1.36, 1.07, 1.91, 1.84, 2.33, 5.00, 2.20, 5.00, 2.20
     </div>
   <div class="quarto-auto-generated-content" style="display: none;">
 <div class="footer footer-default">
-<p>Demographic Analysis with R | NHANES Dataset</p>
+<p>SDPI,NL and UNFPA D4D Workshop - Demographic Analysis with R</p>
 </div>
 </div></div>
 

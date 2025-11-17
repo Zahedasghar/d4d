@@ -10,7 +10,8 @@ library(leaflet)
 pakistan_sf <- geoboundaries("Pakistan", adm_lvl = 2)
 
 # Inspect the data structure
-print("Column names in the dataset:")
+print("Column names in the dataset:") 
+
 names(pakistan_sf)
 
 print("\nFirst few rows:")

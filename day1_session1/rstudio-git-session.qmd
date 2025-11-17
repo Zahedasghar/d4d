@@ -1,8 +1,8 @@
 ---
 title: "Getting Started with R"
 subtitle: "RStudio, Projects, and Version Control with Git"
-author: "Markus Freitag"
-institute: "Geschwister Scholl Institute of Political Science, LMU"
+author: "Zahid Asghar, School of Economics, QAU"
+institute: "Organised by the SDPI D4D Program"
 date: today
 format:
   revealjs:
@@ -23,7 +23,7 @@ format:
 ### Today's Focus
 
 ::: {.incremental}
-- Why R and why it matters for research
+- Why R and why it matters for research and data analysis
 - Setting up a productive workflow with RStudio
 - Understanding R Projects
 - Version control basics with Git and GitHub
@@ -35,7 +35,7 @@ This session covers foundational tools that will make your research life easier.
 
 # Why R?
 
-## R in Academic Research {.smaller}
+## R in Data Analysis and Research {.smaller}
 
 **R is purpose-built for statistical computing**
 
@@ -46,7 +46,7 @@ This session covers foundational tools that will make your research life easier.
 - Designed by statisticians for statistics
 - Massive ecosystem of specialized packages
 - Industry-leading data visualization (ggplot2)
-- Active academic development community
+- Active  development community
 - Excellent reproducibility tools
 - Free and open source
 :::
@@ -57,7 +57,7 @@ This session covers foundational tools that will make your research life easier.
 - Data analysis and statistics
 - Scientific visualization
 - Reproducible research
-- Academic publishing
+- Reporting and documentation
 - Teaching and collaboration
 :::
 :::
@@ -1379,15 +1379,15 @@ Open floor for questions. Common topics:
 
 **Contact:**
 
-- 🌐 [Your Website]
-- 📧 [Your Email]
-- 🐦 [Twitter/X]
-- 💻 [GitHub Profile]
+- 🌐 zahid.quarto.pub
+- 📧 zasghar@qau.edu.pk
+- 🐦 zahedasghar
+- 💻 github.com/Zahedasghar
 
 **Course Materials:**
 
-- 📚 [Course Repository]
-- 💬 [Discussion Forum]
+- 📚 github.com/Zahedasghar/d4d
+
 
 ::: {.fragment}
 ### See you next session!

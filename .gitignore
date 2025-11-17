@@ -6,21 +6,18 @@
 .Ruserdata
 .Rhistory
 .Rapp.history
-
 # Workspace / temp
 .Renviron
 .Renv
 *.RData
-
 # Posit / VSCode
 .vscode/
 *.code-workspace
-
 # OS files
 .DS_Store
 Thumbs.db
-
 # Packages / build
 packrat/
 renv/library/
 renv/staging/
+.secrets

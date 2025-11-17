@@ -1,0 +1,646 @@
+# Load pacman package if not already installed
+
+if (!requireNamespace("pacman", quietly = TRUE)) {
+  install.packages("pacman")
+}
+
+pacman::p_load(tidyverse, rio, modelsummary, NHANES)
+
+library(tidyverse) # Data wrangling & visualization
+library(rio) # Import/export any format
+library(modelsummary) # Summary tables
+library(NHANES) # Our practice dataset
+
+# Load NHANES dataset
+data("NHANES")
+
+# Inspect the data structure
+
+# Oneway to view data file and explore in positron
+
+dim(NHANES)
+
+giimpse(NHANES)
+
+head(NHANES)
+
+tail(NHANES)
+
+names(NHANES)
+
+
+# Create a clean working dataset
+nhanes_data <- NHANES |>
+  as_tibble() |>
+  # Select relevant variables for demographic analysis
+  select(
+    # Demographics
+    ID,
+    Gender,
+    Age,
+    AgeDecade,
+    Race1,
+    Education,
+    MaritalStatus,
+    HomeOwn,
+    # Health measures
+    Height,
+    Weight,
+    BMI,
+    BPSysAve,
+    BPDiaAve,
+    Diabetes,
+    PhysActive,
+    SmokeNow,
+    # Socioeconomic
+    HHIncome,
+    Poverty
+  ) |>
+  # Remove duplicates (NHANES has some repeated IDs)
+  distinct(ID, .keep_all = TRUE)
+
+
+glimpse(nhanes_data)
+
+# How many observations?
+nrow(nhanes_data)
+
+# Summary statistics
+datasummary_skim(nhanes_data, histogram = FALSE)
+
+nhanes_data |>
+  summarise(
+    n = n(),
+    avg_age = mean(Age, na.rm = TRUE),
+    pct_female = mean(Gender == "female", na.rm = TRUE) * 100,
+    pct_diabetes = mean(Diabetes == "Yes", na.rm = TRUE) * 100
+  )
+
+nhanes_data |>
+  count(AgeDecade) |>
+  mutate(
+    percentage = n / sum(n) * 100,
+    percentage = round(percentage, 1)
+  ) |>
+  arrange(AgeDecade)
+
+nhanes_data |>
+  count(Gender) |>
+  mutate(
+    percentage = n / sum(n) * 100,
+    percentage = round(percentage, 1)
+  )
+
+nhanes_data |>
+  summarise(
+    across(
+      c(Age, Gender, BMI, BPSysAve, Diabetes),
+      ~ sum(is.na(.)) / n() * 100
+    )
+  ) |>
+  pivot_longer(
+    everything(),
+    names_to = "variable",
+    values_to = "pct_missing"
+  ) |>
+  mutate(pct_missing = round(pct_missing, 1))
+
+nhanes_clean <- nhanes_data |>
+  mutate(
+    # Create standard demographic age groups
+    age_group = case_when(
+      Age < 18 ~ "0-17",
+      Age >= 18 & Age < 35 ~ "18-34",
+      Age >= 35 & Age < 50 ~ "35-49",
+      Age >= 50 & Age < 65 ~ "50-64",
+      Age >= 65 ~ "65+",
+      TRUE ~ NA_character_
+    ),
+    # Convert to factor with correct order
+    age_group = factor(
+      age_group,
+      levels = c("0-17", "18-34", "35-49", "50-64", "65+")
+    )
+  )
+
+nhanes_clean <- nhanes_clean |>
+  mutate(
+    # BMI categories (WHO classification)
+    bmi_category = case_when(
+      BMI < 18.5 ~ "Underweight",
+      BMI >= 18.5 & BMI < 25 ~ "Normal",
+      BMI >= 25 & BMI < 30 ~ "Overweight",
+      BMI >= 30 ~ "Obese",
+      TRUE ~ NA_character_
+    ),
+    bmi_category = factor(
+      bmi_category,
+      levels = c("Underweight", "Normal", "Overweight", "Obese")
+    ),
+
+    # Hypertension (BP >= 140/90)
+    hypertension = case_when(
+      BPSysAve >= 140 | BPDiaAve >= 90 ~ "Yes",
+      !is.na(BPSysAve) & !is.na(BPDiaAve) ~ "No",
+      TRUE ~ NA_character_
+    )
+  )
+
+nhanes_clean <- nhanes_clean |>
+  mutate(
+    # Education level (simplified)
+    education_level = case_when(
+      Education %in% c("8th Grade", "9 - 11th Grade") ~ "Less than HS",
+      Education == "High School" ~ "High School",
+      Education == "Some College" ~ "Some College",
+      Education == "College Grad" ~ "College+",
+      TRUE ~ NA_character_
+    ),
+    education_level = factor(
+      education_level,
+      levels = c("Less than HS", "High School", "Some College", "College+")
+    ),
+
+    # Poverty status
+    poverty_status = case_when(
+      Poverty < 1 ~ "Below poverty",
+      Poverty >= 1 & Poverty < 2 ~ "Near poverty",
+      Poverty >= 2 ~ "Above poverty",
+      TRUE ~ NA_character_
+    )
+  )
+
+nhanes_clean |>
+  select(Age, age_group, BMI, bmi_category, Education, education_level) |>
+  head(5)
+
+nhanes_clean |>
+  count(age_group, Gender) |>
+  group_by(age_group) |>
+  mutate(
+    total = sum(n),
+    percentage = n / total * 100
+  ) |>
+  select(age_group, Gender, n, percentage)
+
+nhanes_clean |>
+  filter(!is.na(age_group), !is.na(Diabetes)) |>
+  group_by(age_group) |>
+  summarise(
+    n = n(),
+    diabetes_prev = mean(Diabetes == "Yes", na.rm = TRUE) * 100,
+    avg_bmi = mean(BMI, na.rm = TRUE),
+    avg_sbp = mean(BPSysAve, na.rm = TRUE)
+  ) |>
+  mutate(across(where(is.numeric), ~ round(., 1)))
+
+nhanes_clean |>
+  group_by(Gender) |>
+  summarise(
+    n = n(),
+    avg_age = mean(Age, na.rm = TRUE),
+    avg_bmi = mean(BMI, na.rm = TRUE),
+    diabetes_pct = mean(Diabetes == "Yes", na.rm = TRUE) * 100,
+    phys_active_pct = mean(PhysActive == "Yes", na.rm = TRUE) * 100,
+    smoker_pct = mean(SmokeNow == "Yes", na.rm = TRUE) * 100
+  ) |>
+  mutate(across(where(is.numeric), ~ round(., 1)))
+
+nhanes_clean |>
+  filter(!is.na(education_level), !is.na(Diabetes)) |>
+  group_by(education_level) |>
+  summarise(
+    n = n(),
+    diabetes_prev = mean(Diabetes == "Yes", na.rm = TRUE) * 100,
+    obesity_prev = mean(bmi_category == "Obese", na.rm = TRUE) * 100,
+    phys_active = mean(PhysActive == "Yes", na.rm = TRUE) * 100
+  ) |>
+  mutate(across(where(is.numeric), ~ round(., 1)))
+
+nhanes_clean |>
+  filter(!is.na(age_group), !is.na(bmi_category)) |>
+  count(age_group, bmi_category) |>
+  group_by(age_group) |>
+  mutate(
+    percentage = n / sum(n) * 100,
+    percentage = round(percentage, 1)
+  ) |>
+  arrange(age_group, bmi_category)
+
+nhanes_clean |>
+  filter(!is.na(age_group), !is.na(hypertension)) |>
+  group_by(age_group) |>
+  summarise(
+    n = n(),
+    hypertension_prev = mean(hypertension == "Yes") * 100,
+    avg_sbp = mean(BPSysAve, na.rm = TRUE),
+    avg_dbp = mean(BPDiaAve, na.rm = TRUE)
+  ) |>
+  mutate(across(where(is.numeric), ~ round(., 1)))
+
+nhanes_clean |>
+  filter(
+    !is.na(age_group),
+    !is.na(Gender),
+    !is.na(education_level),
+    !is.na(Diabetes)
+  ) |>
+  group_by(age_group, Gender, education_level) |>
+  summarise(
+    n = n(),
+    diabetes_prev = mean(Diabetes == "Yes") * 100,
+    .groups = "drop"
+  ) |>
+  filter(n >= 20) |> # Only groups with 20+ observations
+  arrange(age_group, Gender, education_level) |>
+  head(10)
+
+health_summary <- nhanes_clean |>
+  filter(!is.na(Gender), !is.na(age_group)) |>
+  group_by(Gender, age_group) |>
+  summarise(
+    N = n(),
+    `Mean Age` = round(mean(Age, na.rm = TRUE), 1),
+    `Mean BMI` = round(mean(BMI, na.rm = TRUE), 1),
+    `Diabetes (%)` = round(mean(Diabetes == "Yes", na.rm = TRUE) * 100, 1),
+    `Hypertension (%)` = round(
+      mean(hypertension == "Yes", na.rm = TRUE) * 100,
+      1
+    ),
+    .groups = "drop"
+  )
+
+head(health_summary, 10)
+
+# Calculate prevalence by education
+diabetes_by_ed <- nhanes_clean |>
+  filter(!is.na(education_level), !is.na(Diabetes)) |>
+  group_by(education_level) |>
+  summarise(
+    prevalence = mean(Diabetes == "Yes") * 100
+  )
+
+# Calculate prevalence ratios
+diabetes_by_ed |>
+  mutate(
+    reference_prev = prevalence[education_level == "College+"],
+    prevalence_ratio = prevalence / reference_prev
+  ) |>
+  mutate(across(where(is.numeric), ~ round(., 2)))
+
+# Reference population (all ages)
+reference_age_dist <- nhanes_clean |>
+  count(age_group) |>
+  mutate(weight = n / sum(n))
+
+# Age-specific rates by gender
+age_specific_rates <- nhanes_clean |>
+  filter(!is.na(Diabetes), !is.na(age_group)) |>
+  group_by(Gender, age_group) |>
+  summarise(
+    rate = mean(Diabetes == "Yes") * 100,
+    .groups = "drop"
+  )
+
+# Standardized rates
+age_specific_rates |>
+  left_join(reference_age_dist, by = "age_group") |>
+  group_by(Gender) |>
+  summarise(
+    crude_rate = mean(rate),
+    standardized_rate = sum(rate * weight),
+    .groups = "drop"
+  ) |>
+  mutate(across(where(is.numeric), ~ round(., 2)))
+
+nhanes_clean |>
+  filter(!is.na(age_group), !is.na(Gender)) |>
+  count(age_group, Gender) |>
+  mutate(
+    n = ifelse(Gender == "male", -n, n)
+  ) |>
+  ggplot(aes(x = age_group, y = n, fill = Gender)) +
+  geom_col() +
+  coord_flip() +
+  scale_y_continuous(
+    labels = abs,
+    name = "Population Count"
+  ) +
+  scale_fill_manual(values = c("male" = "#4A90E2", "female" = "#E24A90")) +
+  labs(
+    title = "Population Pyramid: NHANES Sample",
+    x = "Age Group",
+    fill = "Gender"
+  ) +
+  theme_minimal(base_size = 14) +
+  theme(legend.position = "bottom")
+
+nhanes_clean |>
+  filter(!is.na(BMI), BMI < 60) |>
+  ggplot(aes(x = BMI, fill = Gender)) +
+  geom_histogram(bins = 30, alpha = 0.6, position = "identity") +
+  scale_fill_manual(values = c("male" = "#4A90E2", "female" = "#E24A90")) +
+  labs(
+    title = "BMI Distribution by Gender",
+    x = "Body Mass Index (kg/m²)",
+    y = "Count"
+  ) +
+  theme_minimal(base_size = 14)
+
+nhanes_clean |>
+  filter(!is.na(age_group), !is.na(Diabetes)) |>
+  group_by(age_group, Gender) |>
+  summarise(
+    prevalence = mean(Diabetes == "Yes") * 100,
+    .groups = "drop"
+  ) |>
+  ggplot(aes(x = age_group, y = prevalence, color = Gender, group = Gender)) +
+  geom_line(size = 1.2) +
+  geom_point(size = 3) +
+  scale_color_manual(values = c("male" = "#4A90E2", "female" = "#E24A90")) +
+  labs(
+    title = "Diabetes Prevalence by Age and Gender",
+    x = "Age Group",
+    y = "Prevalence (%)"
+  ) +
+  theme_minimal(base_size = 14) +
+  theme(legend.position = "bottom")
+
+nhanes_clean |>
+  filter(!is.na(age_group), !is.na(BPSysAve)) |>
+  ggplot(aes(x = age_group, y = BPSysAve, fill = age_group)) +
+  geom_boxplot() +
+  facet_wrap(~Gender) +
+  labs(
+    title = "Systolic Blood Pressure Distribution by Age and Gender",
+    x = "Age Group",
+    y = "Systolic BP (mmHg)"
+  ) +
+  theme_minimal(base_size = 14) +
+  theme(
+    legend.position = "none",
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  )
+
+nhanes_clean |>
+  filter(!is.na(education_level), !is.na(bmi_category)) |>
+  count(education_level, bmi_category) |>
+  group_by(education_level) |>
+  mutate(percentage = n / sum(n) * 100) |>
+  ggplot(aes(x = education_level, y = percentage, fill = bmi_category)) +
+  geom_col(position = "dodge") +
+  scale_fill_brewer(palette = "Set2") +
+  labs(
+    title = "BMI Categories by Education Level",
+    x = "Education Level",
+    y = "Percentage (%)",
+    fill = "BMI Category"
+  ) +
+  theme_minimal(base_size = 14) +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    legend.position = "bottom"
+  )
+
+# # Your code here
+# nhanes_clean |>
+#   filter(!is.na(___), !is.na(___)) |>
+#   group_by(___) |>
+#   summarise(
+#     n = ___,
+#     obesity_prev = mean(___ == "___") * 100
+#   )
+
+nhanes_clean |>
+  filter(!is.na(Race1), !is.na(bmi_category)) |>
+  group_by(Race1) |>
+  summarise(
+    n = n(),
+    obesity_prev = mean(bmi_category == "Obese") * 100
+  ) |>
+  arrange(desc(obesity_prev)) |>
+  mutate(obesity_prev = round(obesity_prev, 1))
+
+# # Your code here
+# nhanes_clean |>
+#   filter(!is.na(___), !is.na(___), !is.na(___)) |>
+#   group_by(___, ___) |>
+#   summarise(
+#     active_pct = ___,
+#     .groups = "drop"
+#   )
+
+nhanes_clean |>
+  filter(
+    !is.na(age_group),
+    !is.na(poverty_status),
+    !is.na(PhysActive)
+  ) |>
+  group_by(age_group, poverty_status) |>
+  summarise(
+    n = n(),
+    active_pct = mean(PhysActive == "Yes") * 100,
+    .groups = "drop"
+  ) |>
+  filter(n >= 20) |>
+  mutate(active_pct = round(active_pct, 1)) |>
+  arrange(age_group, poverty_status)
+
+# # Your code here
+# nhanes_clean |>
+#   filter(!is.na(___), !is.na(___)) |>
+#   group_by(___) |>
+#   summarise(prev = ___) |>
+#   ggplot(aes(x = ___, y = ___)) +
+#   geom_col(fill = "steelblue") +
+#   labs(title = "___")
+
+nhanes_clean |>
+  filter(!is.na(age_group), !is.na(hypertension)) |>
+  group_by(age_group) |>
+  summarise(prev = mean(hypertension == "Yes") * 100) |>
+  ggplot(aes(x = age_group, y = prev)) +
+  geom_col(fill = "steelblue") +
+  labs(
+    title = "Hypertension Prevalence by Age Group",
+    x = "Age Group",
+    y = "Prevalence (%)"
+  ) +
+  theme_minimal(base_size = 14)
+
+nhanes_clean |>
+  filter(
+    Age >= 18,
+    !is.na(education_level),
+    !is.na(Gender),
+    !is.na(age_group),
+    !is.na(BMI)
+  ) |>
+  group_by(Gender, age_group, education_level) |>
+  summarise(
+    n = n(),
+    mean_bmi = mean(BMI),
+    .groups = "drop"
+  ) |>
+  filter(n >= 10) |>
+  mutate(mean_bmi = round(mean_bmi, 1)) |>
+  arrange(Gender, age_group, education_level) |>
+  head(12)
+
+# # Save as CSV
+# export(nhanes_clean, "nhanes_cleaned.csv")
+#
+# # Save as RDS (preserves R object types)
+# export(nhanes_clean, "nhanes_cleaned.rds")
+#
+# # Save as Stata file
+# export(nhanes_clean, "nhanes_cleaned.dta")
+#
+# # Save as Excel
+# export(nhanes_clean, "nhanes_cleaned.xlsx")
+
+# # Create summary
+# summary_table <- nhanes_clean |>
+#   group_by(Gender, age_group) |>
+#   summarise(
+#     N = n(),
+#     `Mean BMI` = mean(BMI, na.rm = TRUE),
+#     `Diabetes (%)` = mean(Diabetes == "Yes", na.rm = TRUE) * 100,
+#     .groups = "drop"
+#   )
+#
+# # Export
+# export(summary_table, "health_summary.csv")
+# export(summary_table, "health_summary.xlsx")
+
+# # Create plot
+# p <- nhanes_clean |>
+#   filter(!is.na(age_group), !is.na(Diabetes)) |>
+#   group_by(age_group) |>
+#   summarise(prev = mean(Diabetes == "Yes") * 100) |>
+#   ggplot(aes(x = age_group, y = prev)) +
+#   geom_col(fill = "steelblue") +
+#   labs(title = "Diabetes Prevalence by Age")
+#
+# # Save
+# ggsave("diabetes_by_age.png", p, width = 10, height = 6, dpi = 300)
+# ggsave("diabetes_by_age.pdf", p, width = 10, height = 6)
+
+diabetes_inequality <- nhanes_clean |>
+  filter(
+    Age >= 25, # Adults who completed education
+    !is.na(education_level),
+    !is.na(poverty_status),
+    !is.na(Diabetes)
+  ) |>
+  group_by(education_level, poverty_status) |>
+  summarise(
+    n = n(),
+    diabetes_prev = mean(Diabetes == "Yes") * 100,
+    .groups = "drop"
+  ) |>
+  filter(n >= 20)
+
+diabetes_inequality |>
+  arrange(education_level, poverty_status) |>
+  mutate(diabetes_prev = round(diabetes_prev, 1))
+
+diabetes_inequality |>
+  ggplot(aes(x = education_level, y = diabetes_prev, fill = poverty_status)) +
+  geom_col(position = "dodge") +
+  scale_fill_brewer(palette = "Set2") +
+  labs(
+    title = "Diabetes Prevalence by Education and Poverty Status",
+    subtitle = "NHANES Data (Adults 25+)",
+    x = "Education Level",
+    y = "Diabetes Prevalence (%)",
+    fill = "Poverty Status"
+  ) +
+  theme_minimal(base_size = 14) +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    legend.position = "bottom"
+  )
+
+cv_risk_data <- nhanes_clean |>
+  filter(Age >= 18) |>
+  mutate(
+    has_hypertension = hypertension == "Yes",
+    has_obesity = bmi_category == "Obese",
+    has_diabetes = Diabetes == "Yes",
+    inactive = PhysActive == "No",
+    current_smoker = SmokeNow == "Yes",
+
+    risk_count = rowSums(
+      across(
+        c(
+          has_hypertension,
+          has_obesity,
+          has_diabetes,
+          inactive,
+          current_smoker
+        ),
+        ~ as.numeric(.)
+      ),
+      na.rm = TRUE
+    )
+  )
+
+
+cv_risk_summary <- cv_risk_data |>
+  filter(!is.na(age_group), !is.na(Gender)) |>
+  group_by(age_group, Gender) |>
+  summarise(
+    n = n(),
+    hypertension_pct = mean(has_hypertension, na.rm = TRUE) * 100,
+    obesity_pct = mean(has_obesity, na.rm = TRUE) * 100,
+    diabetes_pct = mean(has_diabetes, na.rm = TRUE) * 100,
+    inactive_pct = mean(inactive, na.rm = TRUE) * 100,
+    smoking_pct = mean(current_smoker, na.rm = TRUE) * 100,
+    mean_risk_count = mean(risk_count, na.rm = TRUE),
+    .groups = "drop"
+  ) |>
+  mutate(across(where(is.numeric), ~ round(., 1)))
+
+cv_risk_summary |>
+  arrange(age_group, Gender) |>
+  head(10)
+
+cv_risk_summary |>
+  select(
+    age_group,
+    Gender,
+    hypertension_pct,
+    obesity_pct,
+    diabetes_pct,
+    inactive_pct
+  ) |>
+  pivot_longer(
+    cols = ends_with("_pct"),
+    names_to = "risk_factor",
+    values_to = "prevalence"
+  ) |>
+  mutate(
+    risk_factor = str_remove(risk_factor, "_pct"),
+    risk_factor = str_to_title(risk_factor)
+  ) |>
+  ggplot(aes(
+    x = age_group,
+    y = prevalence,
+    color = risk_factor,
+    group = risk_factor
+  )) +
+  geom_line(linewidth = 1) +
+  geom_point(size = 2) +
+  facet_wrap(~Gender) +
+  labs(
+    title = "Cardiovascular Risk Factors by Age and Gender",
+    x = "Age Group",
+    y = "Prevalence (%)",
+    color = "Risk Factor"
+  ) +
+  theme_minimal(base_size = 13) +
+  theme(
+    legend.position = "bottom",
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  )

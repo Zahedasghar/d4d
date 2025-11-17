@@ -1,7 +1,8 @@
 ---
 title: "Demographic Analysis Using R"
+title-block-banner: true
 subtitle: "Population & Health Data with Tidyverse"
-author: "Workshop on Demographic Data Analysis"
+author: "Zahid Asghar, School of Economics, QAU"
 date: today
 format:
   revealjs:
@@ -13,7 +14,7 @@ format:
     code-overflow: wrap
     code-line-numbers: false
     highlight-style: github
-    footer: "Demographic Analysis with R | NHANES Dataset"
+    footer: "SDPI,NL and UNFPA D4D Workshop - Demographic Analysis with R"
 execute:
   echo: true
   
