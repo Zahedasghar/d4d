@@ -5,6 +5,7 @@ library(lubridate)
 # Load data
 wide_data <- read_excel("data/wide_data.xlsx")
 
+glimpse(wide_data)
 # Ensure numeric columns
 wide_data <- wide_data |> mutate(Dec = as.numeric(Dec))
 

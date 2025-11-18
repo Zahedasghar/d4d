@@ -7,6 +7,8 @@ if(!requireNamespace("pacman", quietly = TRUE)) {
   install.packages("pacman")
 }
 
+
+
 pacman::p_load(tidyverse, data.table, readxl, janitor, ggplot2, sf, leaflet, rio, lubridate) 
 
 # We will first learn how to import data having different formats 

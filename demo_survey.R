@@ -3,7 +3,7 @@
 # Fertility, Mortality, and Child Health Analysis
 # ====================================================================
 if(!require(pacman)) install.packages("pacman")
-pacman::p_load(haven, dplyr, ggplot2, tidyr)
+pacman::p_load(haven, dplyr, ggplot2, tidyr, readr)
 
 
 # Set theme for all plots
@@ -21,7 +21,7 @@ birth_color <- "#66bd63"
 cat("\n=== FERTILITY ANALYSIS ===\n")
 
 # Load data
-fertility <- read_sav("Data/SPSS Data/Fertility.sav")
+fertility <- read_sav("data/Fertility.sav")
 
 # --- 1.1 Age at First Marriage and First Birth -----------------------
 

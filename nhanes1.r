@@ -13,8 +13,10 @@ pacman::p_load(
 # Load NHANES dataset
 data("NHANES")
 
+NHANES |> dim()
+
 # Create a clean working dataset
-nhanes_data <- NHANES %>%
+nhanes_data <- NHANES |> 
   as_tibble() %>%
   # Select relevant variables for demographic analysis
   select(
@@ -30,6 +32,9 @@ nhanes_data <- NHANES %>%
   # Remove duplicates (NHANES has some repeated IDs)
   distinct(ID, .keep_all = TRUE)
 
+
+
+dim(nhanes_data)
 #' 
 #' ## First Look at Our Data
 #' 
