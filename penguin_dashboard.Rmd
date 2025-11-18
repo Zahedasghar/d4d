@@ -1,0 +1,240 @@
+---
+title: "Palmer Penguins Dashboard"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: rows
+    theme: cosmo
+    social: menu
+    source_code: embed
+---
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+library(tidyverse)
+library(palmerpenguins)
+library(plotly)
+
+# Remove missing values for cleaner visualizations
+penguins_clean <- penguins |> 
+  drop_na()
+```
+
+# Overview
+
+## Row {data-height=150}
+
+### Total Penguins
+
+```{r}
+valueBox(
+  nrow(penguins_clean),
+  icon = "fa-snowflake",
+  color = "info"
+)
+```
+
+### Species
+
+```{r}
+valueBox(
+  n_distinct(penguins_clean$species),
+  icon = "fa-list",
+  color = "primary"
+)
+```
+
+### Islands
+
+```{r}
+valueBox(
+  n_distinct(penguins_clean$island),
+  icon = "fa-map",
+  color = "success"
+)
+```
+
+### Average Body Mass
+
+```{r}
+avg_mass <- round(mean(penguins_clean$body_mass_g))
+valueBox(
+  paste(format(avg_mass, big.mark = ","), "g"),
+  icon = "fa-weight",
+  color = "warning"
+)
+```
+
+## Row {data-height=425}
+
+### Body Mass vs Flipper Length by Species
+
+```{r}
+p1 <- ggplot(penguins_clean, aes(x = flipper_length_mm, y = body_mass_g, color = species)) +
+  geom_point(aes(text = paste("Species:", species,
+                               "<br>Flipper:", flipper_length_mm, "mm",
+                               "<br>Body Mass:", body_mass_g, "g",
+                               "<br>Island:", island)), 
+             size = 2, alpha = 0.7) +
+  geom_smooth(method = "lm", se = FALSE) +
+  labs(
+    title = "Relationship between Flipper Length and Body Mass",
+    x = "Flipper Length (mm)",
+    y = "Body Mass (g)",
+    color = "Species"
+  ) +
+  theme_minimal() +
+  scale_color_manual(values = c("#FF6F00", "#C15BCB", "#007C91"))
+
+ggplotly(p1, tooltip = "text")
+```
+
+### Bill Dimensions by Species
+
+```{r}
+p2 <- ggplot(penguins_clean, aes(x = bill_length_mm, y = bill_depth_mm, color = species)) +
+  geom_point(aes(text = paste("Species:", species,
+                               "<br>Bill Length:", bill_length_mm, "mm",
+                               "<br>Bill Depth:", bill_depth_mm, "mm")),
+             size = 2, alpha = 0.7) +
+  labs(
+    title = "Bill Dimensions Across Species",
+    x = "Bill Length (mm)",
+    y = "Bill Depth (mm)",
+    color = "Species"
+  ) +
+  theme_minimal() +
+  scale_color_manual(values = c("#FF6F00", "#C15BCB", "#007C91"))
+
+ggplotly(p2, tooltip = "text")
+```
+
+## Row {data-height=425}
+
+### Distribution of Body Mass
+
+```{r}
+p3 <- ggplot(penguins_clean, aes(x = body_mass_g, fill = species)) +
+  geom_histogram(alpha = 0.6, position = "identity", bins = 30) +
+  labs(
+    title = "Body Mass Distribution by Species",
+    x = "Body Mass (g)",
+    y = "Count",
+    fill = "Species"
+  ) +
+  theme_minimal() +
+  scale_fill_manual(values = c("#FF6F00", "#C15BCB", "#007C91"))
+
+ggplotly(p3)
+```
+
+### Penguins by Island and Species
+
+```{r}
+island_summary <- penguins_clean |> 
+  count(island, species)
+
+p4 <- ggplot(island_summary, aes(x = island, y = n, fill = species)) +
+  geom_col(position = "dodge") +
+  labs(
+    title = "Penguin Counts by Island and Species",
+    x = "Island",
+    y = "Count",
+    fill = "Species"
+  ) +
+  theme_minimal() +
+  scale_fill_manual(values = c("#FF6F00", "#C15BCB", "#007C91"))
+
+ggplotly(p4)
+```
+
+# By Species
+
+## Row {.tabset}
+
+### Adelie
+
+```{r}
+adelie_data <- penguins_clean |> filter(species == "Adelie")
+
+p_adelie <- ggplot(adelie_data, aes(x = flipper_length_mm, y = body_mass_g, color = island)) +
+  geom_point(size = 3, alpha = 0.7) +
+  labs(
+    title = "Adelie Penguins: Body Mass vs Flipper Length",
+    x = "Flipper Length (mm)",
+    y = "Body Mass (g)",
+    color = "Island"
+  ) +
+  theme_minimal()
+
+ggplotly(p_adelie)
+```
+
+### Chinstrap
+
+```{r}
+chinstrap_data <- penguins_clean |> filter(species == "Chinstrap")
+
+p_chinstrap <- ggplot(chinstrap_data, aes(x = flipper_length_mm, y = body_mass_g, color = sex)) +
+  geom_point(size = 3, alpha = 0.7) +
+  labs(
+    title = "Chinstrap Penguins: Body Mass vs Flipper Length",
+    x = "Flipper Length (mm)",
+    y = "Body Mass (g)",
+    color = "Sex"
+  ) +
+  theme_minimal() +
+  scale_color_manual(values = c("#E69F00", "#56B4E9"))
+
+ggplotly(p_chinstrap)
+```
+
+### Gentoo
+
+```{r}
+gentoo_data <- penguins_clean |> filter(species == "Gentoo")
+
+p_gentoo <- ggplot(gentoo_data, aes(x = flipper_length_mm, y = body_mass_g, color = sex)) +
+  geom_point(size = 3, alpha = 0.7) +
+  labs(
+    title = "Gentoo Penguins: Body Mass vs Flipper Length",
+    x = "Flipper Length (mm)",
+    y = "Body Mass (g)",
+    color = "Sex"
+  ) +
+  theme_minimal() +
+  scale_color_manual(values = c("#E69F00", "#56B4E9"))
+
+ggplotly(p_gentoo)
+```
+
+# Data Table
+
+## Row
+
+### Summary Statistics
+
+```{r}
+penguins_clean |> 
+  group_by(species) |> 
+  summarise(
+    Count = n(),
+    `Avg Body Mass (g)` = round(mean(body_mass_g)),
+    `Avg Flipper Length (mm)` = round(mean(flipper_length_mm), 1),
+    `Avg Bill Length (mm)` = round(mean(bill_length_mm), 1),
+    `Avg Bill Depth (mm)` = round(mean(bill_depth_mm), 1)
+  ) |> 
+  knitr::kable()
+```
+
+### Dataset
+
+```{r}
+DT::datatable(
+  penguins_clean,
+  options = list(
+    pageLength = 10,
+    scrollX = TRUE
+  ),
+  filter = "top"
+)
+```

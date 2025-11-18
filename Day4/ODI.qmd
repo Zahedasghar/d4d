@@ -6,7 +6,7 @@ format:
     theme: [simple]
     keep-md: false
 params:
-  player: "Babar Azam"
+  player: "Sadeera Samarawickrama"
 execute: 
   freeze: auto
 ---
