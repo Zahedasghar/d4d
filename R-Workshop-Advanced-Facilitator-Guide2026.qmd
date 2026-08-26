@@ -1,0 +1,386 @@
+---
+title: "Data Analysis Using R for Evidence-Based Decision-Making"
+subtitle: "Advanced Edition — 5-Day Facilitator's Guide (with Trainer's Notes)"
+author: "Prof. Dr. Zahid Asghar, School of Economics, QAU"
+date: today
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    number-sections: false
+    theme: cosmo
+    code-tools: false
+  docx:
+    toc: true
+    toc-depth: 2
+editor: visual
+editor_options:
+  chunk_output_type: console
+---
+
+**Trainer:** Prof. Dr. Zahid Asghar, School of Economics, Quaid-i-Azam University, Islamabad\
+**Dates:** ____________________ &nbsp;&nbsp;&nbsp;&nbsp; **Venue:** ____________________\
+**Audience:** Officers and analysts from Statistical Bureaus and Planning & Development departments
+
+---
+
+## How to Use This Guide
+
+This is the Advanced Edition of the workshop: it assumes a mixed cohort of some first-time and some returning participants, and is paced as a refresher-plus-extension rather than a ground-up introduction. Each day follows the same four-block structure. For every module, the module table gives what to teach; the Trainer's Notes that follow it give how — the specific facilitation moves, the traps worth walking into on purpose, and the fallback if something breaks.
+
+- **Refresher pace, not beginner pace.** Gauge the room in the first 15 minutes of Day 1 and adjust — don't apologise for moving quickly.
+- **AI assistance is integrated throughout**, not taught once and forgotten. Every day's final module puts an AI-drafted output in front of the room and asks them to find what's wrong with it before trusting it.
+- **Every day ends toward Day 5.** From Day 3 onward, remind participants to save one shareable output — this is what makes the demonstration day work.
+- **Fail loudly, never silently.** This principle is repeated across Days 2, 3 and 4 because it is the single habit most worth instilling in an audience producing official statistics.
+
+## Pre-Workshop Preparation
+
+- Three weeks out: send the application/intake form asking for current tools, self-rated R experience (1–5), and the one recurring report each participant wants to leave the week able to automate.
+- Two weeks out: send `install_packages.R` / `renv.lock` and AI API key setup instructions together, as one package — account creation must not consume Day 1 time.
+- Provision a cloud fallback environment (e.g. Posit Cloud) with everything pre-installed, for any participant on a locked-down government laptop without admin rights.
+- Five days out: run a 60-minute optional installation clinic online; anyone who hasn't confirmed a working setup afterward is followed up with personally.
+- On arrival: every participant's project folder already contains the full data pack — boundaries, CORE Econ datasets, and any pre-cleaned practice extracts — so nothing depends on live venue wifi.
+
+## Standard Daily Structure
+
+Used all five days:
+
+| Time | Block |
+|---|---|
+| 9:00 – 10:30 | Module 1 |
+| 10:30 – 10:45 | Tea Break |
+| 10:45 – 1:00 | Module 2 |
+| 1:00 – 2:00 | Lunch Break |
+| 2:00 – 3:30 | Module 3 |
+| 3:30 – 4:00 | Module 4 / Wrap-up & Q&A |
+
+## Day 1 — Foundations Refresher, Reproducible Setup & AI Toolkit
+
+*Re-establish a reproducible R workflow at speed, and get every participant's AI assistant configured and firing before lunch — everything from Day 2 onward assumes it works.*
+
+| Time | Module | Content |
+|---|---|---|
+| 9:00–10:30 | 1 | Welcome & roadmap for the week. Fast refresher: R/RStudio/Positron project workflow, working directories, here::here(), project-oriented reproducibility from the start. Quick tidyverse recap (pipe, dplyr verbs) — pitched so returners aren't bored and newcomers aren't lost. |
+| 10:45–1:00 | 2 | Data import from multiple formats: CSV, Excel, Stata/SPSS (haven), JSON, and web APIs (e.g., official indicator series via httr2). Data wrangling refresher: recoding, cleaning, joining — with an eye toward writing code that's reusable next month, not just today. |
+| 2:00–3:30 | 3 | Setting up your AI toolkit: installing/configuring GitHub Copilot in RStudio, enabling the Positron Assistant pane, setting up chattr and gander with API keys. First AI-assisted exercise: clean a messy dataset using a natural-language prompt and review what the AI generated. |
+| 3:30–4:00 | 4 | Troubleshooting, Q&A, homework: bring one dataset you regularly work with for later days. |
+
+### Trainer's Notes
+
+#### Materials & Data Needed
+
+- One deliberately messy sample dataset per pair (merged headers, junk rows, mixed date formats) in case a participant hasn't brought their own yet
+- Printed or shared AI-toolkit setup card: where each API key goes, for Copilot, Positron Assistant, chattr, gander
+- A pre-recorded or pre-run "golden" AI-cleaning example to show if live demo or wifi fails
+- Sign-up sheet capturing each participant's homework dataset and its format, collected at the end of the day
+
+#### Facilitation Notes, Module by Module
+
+**Module M1**
+
+- Poll the room in the first 10 minutes: who attended the earlier intro workshop, who has R/Positron already installed and working. Use this to decide, live, whether to compress or hold Module 1's pace.
+- This is a **refresher**, not an introduction — don't apologise for moving quickly. Returners disengage fast if the pace drags; newcomers can be paired with a returner rather than slowing the whole room.
+- Model **project-oriented workflow** from the very first keystroke: open a `.Rproj`, never set a working directory manually, use `here::here()` in the first demo script so it becomes the default reflex, not an afterthought.
+
+**Module M2**
+
+- This module is where refreshers quietly go wrong: date parsing, factor labels dropped from `haven::read_dta()`, and silent encoding issues. Show `haven::as_factor()` beside the raw numeric-coded version side by side so the trap is visible, not theoretical.
+- For the API import segment, use `httr2` against a real official indicator series (World Bank / UN Population Division) live — but have a saved local copy ready in case the venue connection drops.
+- Close the loop explicitly: wrangling code written today should be reusable as a function next month. Plant this line now; it pays off on Day 4 when parameterised reporting depends on exactly this habit.
+
+**Module M3**
+
+- This is the differentiator module of Day 1 and arguably of the whole workshop for a returning cohort — protect its full 90 minutes even if Module 1 has to be trimmed.
+- Have participants use the API key issued during Day 0 setup. Anyone whose key isn't working should be paired immediately with someone whose key is — do not let one broken key stall a pair for the whole module.
+- Frame AI assistance explicitly and repeatedly as **a fast junior analyst, always reviewed** — never as an oracle. The single most useful five minutes of the day is deliberately showing the room one confidently wrong AI-generated cleaning step and having them catch it themselves before you point it out.
+- Briefly distinguish the three tools so participants know when to reach for which: Copilot for inline code completion as you type; Positron Assistant / chattr for conversational, chat-style requests against your actual R session; gander for spreadsheet-style natural-language data operations. One sentence each is enough — depth comes from using them, not explaining them.
+
+**Module M4**
+
+- Physically collect (on a whiteboard or shared sheet) the file name and format of each participant's homework dataset. This lets the trainer pre-empt exotic formats overnight rather than discovering them live on Day 2.
+- Confidentiality reminder belongs here, stated plainly: microdata and confidential administrative extracts are never uploaded to a cloud AI service. Use synthetic or public proxies for anything sensitive when working with an AI assistant this week.
+
+#### Common Pitfalls & Fixes
+
+- API key configured in one tool's settings but not propagating to the Positron Assistant pane — fix is a full IDE restart, not just a reload.
+- Corporate proxy or venue firewall blocking calls to the LLM API — have the **non-AI fallback version** of the Module 3 exercise ready to swap in without breaking stride.
+- Participants trying to use AI assistance on their actual confidential microdata during the very first exercise — redirect to the provided sample immediately, and use it as the moment to state the confidentiality rule out loud.
+
+#### Timing & Flex
+
+Module 3 always overruns on a first outing with a new cohort — protect it by trimming Module 1 to 75 minutes whenever the pre-workshop poll shows a majority of returners.
+
+#### End-of-Day Checkpoint
+
+By 4:00 pm every laptop should have: a working project folder opened via `.Rproj`; at least one successful AI-assisted cleaning run they can explain in their own words; and their homework dataset identified and logged.
+
+---
+
+## Day 2 — Indicators, Exploratory Analysis & Visualization
+
+*Move the room from "can make a chart" to "can produce a correctly weighted, decision-ready table or chart that would survive being published."*
+
+| Time | Module | Content |
+|---|---|---|
+| 9:00–10:30 | 1 | Recap of key indicators relevant to participants' sectors (rates, ratios, shares — health, education, or population as applicable). Case study: recalculating the Human Development Index (HDI) from CORE Econ's Doing Economics — combining GDP per capita, life expectancy, and education into a single composite indicator, and comparing to official published values. Survey design refresher — weights, strata, clusters with srvyr. |
+| 10:45–1:00 | 2 | Exploratory data analysis and decision-ready tables: gtsummary, gt, weighted summary tables by region/subgroup. |
+| 2:00–3:30 | 3 | Visualization: ggplot2 recap, animated visualizations with gganimate. Case study: animating global temperature and emissions trends from CORE Econ's Doing Economics Climate Change chapter. Interactive plots with plotly. |
+| 3:30–4:00 | 4 | AI-assisted visualization: prompting Copilot/Positron Assistant to draft ggplot2 code and summary tables from plain-language requests; reviewing, correcting, and refining AI output rather than accepting it blindly. |
+
+### Trainer's Notes
+
+#### Materials & Data Needed
+
+- PSLM/MICS-shaped practice extract with genuine survey weight, stratum and PSU columns
+- CORE Econ Doing Economics HDI and Climate Change datasets and scripts, pre-loaded locally for offline use
+- A pre-rendered gganimate GIF as a fallback in case live rendering is too slow on venue laptops
+
+#### Facilitation Notes, Module by Module
+
+**Module M1**
+
+- The HDI recreation is the best available "trap" exercise of the morning: some normalised sub-indices fall outside [0,1] because of out-of-range raw values in the education and mortality inputs. Let participants hit this themselves before revealing that `pmin()`/`pmax()` clamping is the fix — a bug they find is worth ten a trainer names.
+- Immediately after, contrast a naive `summary()`/`mean()` on a raw variable against a design-based `srvyr` summary on the *same* variable. The gap between the two numbers is the whole argument for why the rest of the day matters.
+- State explicitly: **using `filter()` on raw rows instead of `subset()` on the full `svydesign` object silently produces confidently wrong standard errors** — no error is thrown. For an audience producing official statistics this is the single highest-stakes correction of the week.
+
+**Module M2**
+
+- This is where participants' actual office habits get corrected. Push past the mechanics of gtsummary/gt into what a *publishable* table needs: source notes, unit rows, rounding rules, and a footnote flag for high relative standard error rather than silently reporting an unreliable estimate as fact.
+- Have each pair build one subgroup table (region × indicator) from the practice extract using the design object, and read the standard errors out loud — this cements the M1 lesson through repetition rather than restating it.
+
+**Module M3**
+
+- gganimate rendering is the most common laptop-performance bottleneck of the whole week. If a render is visibly still running after ~90 seconds, switch immediately to the pre-rendered fallback GIF rather than losing the room to a spinning cursor.
+- The climate change animation case study is deliberately not Pakistan-specific — use that: it lets participants practise the mechanics of `transition_time()`/`transition_states()` on a low-stakes, globally familiar dataset before they apply the same code to their own indicators later in the week.
+- Close with a short, honest discussion: animation clarifies a trend over time; it does not rescue a chart that has nothing to say. This keeps the tool from becoming decoration in participants' own reports.
+
+**Module M4**
+
+- Repeat the Day 1 discipline: show one AI-drafted ggplot2 chart that looks polished but silently mislabels an axis or misreads a filter, and have the room catch it against their own numbers before moving on.
+- Teach the one-line gut check explicitly: *does the chart's shape match what the summary table already told me?* If not, the AI code is wrong before you've even read it.
+
+#### Common Pitfalls & Fixes
+
+- Subgroup analysis run by pre-filtering rows rather than `subset()` on the survey design object — the fix must be shown, not just mentioned, because the output looks completely normal.
+- gganimate render times spiralling on underpowered laptops — always have the static fallback ready.
+- Participants treating an AI-drafted table's numbers as correct because the formatting looks professional — the polish of `gt` output raises this risk rather than lowering it.
+
+#### Timing & Flex
+
+If Module 1 overruns because of the HDI debugging discussion, protect Module 2 in full and trim Module 3 to the animation case study only, moving plotly practice to homework.
+
+#### End-of-Day Checkpoint
+
+Every pair leaves with one weighted subgroup table, one branded/labelled static chart, and one animated or interactive chart they can explain — including at least one moment where they caught an error themselves.
+
+---
+
+## Day 3 — Mapping, Spatial Patterns & Modeling
+
+*Turn administrative and survey indicators into maps and models that support a conclusion, not just a description — while building the habit of treating spatial joins and coefficients with appropriate scepticism.*
+
+| Time | Module | Content |
+|---|---|---|
+| 9:00–10:30 | 1 | Spatial data refresher: sf basics, reading shapefiles, joining indicator data to administrative boundaries. |
+| 10:45–1:00 | 2 | Choropleth mapping with tmap — class breaks, palettes, layout for print and reports. |
+| 2:00–3:30 | 3 | Interactive mapping with leaflet/mapview. Light modeling: regression and survey-weighted models (svyglm) to support evidence-based conclusions rather than description alone. Case study: modeling the relationship between emissions and economic growth, adapted from CORE Econ's Doing Economics Climate Change chapter. |
+| 3:30–4:00 | 4 | AI-assisted mapping & modeling: using the AI assistant to generate mapping code, debug spatial join/CRS errors, and translate model coefficients into plain-language interpretation for non-technical audiences. |
+
+### Trainer's Notes
+
+#### Materials & Data Needed
+
+- District/tehsil boundary shapefiles
+- A pre-built name crosswalk file (district name in boundaries vs. district name/code in survey data) — build this once before the workshop, not live
+- CORE Econ emissions–growth dataset and script
+
+#### Facilitation Notes, Module by Module
+
+**Module M1**
+
+- The single biggest blocker in any Pakistan spatial session is **district name mismatch** between boundary files and survey or administrative data. Spend ten minutes on this explicitly before any join is attempted, and treat mismatches as the expected first outcome, not an exception to troubleshoot around.
+- Show the crosswalk file as a versioned artefact — built once, checked by a human, saved — rather than a one-off fuzzy-match hack repeated every time. `stringdist`-based matching is a suggestion engine; the human decision is what gets committed.
+- Teach `sf::st_transform()` to a common CRS as a reflex before any join or plot, and `sf::st_make_valid()` as the standard response to geometries that plot as empty or throw obscure errors.
+
+**Module M2**
+
+- Demonstrate the **same indicator** under quantile, Jenks (natural breaks), and equal-interval classification, side by side. This is a genuine governance point for people whose maps go into official documents: a "neutral" choropleth can look alarmist or complacent purely from the classification choice, before a single number changes.
+- Push on print-layout details this audience will actually need: legend placement, a source note, and a scale/orientation element — the difference between a map that looks like an R plot and one that looks like it belongs in a government report.
+
+**Module M3**
+
+- Keep model interpretation plain-language first, coefficients second. State the direction and magnitude of the relationship in one sentence before showing the regression table.
+- The emissions–growth case study is deliberately outside Pakistan and low political stakes — use it to let participants practise *interpreting* a coefficient honestly (including its limitations) before they apply the same discipline to a domestic, more sensitive relationship in their own capstone.
+- When introducing `svyglm`, connect it explicitly back to Day 2's design-object lesson: modelling on unweighted data repeats the same silent-error risk as an unweighted summary table.
+
+**Module M4**
+
+- This is one of the highest-value AI uses of the whole week: CRS and spatial-join errors are common and genuinely cryptic. Have each pair paste a real error message from their own Module 1 exercise and watch the assistant diagnose it live, rather than using a pre-written example.
+- For coefficient interpretation, have the AI assistant draft the plain-language sentence, then have the participant correct it against the actual model output — reinforcing the same review discipline as Days 1 and 2, now applied to numbers with real policy weight.
+
+#### Common Pitfalls & Fixes
+
+- Joining on district name without a crosswalk — silently drops or mismatches districts rather than erroring, so always check `nrow()` before and after a join.
+- Mismatched CRS between boundary and point/raster data producing empty-looking plots rather than an error.
+- Reading a `svyglm` coefficient as if it came from an unweighted `lm()` — restate the design object every time a model is introduced.
+
+#### Timing & Flex
+
+If Module 1's crosswalk troubleshooting runs long, it is worth it — trim the print-layout portion of Module 2 rather than rushing the join itself, since every later exercise depends on the join being correct.
+
+#### End-of-Day Checkpoint
+
+Each pair has one correctly joined choropleth, one interactive leaflet/mapview map, and one model whose coefficient they can state correctly in one plain-language sentence.
+
+---
+
+## Day 4 — Automation & Reproducibility: Reports and Dashboards
+
+*This is the day that changes what participants do back at the office. Protect the middle two modules — parameterised reporting and dashboards — above everything else on the schedule.*
+
+| Time | Module | Content |
+|---|---|---|
+| 9:00–10:30 | 1 | Quarto essentials: documents, YAML, code chunks, cross-references — recap plus newer features. |
+| 10:45–1:00 | 2 | Parameterized reports: one template, rendered automatically for each region/subgroup/time period; looped rendering with purrr::walk() — the core automation habit that saves hours on recurring reporting cycles. |
+| 2:00–3:30 | 3 | Quarto dashboards: building an interactive, decision-ready dashboard — value boxes, tabs, embedded maps and plots that a manager or decision-maker can explore without touching code. |
+| 3:30–4:00 | 4 | AI-assisted report writing: using the AI assistant to draft narrative interpretation and executive-summary text from model/table output, then critically reviewing it for factual accuracy before use. |
+
+### Trainer's Notes
+
+#### Materials & Data Needed
+
+- One finished report template with a `params:` block, ready to render as a live demo
+- The Day 2/3 indicator table and map objects, saved so Module 3 can embed them without rebuilding
+- A short reference card on `execute: freeze` / caching behaviour
+
+#### Facilitation Notes, Module by Module
+
+**Module M1**
+
+- Move fast — most of this cohort has the Quarto basics from the earlier intro workshop. Spend the time this saves on caching (`freeze`), since that is what makes iterative report-building bearable rather than a demonstration of patience.
+- One sentence worth planting here for later: **a template renders correctly for one region; the discipline is making sure it renders correctly, or fails loudly, for all of them.** This sets up Module 2.
+
+**Module M2**
+
+- This is the single highest-value skill of the week for a reporting bureau — protect its full block. Live-render one template across every region or subgroup with `purrr::walk()`, then open two or three of the resulting files at random in front of the room. This moment, more than any other in the week, is what participants describe afterward.
+- Explicitly cover what happens when a subgroup has missing or insufficient data: a parameterised report should **fail loudly or flag clearly**, never silently produce a blank or misleading page. Build one `stopifnot()`-style guard into the template together as a group.
+- Have each participant render their own template against at least three parameter values before lunch — the habit only sticks once they've done it themselves, not watched it once.
+
+**Module M3**
+
+- Stress, and keep stressing, that value boxes must be wired to real computed numbers — not typed in by hand. A dashboard that updates itself when the underlying data changes is the entire point; one that doesn't is just a nicer-looking static report.
+- State plainly that this is deliberately **serverless** and that this is the deployable ceiling for this audience, not a compromise: government IT will not host a Shiny server, so a single self-contained HTML file that opens on any machine is the target output, not a stepping stone to something more elaborate.
+- Have participants embed at least one object from an earlier day (their Day 2 chart, their Day 3 map) rather than building everything from scratch — this reinforces that the whole week has been building toward this file.
+
+**Module M4**
+
+- This is the highest-stakes AI use of the week: fluent, well-written wrong text is more dangerous in an official document than obviously wrong text, because it doesn't invite scrutiny. Run a live fact-check exercise — AI drafts an executive-summary paragraph, the room checks every number in it against the actual table before anyone is allowed to approve it.
+- Close by asking each participant to name, out loud, one number in their own draft narrative they have personally verified. This is a small ritual, but it is the one most likely to survive into their actual office practice.
+
+#### Common Pitfalls & Fixes
+
+- Forgetting to re-render after the underlying data changes — `freeze` caching can hide stale output; show explicitly how to force a fresh render.
+- A parameterised template that silently produces a blank or broken page for one subgroup instead of erroring — always test the edge case (smallest sample, missing category) live, not just the easy case.
+- Dashboard value boxes hand-typed once and never reconnected to the data — check for this specifically when circulating during the exercise.
+
+#### Timing & Flex
+
+If time is short anywhere today, take it from Module 1's "newer features" tour, never from Modules 2 or 3 — those two are the ones participants will actually use on Monday.
+
+#### End-of-Day Checkpoint
+
+Every participant has rendered a parameterised report across at least three parameter values and has one dashboard file that opens standalone in a browser with at least one embedded chart or map.
+
+---
+
+## Day 5 — Demonstration Day: From Data to Decision-Ready Evidence
+
+*Intentionally demo-heavy: less hands-on exercise, more live, integrated demonstration of the week's skills working together, with a deliberate focus on how this supports evidence-based decision-making in practice. Runs on rehearsal discipline, not new content.*
+
+| Time | Module | Content |
+|---|---|---|
+| 9:00–10:30 | 1 | Live demo: raw data to cleaned, reproducible dataset, using AI-assisted wrangling ("vibe coding") from start to finish, narrated step by step. |
+| 10:45–1:00 | 2 | Live demo: automatic parameterized report generation and a Quarto dashboard built in real time, with the AI assistant drafting code and narrative text along the way — showing the full pipeline from data to a decision-maker-facing output. |
+| 2:00–3:30 | 3 | Participant lightning demos (5 minutes each): each participant/team shows one thing they built during the week; open-floor troubleshooting and peer feedback. |
+| 3:30–4:00 | 4 | Wrap-up, resources for continued learning, feedback form, certificates, closing. |
+
+### Trainer's Notes
+
+#### Materials & Data Needed
+
+- A visible countdown timer for the lightning demos
+- A backup copy of the trainer's own week-long project, in case the live demo hits an unrecoverable error
+- Printed or digital certificates, ready before the day starts
+- "30-Day Commitment" cards, one per participant
+
+#### Facilitation Notes, Module by Module
+
+**Module M1**
+
+- The trainer narrates their own thought process live, including the mistakes the AI assistant makes along the way — this should not go perfectly. Script in at least one deliberate AI error to catch on camera; it models exactly the sceptical-review habit taught all week, at the moment participants are most likely to remember it.
+- If leadership has been invited for the afternoon only, this morning block is still worth running at full quality — participants take their cue for how seriously to treat their own afternoon demo from how seriously the trainer treats this one.
+
+**Module M2**
+
+- Treat this as reinforcing muscle memory immediately before participants present their own work, not as new teaching. Reuse the actual template and dashboard structure from Day 4 rather than introducing a new example.
+- If bureau or P&D leadership is joining for the afternoon, this is the block to invite them to arrive in time to see the tail end of — it is the clearest single demonstration of the week's value to a non-technical decision-maker.
+
+**Module M3**
+
+- Enforce the 5-minute limit visibly and without exception — a single overrun demo costs every participant after it their fair share of time. A visible countdown, not a verbal warning, keeps this from becoming personal.
+- Seed the first two rounds of peer feedback yourself if the room is slow to speak up; after that it runs itself.
+- Score against the published rubric (below) live or immediately after each block, and announce results before the day ends — waiting until "later" loses the moment.
+
+**Module M4**
+
+- Close with the 30-Day Commitment card: each participant writes one specific thing they will automate within 30 days, with a date, before certificates are handed out. Photograph the cards for a day-30 follow-up message.
+- Ask the room directly, in front of any attending leadership, what their bureau needs to make this normal practice rather than a one-week novelty — this is the institutional payoff of the whole week, and it belongs on the record while leadership is in the room.
+
+#### Common Pitfalls & Fixes
+
+- A lightning demo that fails live and derails momentum — the fix is a visible, low-drama recovery ("here's what broke, here's what I'd try next") rather than a long debugging detour; model this once yourself in Module 1 so participants know it's an acceptable way to end their own demo.
+- Certificates or awards announced without a rubric behind them — decide criteria on Day 1, publish them, and score against them consistently.
+
+#### Timing & Flex
+
+Protect the technical rehearsal implied by Module 1 and 2's smooth execution — arrive early enough on Day 5 to confirm every participant's laptop actually connects to the projector before the room fills.
+
+#### End-of-Day Checkpoint
+
+Every participant has presented, received feedback against the published rubric, and left with one dated, specific 30-Day Commitment card.
+
+---
+
+## Day 5 Assessment Rubric
+
+Share this with participants on Day 1, not on Day 5 — a thin final demo is almost always a sign the requirements weren't known in advance.
+
+| Criterion | Weight | Looking for |
+|---|---|---|
+| Reproducibility | 25% | Runs from raw data to final output with no manual steps; no hard-coded absolute paths |
+| Automation | 20% | Parameterisation or looped rendering doing genuine repeated work, not a single one-off report |
+| Correctness | 20% | Survey weights applied where relevant; figures reconcile with a known published source |
+| Communication | 20% | Clear, honestly labelled visuals and narrative a decision-maker would actually read |
+| Ambition | 15% | Attempted something genuinely beyond the participant's comfort zone entering the week |
+
+## Trainer's Risk & Mitigation Checklist
+
+| Risk | Mitigation |
+|---|---|
+| Locked-down government laptops | Cloud fallback environment provisioned and tested for every participant, two weeks ahead |
+| Venue wifi fails | Zero live downloads required for any core exercise; full data pack shipped in advance; offline fallback for every AI exercise |
+| Ability spread too wide for one room | Day 0 self-paced primer; mixed-ability pairing; stretch tasks ready for fast finishers |
+| AI API access blocked by a proxy | Non-AI fallback version of every AI-assisted exercise prepared in advance |
+| Day 5 demos too thin | Requirements and rubric published on Day 1; daily reminder from Day 3 onward to save a shareable output |
+| Confidential microdata mishandled with AI tools | Explicit rule stated Day 1: confidential data never leaves the local machine via an AI service; synthetic/public proxies used in all AI exercises |
+| Enthusiasm fades after the workshop ends | 30-Day Commitment cards with a day-30 follow-up message; a small alumni channel kept open |
+
+## Notes for Organizers
+
+- Day 1's refresher pace can flex depending on how many returning vs. new participants attend — gauge this in the first 15 minutes and adjust Module 1 depth accordingly.
+- AI features require API keys (Anthropic/OpenAI) configured in advance — send setup instructions with the pre-workshop package so Day 1 isn't consumed by account creation.
+- Pre-load the CORE Econ Doing Economics Human Development and Climate Change chapter datasets and R scripts alongside participants' own data, so Day 2/3 case studies run smoothly offline if needed.
+- Bring an offline copy of all datasets and a non-AI fallback plan for each exercise, in case of connectivity issues on the day.
+- Day 5 presentations work best if participants are reminded on Day 3 to start saving one "shareable" output from their work.
+- Since Bureau of Statistics and P&D participants may bring their own administrative datasets, consider a short intake form beforehand so exercises can be adapted where useful.
+

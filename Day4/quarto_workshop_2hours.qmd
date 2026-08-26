@@ -1,0 +1,789 @@
+---
+title: "Quarto for Beginners"
+subtitle: "A 2-Hour Interactive Workshop"
+author: "Your Name"
+date: today
+format: 
+  revealjs:
+    theme: moon
+    slide-number: true
+    chalkboard: true
+    preview-links: auto
+    footer: "Quarto Workshop 2024"
+    transition: slide
+    background-transition: fade
+---
+
+# Welcome! {background-color="#43464B"}
+
+## Workshop Overview {.smaller}
+
+**Duration:** 2 hours
+
+**What we'll cover:**
+
+- Session 1 (50 min): Quarto Basics & Document Creation
+- Break (10 min)
+- Session 2 (60 min): Advanced Features & Real-World Applications
+
+**Prerequisites:**
+
+- RStudio or VS Code installed
+- Quarto installed ([quarto.org](https://quarto.org))
+- Basic familiarity with Markdown (helpful but not required)
+
+::: {.notes}
+Make sure everyone has Quarto installed before starting.
+:::
+
+# Session 1: Getting Started {background-color="#2C5F2D"}
+
+## What is Quarto?
+
+::: {.incremental}
+- **Next-generation** scientific and technical publishing system
+- Works with R, Python, Julia, and Observable JS
+- Creates documents, presentations, websites, books, and more
+- **One source → multiple outputs** (HTML, PDF, Word, slides)
+- Open source and developed by Posit (formerly RStudio)
+:::
+
+::: {.fragment}
+Think of it as: **Markdown + Code + Output = Beautiful Documents**
+:::
+
+## Why Quarto?
+
+::: {.columns}
+::: {.column width="50%"}
+**Advantages:**
+
+- Reproducible research
+- Multiple output formats
+- Language agnostic
+- Active community
+- Easy to learn
+:::
+
+::: {.column width="50%"}
+**Use Cases:**
+
+- Research papers
+- Reports & dashboards
+- Presentations
+- Websites & blogs
+- Books & tutorials
+:::
+:::
+
+## Your First Quarto Document
+
+**File structure:**
+
+```markdown
+---
+title: "My First Document"
+author: "Your Name"
+format: html
+---
+
+# Introduction
+
+This is my first Quarto document!
+
+## Section 1
+
+Here's some text with **bold** and *italic*.
+```
+
+## YAML Header {.smaller}
+
+The YAML header controls document settings:
+
+```yaml
+---
+title: "Document Title"
+author: "Author Name"
+date: "2024-11-19"
+format: 
+  html:
+    toc: true
+    code-fold: true
+    theme: cosmo
+---
+```
+
+::: {.callout-tip}
+## Pro Tip
+YAML is indentation-sensitive! Use spaces, not tabs.
+:::
+
+## Markdown Basics
+
+```markdown
+# Heading 1
+## Heading 2
+### Heading 3
+
+**bold text**
+*italic text*
+~~strikethrough~~
+
+- Bullet point
+- Another point
+  - Nested point
+
+1. Numbered list
+2. Second item
+```
+
+## Exercise 1: Create Your First Document {background-color="#097969"}
+
+**Task (5 minutes):**
+
+1. Open RStudio or VS Code
+2. Create a new Quarto document (`.qmd`)
+3. Add a YAML header with title, author, and format
+4. Write a brief introduction about yourself
+5. Add at least 2 sections with headings
+6. Use bold, italic, and a list
+7. Render the document (Ctrl/Cmd + Shift + K)
+
+::: {.fragment}
+**Bonus:** Try changing the format to `pdf` or `docx`
+:::
+
+## Working with Code Chunks
+
+**R example:**
+
+````markdown
+```{{r}}
+# This is an R code chunk
+x <- c(1, 2, 3, 4, 5)
+mean(x)
+```
+````
+
+**Python example:**
+
+````markdown
+```{{python}}
+# This is a Python code chunk
+numbers = [1, 2, 3, 4, 5]
+print(f"Mean: {sum(numbers)/len(numbers)}")
+```
+````
+
+## Code Chunk Options {.smaller}
+
+Control how code appears:
+
+````markdown
+```{{r}}
+#| echo: false      # Hide code, show output
+#| eval: true       # Run the code
+#| warning: false   # Hide warnings
+#| message: false   # Hide messages
+#| fig-cap: "My Plot"
+
+plot(cars)
+```
+````
+
+::: {.callout-note}
+Use `#|` for chunk options (recommended) or `{r, echo=FALSE}` style
+:::
+
+## Inline Code
+
+Mix code with text:
+
+```markdown
+The mean of our data is `r mean(c(1,2,3,4,5))`.
+
+We analyzed `python len(data)` observations.
+```
+
+Output:
+
+The mean of our data is 3.
+
+We analyzed 150 observations.
+
+## Exercise 2: Add Code to Your Document {background-color="#097969"}
+
+**Task (8 minutes):**
+
+1. Add a code chunk that creates a simple calculation
+2. Create a visualization (scatter plot, bar chart, etc.)
+3. Use `#| echo: false` to hide the code for one chunk
+4. Add inline code to reference a calculated value
+5. Render and check the output
+
+::: {.fragment}
+**Bonus:** Try `#| code-fold: true` to make code collapsible
+:::
+
+## Creating Tables
+
+**Markdown tables:**
+
+```markdown
+| Column 1 | Column 2 | Column 3 |
+|----------|----------|----------|
+| A        | B        | C        |
+| 1        | 2        | 3        |
+```
+
+**From code:**
+
+````markdown
+```{{r}}
+#| label: tbl-example
+#| tbl-cap: "Sample Data"
+
+library(knitr)
+kable(head(mtcars, 5))
+```
+````
+
+## Images and Figures
+
+**Markdown syntax:**
+
+```markdown
+![Caption text](path/to/image.png)
+
+![Logo](https://quarto.org/quarto.png){width=50%}
+```
+
+**From code:**
+
+````markdown
+```{{r}}
+#| label: fig-plot
+#| fig-cap: "Scatter plot of cars data"
+
+plot(cars)
+```
+````
+
+## Cross-References {.smaller}
+
+Reference figures, tables, and sections:
+
+```markdown
+See @fig-plot for the visualization.
+
+As shown in @tbl-example, the data includes...
+
+More details in @sec-methods.
+
+# Methods {#sec-methods}
+```
+
+::: {.callout-important}
+Labels must start with `fig-`, `tbl-`, or `sec-` for auto-numbering
+:::
+
+## Exercise 3: Tables, Figures & References {background-color="#097969"}
+
+**Task (7 minutes):**
+
+1. Create a table from your data (manually or from code)
+2. Add a figure with a caption
+3. Create cross-references to your table and figure in the text
+4. Add section IDs to your headings
+5. Create a cross-reference to a section
+
+---
+
+## Break Time! {background-color="#FFA500"}
+
+::: {.r-fit-text}
+10 Minute Break
+:::
+
+::: {.fragment}
+Stretch, grab water, check Quarto docs! 🎉
+:::
+
+# Session 2: Advanced Features {background-color="#2C5F2D"}
+
+## Callout Blocks
+
+Create attention-grabbing blocks:
+
+```markdown
+::: {.callout-note}
+This is a note callout.
+:::
+
+::: {.callout-warning}
+This is a warning!
+:::
+
+::: {.callout-tip}
+## Custom Title
+Pro tips go here!
+:::
+```
+
+Types: `note`, `warning`, `important`, `tip`, `caution`
+
+## Divs and Spans
+
+**Divs** for blocks:
+
+```markdown
+::: {.class-name}
+Content here
+:::
+
+::: {style="background-color: lightblue; padding: 10px;"}
+Custom styled content
+:::
+```
+
+**Spans** for inline:
+
+```markdown
+This is [special text]{.highlight}.
+
+This is [red text]{style="color: red;"}.
+```
+
+## Layouts and Columns {.smaller}
+
+**Two-column layout:**
+
+```markdown
+::: {.columns}
+::: {.column width="40%"}
+Left column content
+:::
+
+::: {.column width="60%"}
+Right column content
+:::
+:::
+```
+
+**Multiple panels:**
+
+```markdown
+::: {layout-ncol=2}
+![Image 1](img1.png)
+
+![Image 2](img2.png)
+:::
+```
+
+## Tabsets
+
+Create tabbed content:
+
+```markdown
+::: {.panel-tabset}
+
+## Tab 1
+Content for tab 1
+
+## Tab 2  
+Content for tab 2
+
+## Tab 3
+Content for tab 3
+
+:::
+```
+
+## Exercise 4: Formatting & Layout {background-color="#097969"}
+
+**Task (10 minutes):**
+
+1. Add at least 2 different callout blocks
+2. Create a two-column layout
+3. Add a custom styled div
+4. Create tabbed content with 3 tabs
+5. Experiment with different styles
+
+## Citations and Bibliography {.smaller}
+
+**Add bibliography to YAML:**
+
+```yaml
+---
+title: "My Research"
+bibliography: references.bib
+csl: apa.csl  # Optional: citation style
+---
+```
+
+**Cite in text:**
+
+```markdown
+As shown by @smith2020, the results are significant.
+
+Multiple sources [@jones2019; @smith2020].
+
+See [Chapter 3, @doe2021] for details.
+```
+
+::: {.callout-note}
+References will auto-generate at the end
+:::
+
+## Creating Presentations
+
+**RevealJS slides:**
+
+```yaml
+---
+title: "My Presentation"
+format: 
+  revealjs:
+    theme: dark
+    slide-number: true
+    chalkboard: true
+---
+
+## Slide 1
+
+Content here
+
+## Slide 2
+
+More content
+```
+
+## Presentation Features {.smaller}
+
+**Incremental lists:**
+
+```markdown
+::: {.incremental}
+- Point 1
+- Point 2
+- Point 3
+:::
+```
+
+**Fragments:**
+
+```markdown
+::: {.fragment}
+This appears on click
+:::
+```
+
+**Speaker notes:**
+
+```markdown
+::: {.notes}
+Notes only you can see
+:::
+```
+
+## Advanced Presentation Layouts {.smaller}
+
+**Background images:**
+
+```markdown
+## {background-image="image.jpg"}
+
+## {background-color="#43464B"}
+```
+
+**Centered content:**
+
+```markdown
+## {.center}
+
+::: {.r-fit-text}
+Large centered text!
+:::
+```
+
+**Absolute positioning:**
+
+```markdown
+::: {.absolute top=200 left=50}
+Positioned content
+:::
+```
+
+## Exercise 5: Create a Mini Presentation {background-color="#097969"}
+
+**Task (12 minutes):**
+
+1. Create a new `.qmd` file with `revealjs` format
+2. Add 5-7 slides about a topic of your choice
+3. Include:
+   - A title slide
+   - Incremental lists
+   - A code chunk with output
+   - A custom background
+4. Render and present!
+
+## Multiple Output Formats
+
+**Single source, multiple formats:**
+
+```yaml
+---
+title: "Flexible Document"
+format:
+  html:
+    toc: true
+    theme: cosmo
+  pdf:
+    documentclass: article
+  docx:
+    reference-doc: template.docx
+---
+```
+
+Render specific format: `quarto render doc.qmd --to pdf`
+
+## Parameterized Reports {.smaller}
+
+**Add parameters:**
+
+```yaml
+---
+title: "Sales Report"
+params:
+  region: "North"
+  year: 2024
+---
+```
+
+**Use in code:**
+
+````markdown
+```{{r}}
+region <- params$region
+year <- params$year
+
+# Filter data based on parameters
+filtered_data <- data %>% 
+  filter(Region == region, Year == year)
+```
+````
+
+Render with params: `quarto render report.qmd -P region:South`
+
+## Publishing Your Work {.smaller}
+
+**Quarto Pub (free):**
+
+```bash
+quarto publish quarto-pub document.qmd
+```
+
+**GitHub Pages:**
+
+```bash
+quarto publish gh-pages
+```
+
+**Other options:**
+
+- Netlify
+- Posit Connect
+- Confluence
+- Custom server
+
+## Quarto Projects {.smaller}
+
+**Create a project:**
+
+```yaml
+# _quarto.yml
+project:
+  type: website
+
+website:
+  title: "My Website"
+  navbar:
+    left:
+      - href: index.qmd
+        text: Home
+      - about.qmd
+```
+
+**Project types:**
+
+- `website` - Personal or project website
+- `book` - Long-form documentation
+- `manuscript` - Academic manuscripts
+
+## Exercise 6: Final Project {background-color="#097969"}
+
+**Task (15 minutes):**
+
+Create a complete mini-report or presentation that includes:
+
+1. Proper YAML configuration
+2. Multiple sections with headings
+3. At least one code chunk with visualization
+4. A table with cross-reference
+5. Callout blocks
+6. Either columns OR tabsets
+7. Professional formatting
+
+**Share your work with a neighbor!**
+
+## Helpful Resources {.smaller}
+
+::: {.columns}
+::: {.column width="50%"}
+**Documentation:**
+
+- [quarto.org](https://quarto.org)
+- [Quarto Gallery](https://quarto.org/docs/gallery/)
+- [Awesome Quarto](https://github.com/mcanouil/awesome-quarto)
+:::
+
+::: {.column width="50%"}
+**Community:**
+
+- Posit Community Forum
+- Stack Overflow
+- GitHub Discussions
+- Twitter #QuartoPub
+:::
+:::
+
+## Common Issues & Solutions {.smaller}
+
+**YAML errors:**
+
+- Check indentation (use spaces!)
+- Ensure colons have spaces after them
+- Validate YAML syntax
+
+**Rendering fails:**
+
+- Check code chunk syntax
+- Look for missing packages
+- Review error messages carefully
+
+**Formatting issues:**
+
+- Try clearing cache: `quarto render --cache-refresh`
+- Check for conflicting CSS/LaTeX
+
+## Tips for Success
+
+::: {.incremental}
+1. **Start simple** - Master basics before advanced features
+2. **Use templates** - Learn from existing examples
+3. **Read error messages** - They're usually helpful!
+4. **Experiment** - Try new features in test documents
+5. **Check the docs** - Quarto documentation is excellent
+6. **Join the community** - Ask questions, share work
+:::
+
+## What's Next?
+
+::: {.incremental}
+**Continue learning:**
+
+- Build a personal website or blog
+- Create a dashboard with `shinylive`
+- Write a technical book
+- Publish research papers
+- Create interactive tutorials
+
+**Advanced topics:**
+
+- Custom themes and styling
+- Extensions and filters
+- Observable JS integration
+- Quarto with Jupyter
+:::
+
+## Thank You! {background-color="#43464B"}
+
+::: {.r-fit-text}
+Questions?
+:::
+
+::: {.fragment}
+Keep practicing and experimenting with Quarto!
+
+Remember: The best way to learn is by doing. 🚀
+:::
+
+---
+
+## Bonus: Quick Reference {.smaller}
+
+```markdown
+# Headers use #, ##, ###
+
+**bold** *italic* ~~strike~~
+
+[link](url) ![image](path)
+
+- bullet list
+1. numbered list
+
+`inline code`
+
+> blockquote
+
+---  (horizontal rule)
+
+@fig-label  (cross-reference)
+
+:::{.class}  (div)
+[text]{.class}  (span)
+```
+
+## Bonus: Keyboard Shortcuts
+
+**RStudio:**
+
+- Render: `Ctrl/Cmd + Shift + K`
+- Insert chunk: `Ctrl/Cmd + Alt/Option + I`
+- Run chunk: `Ctrl/Cmd + Shift + Enter`
+
+**VS Code:**
+
+- Render: `Ctrl/Cmd + Shift + K`
+- Preview: `Ctrl/Cmd + Shift + V`
+
+## Bonus: YAML Templates {.smaller}
+
+**HTML Document:**
+
+```yaml
+---
+title: "Report"
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    code-fold: true
+    code-tools: true
+    embed-resources: true
+    theme: cosmo
+---
+```
+
+**PDF Document:**
+
+```yaml
+---
+title: "Article"
+format:
+  pdf:
+    documentclass: article
+    geometry: margin=1in
+    number-sections: true
+---
+```

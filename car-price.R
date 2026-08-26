@@ -6,8 +6,7 @@ car_prices <- read_excel("data/car-prices.xlsx")
 
 
 
- View(car_prices)
-# Remove missing values as t 
+ # Remove missing values as t 
 
 car_prices <- car_prices |> na.omit()
 
@@ -145,6 +144,7 @@ ggsave("bar_graph.png")
 
 carp |> filter(make == "Suzuki") |> mutate(Cars = fct_reorder(Cars, prices)) |>
   ggplot(aes(x = Cars, y = prices)) + geom_bar(stat = "identity") + coord_flip()
+
 +
   geom_text(stat = 'count', aes(label = after_stat(count)), vjust = -1)
 
@@ -206,6 +206,17 @@ carp |> filter(make == "Honda") |> select(Cars, prices) |>  mutate(Cars = fct_re
 
 carp |> filter(make == "Honda") |> select(Cars, prices) |>  mutate(Cars = fct_reorder(Cars, prices)) |>
   gt() |> gt_theme_nytimes() |> tab_header("Honda vehicles prices(mill. of PKR) in Jan-2023")
+
+
+## Same table with source note and caption
+
+carp |> filter(make == "Honda") |> select(Cars, prices) |>  mutate(Cars = fct_reorder(Cars, prices)) |>
+  gt() |> gt_theme_guardian() |>
+  tab_source_note("The Guardian") |> tab_caption("Honda vehicels prices (mill. of PKR) Jan 2023")
+
+## Same table with source note and caption
+
+
 
 
 carp |> filter(make == "Honda") |> select(Cars, prices) |>  mutate(Cars = fct_reorder(Cars, prices)) |>

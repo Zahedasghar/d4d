@@ -1,0 +1,1619 @@
+---
+title: "Food Prices in Pakistan"
+subtitle: "A complete analytical workflow with dplyr 1.2.0, ggplot2 and sf"
+author: "Prof. Dr. Zahid Asghar"
+date: today
+format:
+  html:
+    theme: sketchy
+    toc: true
+    toc-depth: 3
+    toc-location: left
+    number-sections: true
+    code-copy: true
+    code-overflow: wrap
+    df-print: paged
+    fig-width: 9
+    fig-height: 5.5
+    fig-dpi: 200
+    embed-resources: true
+execute:
+  # Set to `true` when you are ready to render live against the HDX API.
+  # Kept `false` so the document renders on a machine with no internet.
+  eval: false
+  echo: true
+  warning: false
+  message: false
+knitr:
+  opts_chunk:
+    comment: "#>"
+    collapse: true
+---
+
+::: {.callout-note appearance="simple"}
+## How to use this tutorial
+
+Work through it **in order** and **type the code** rather than pasting it. Every
+section ends with a *Check* — a small piece of code whose only job is to tell you
+whether the previous step did what you thought it did. In real analytical work
+those checks are the difference between a defensible number and an embarrassing one.
+
+The dataset is the WFP VAM Food Prices series for Pakistan, published on the
+Humanitarian Data Exchange. It is monthly, market-level, and runs for roughly two
+decades — which makes it one of the few genuinely long, genuinely public,
+genuinely sub-national price series available for Pakistan.
+:::
+
+# What you will be able to do by the end
+
+1. Pull a live dataset from an API reproducibly, and cache it so you are not at the
+   mercy of the network in the middle of a workshop.
+2. Recognise and strip a HXL header row, and understand why the file must first be
+   read as all-character.
+3. Use the **dplyr 1.2.0** filtering and recoding families (`filter_out()`,
+   `when_any()`, `when_all()`, `recode_values()`, `replace_values()`,
+   `replace_when()`) and — more importantly — know *which one* to reach for.
+4. Make the four analytical decisions that determine whether your "average food
+   price" number is meaningful at all.
+5. Build inflation, real-price, affordability, seasonality and market-integration
+   measures from raw price observations.
+6. Draw a publication-quality provincial choropleth of Pakistan that includes
+   Azad Jammu & Kashmir, Gilgit-Baltistan and the wider Jammu & Kashmir region,
+   with the disputed area shown as *no data* and a proper cartographic disclaimer.
+
+# Setup
+
+## Packages
+
+```{r}
+#| label: setup
+library(tidyverse)        # dplyr >= 1.2.0, ggplot2, stringr, purrr, tidyr, readr
+library(sf)               # simple features: spatial data as data frames
+library(rnaturalearth)    # boundary polygons
+library(scales)           # axis label formatting
+library(here)             # project-relative paths
+library(jsonlite)         # for the HDX API call
+
+theme_set(theme_minimal(base_size = 12))
+options(pillar.sigfig = 4)
+```
+
+`rnaturalearth` needs a companion package for high-resolution (scale 10) admin-1
+boundaries. It is not on CRAN:
+
+```{r}
+#| label: install-hires
+# Run once
+install.packages("rnaturalearthhires", repos = "https://ropensci.r-universe.dev")
+library(rnaturalearthhires)
+```
+
+## Version check — fail loudly, early
+
+Half of this tutorial uses functions that did not exist before dplyr 1.2.0
+(released February 2026). Check now rather than discovering it in section 4.
+
+```{r}
+#| label: version-check
+if (packageVersion("dplyr") < "1.2.0") {
+  stop(
+    "This tutorial needs dplyr >= 1.2.0; you have ", packageVersion("dplyr"),
+    ". Run: install.packages('dplyr')"
+  )
+}
+```
+
+::: {.callout-tip}
+## If you are stuck on an older dplyr
+
+Public-sector laptops are often frozen at an older R. Every new verb has a
+pre-1.2.0 equivalent — uglier, but functionally identical. Keep this table handy:
+
+| dplyr 1.2.0 | Pre-1.2.0 equivalent |
+|---|---|
+| `filter_out(x == "a")` | `filter(!(x == "a") \| is.na(x))` |
+| `filter(when_any(a, b))` | `filter(a \| b)` (plus NA handling) |
+| `filter(when_all(a, b))` | `filter(a, b)` |
+| `recode_values(x, "a" ~ 1, "b" ~ 2)` | `case_match(x, "a" ~ 1, "b" ~ 2)` |
+| `replace_values(x, "a" ~ "A")` | `case_match(x, "a" ~ "A", .default = x)` |
+| `replace_when(x, cond ~ v)` | `if_else(cond, v, x)` |
+
+Note that `case_match()` is **deprecated** as of dplyr 1.2.0 in favour of
+`recode_values()` — so the migration runs in one direction only.
+:::
+
+# Getting the data reproducibly
+
+## Why you cannot just `read_csv()` the web page
+
+`https://data.humdata.org/dataset/wfp-food-prices-for-pakistan` is a *landing
+page*. Pointing `read_csv()` at it downloads HTML. HDX runs on CKAN, which exposes
+a JSON API, and the API is the stable, scriptable way in.
+
+```{r}
+#| label: hdx-lookup
+hdx_resource_url <- function(dataset_id,
+                             include = "food_prices",
+                             exclude = "qc") {
+  pkg <- fromJSON(
+    paste0("https://data.humdata.org/api/3/action/package_show?id=", dataset_id)
+  )
+
+  resources <- as_tibble(pkg$result$resources)
+
+  resources |>
+    filter(str_detect(url, regex(include, ignore_case = TRUE))) |>
+    filter_out(str_detect(url, regex(exclude, ignore_case = TRUE))) |>
+    slice(1) |>
+    pull(url)
+}
+```
+
+Two things to notice in that pipeline:
+
+- The **positive** condition uses `filter()`, the **negative** one uses
+  `filter_out()`. That is the whole design intent of the new verb: the function
+  name, not a buried `!`, tells the reader whether rows are being kept or dropped.
+- HDX publishes a "QuickCharts" (`qc`) subset alongside the full file. It has the
+  same name pattern and will silently give you a truncated dataset if you take the
+  first match blindly. This is a very common and very quiet failure mode.
+
+## Cache the download
+
+Never re-download in a loop, in a render, or in front of thirty participants on
+conference wifi.
+
+```{r}
+#| label: download-cache
+raw_dir  <- here("data", "raw")
+dir.create(raw_dir, recursive = TRUE, showWarnings = FALSE)
+
+wfp_path <- file.path(raw_dir, "wfp_food_prices_pak.csv")
+
+if (!file.exists(wfp_path)) {
+  wfp_url <- hdx_resource_url("wfp-food-prices-for-pakistan")
+  message("Downloading from: ", wfp_url)
+  download.file(wfp_url, destfile = wfp_path, mode = "wb")
+} else {
+  message("Using cached file: ", wfp_path)
+}
+```
+
+::: {.callout-important}
+## Record the vintage
+
+A live API means your results change when WFP revises the file. For anything that
+will be published, record *when* you pulled it and keep the raw file under version
+control (or at least in a dated folder). Reproducibility is not the same as
+re-runnability.
+
+```{r}
+#| label: vintage
+vintage <- file.info(wfp_path)$mtime
+vintage
+```
+:::
+
+## Read everything as character — deliberately
+
+```{r}
+#| label: read-raw
+raw <- read_csv(wfp_path, col_types = cols(.default = col_character()))
+
+dim(raw)
+glimpse(raw)
+```
+
+Why force character? Because row 1 is not data:
+
+```{r}
+#| label: hxl-row
+raw |> slice(1) |> select(1:6) |> glimpse()
+```
+
+Every HDX file carries a **HXL tag row** — `#date`, `#adm1+name`, `#value` and so
+on — as the first data row. It is a machine-readable schema annotation, not an
+observation. If you let `read_csv()` guess column types, it sees `#date` in a date
+column, decides the whole column is character anyway, and you gain nothing but
+lose control. Reading as character and converting *after* removing the HXL row is
+explicit and predictable.
+
+# Cleaning
+
+## Drop the HXL row
+
+```{r}
+#| label: drop-hxl
+prices_raw <- raw |>
+  filter_out(str_starts(date, "#"))
+
+nrow(raw) - nrow(prices_raw)   # should be exactly 1
+```
+
+## The single most important behaviour in this tutorial
+
+`filter()` and `filter_out()` **both treat `NA` like `FALSE`**. Read that twice.
+For `filter()`, `NA` means *not kept*. For `filter_out()`, `NA` means *not
+dropped*. That asymmetry is precisely what makes `filter_out()` safe.
+
+```{r}
+#| label: na-demo
+demo <- tibble(
+  market   = c("Lahore", "Karachi", "Quetta", "Peshawar"),
+  category = c("cereals and tubers", "non-food", NA, "pulses and nuts")
+)
+
+# 1. The naive negation — silently loses Quetta
+demo |> filter(category != "non-food")
+
+# 2. The defensive negation — correct, but you have to remember to write it
+demo |> filter(category != "non-food" | is.na(category))
+
+# 3. filter_out() — correct by construction
+demo |> filter_out(category == "non-food")
+```
+
+::: {.callout-warning}
+## This is not a toy problem
+
+In the WFP file, `category` is missing for a non-trivial number of rows. Version 1
+of that pipeline throws away real observations and gives you a slightly-too-low
+national average, with no warning and no error. That kind of bug survives peer
+review because the output *looks* fine.
+:::
+
+## Type conversion
+
+```{r}
+#| label: clean-types
+prices <- prices_raw |>
+  mutate(
+    date = ymd(date),
+    across(c(latitude, longitude, price, usdprice), as.numeric),
+    across(where(is.character), str_squish),
+    year      = year(date),
+    month_num = month(date),
+    month_lab = month(date, label = TRUE, abbr = TRUE)
+  )
+```
+
+**Check.** Silent coercion failures produce `NA`, so count them:
+
+```{r}
+#| label: check-coercion
+prices |>
+  summarise(
+    bad_date  = sum(is.na(date)),
+    bad_price = sum(is.na(price)),
+    bad_lat   = sum(is.na(latitude))
+  )
+```
+
+If `bad_date` is anything other than 0, stop and look at the offending values
+before going further — do not "fix" it downstream.
+
+## Missingness audit
+
+```{r}
+#| label: missingness
+prices |>
+  summarise(across(everything(), \(x) sum(is.na(x)))) |>
+  pivot_longer(everything(), names_to = "column", values_to = "n_missing") |>
+  mutate(pct_missing = n_missing / nrow(prices)) |>
+  filter(n_missing > 0) |>
+  arrange(desc(n_missing))
+```
+
+## Know your columns
+
+The WFP VAM schema is stable across countries. Learn it once and every other
+country file is free.
+
+| Column | Meaning | Why it matters |
+|---|---|---|
+| `date` | Reference month (day is always 15) | Monthly, not daily |
+| `admin1`, `admin2` | Province, district | Your join keys to geography |
+| `market` | Reporting market | The actual unit of observation |
+| `latitude`, `longitude` | Market coordinates | Point mapping, distance calcs |
+| `category` | Broad food group; also `non-food` | Fuel and wages live here |
+| `commodity` | Item, e.g. *Wheat flour* | Not standardised across countries |
+| `unit` | KG, L, 20 KG, Unit, Day… | **Must be normalised** |
+| `pricetype` | Retail / Wholesale | **Never mix these** |
+| `priceflag` | actual / aggregate | `aggregate` are WFP roll-ups |
+| `currency` | PKR | Constant here |
+| `price` | Price in local currency | Nominal |
+| `usdprice` | Same price at that month's FX rate | Nominal USD, *not* real |
+
+```{r}
+#| label: schema-counts
+prices |> count(pricetype, priceflag, sort = TRUE)
+prices |> count(category, sort = TRUE)
+prices |> count(unit, sort = TRUE)
+prices |> count(admin1, sort = TRUE)
+prices |> count(market, sort = TRUE) |> print(n = Inf)
+```
+
+# The four decisions that make or break the analysis
+
+Everything above was mechanical. Everything below is a judgement call, and each one
+changes your headline number. Make them explicitly and write them down.
+
+## Decision 1 — `actual` versus `aggregate`
+
+`aggregate` rows are WFP-computed roll-ups over other rows. Keeping them
+double-counts.
+
+```{r}
+#| label: d1-priceflag
+prices_actual <- prices |>
+  filter_out(priceflag != "actual")
+
+nrow(prices) - nrow(prices_actual)
+```
+
+Note the shape of that condition. `filter_out(priceflag != "actual")` drops
+everything that is *not* actual, and — because `NA` is treated as `FALSE` — keeps
+rows where `priceflag` is missing. Whether that is what you want is a substantive
+choice; the point is that the code makes it visible.
+
+## Decision 2 — retail versus wholesale
+
+This is the decision most often missed. Retail and wholesale prices for the same
+commodity in the same month differ by a margin. If you average across both, your
+"national price" moves whenever the *mix* of reporting types changes — even if no
+actual price moved.
+
+```{r}
+#| label: d2-pricetype
+prices_actual |>
+  count(pricetype, commodity) |>
+  pivot_wider(names_from = pricetype, values_from = n, values_fill = 0) |>
+  arrange(desc(Retail))
+```
+
+```{r}
+#| label: d2-retail
+retail <- prices_actual |>
+  filter(pricetype == "Retail")
+```
+
+Analyse wholesale separately if you need it. Do not pool.
+
+## Decision 3 — normalise the units
+
+`price` is per `unit`, and `unit` is a free-text mess: `KG`, `20 KG`, `500 G`,
+`L`, `Unit`, `Day`. A mean over mixed units is meaningless. Write a small,
+testable function.
+
+```{r}
+#| label: d3-unit-fns
+#' Convert a WFP unit string to its kilogram equivalent
+#' Returns NA for units that are not mass-based.
+unit_to_kg <- function(unit) {
+  qty  <- coalesce(parse_number(unit), 1)      # "20 KG" -> 20; "KG" -> 1
+  mult <- case_when(
+    str_detect(unit, regex("\\bMT\\b",  ignore_case = TRUE)) ~ 1000,
+    str_detect(unit, regex("\\bKG\\b",  ignore_case = TRUE)) ~ 1,
+    str_detect(unit, regex("\\bG\\b",   ignore_case = TRUE)) ~ 1 / 1000,
+    .default = NA_real_
+  )
+  qty * mult
+}
+
+#' Convert a WFP unit string to its litre equivalent
+unit_to_litre <- function(unit) {
+  qty  <- coalesce(parse_number(unit), 1)
+  mult <- case_when(
+    str_detect(unit, regex("\\bML\\b", ignore_case = TRUE)) ~ 1 / 1000,
+    str_detect(unit, regex("\\bL\\b",  ignore_case = TRUE)) ~ 1,
+    .default = NA_real_
+  )
+  qty * mult
+}
+```
+
+Order matters in `case_when()` — the first match wins. `MT` is tested before `KG`
+and `ML` before `L` for exactly that reason. The `\\b` word boundaries stop `G`
+from matching inside `KG`.
+
+**Test the function before trusting it.** This is a habit worth drilling:
+
+```{r}
+#| label: d3-test
+test_units <- c("KG", "20 KG", "500 G", "MT", "L", "1.5 L", "Unit", "Day", "Dozen")
+
+tibble(
+  unit  = test_units,
+  kg    = unit_to_kg(test_units),
+  litre = unit_to_litre(test_units)
+)
+```
+
+Now apply and audit what did not convert:
+
+```{r}
+#| label: d3-apply
+retail <- retail |>
+  mutate(
+    kg_equiv     = unit_to_kg(unit),
+    l_equiv      = unit_to_litre(unit),
+    price_per_kg = price / kg_equiv,
+    price_per_l  = price / l_equiv,
+    price_std    = coalesce(price_per_kg, price_per_l),
+    unit_std     = case_when(
+      !is.na(price_per_kg) ~ "per kg",
+      !is.na(price_per_l)  ~ "per litre",
+      .default = NA_character_
+    )
+  )
+
+# Everything the function could not classify — inspect, don't ignore
+retail |>
+  filter(is.na(unit_std)) |>
+  count(category, commodity, unit, sort = TRUE)
+```
+
+You should see wages (`Day`), fuel (`L` — caught, but non-food), eggs (`Dozen`)
+and similar. Nothing food-and-mass-based should appear. If it does, extend the
+function.
+
+## Decision 4 — the panel is unbalanced
+
+This is the subtlest one. Markets enter and leave the sample. A simple
+`mean(price)` across whatever markets reported this month is a **composition-varying**
+statistic: if an expensive market starts reporting in March, your national average
+jumps in March with no price change anywhere.
+
+```{r}
+#| label: d4-coverage
+coverage <- retail |>
+  filter(!is.na(price_std)) |>
+  summarise(
+    n_obs     = n(),
+    n_months  = n_distinct(date),
+    first_obs = min(date),
+    last_obs  = max(date),
+    .by = c(commodity, market)
+  ) |>
+  arrange(commodity, market)
+
+coverage
+```
+
+```{r}
+#| label: d4-coverage-plot
+retail |>
+  filter(str_detect(commodity, regex("wheat flour", ignore_case = TRUE))) |>
+  distinct(market, date) |>
+  ggplot(aes(date, fct_rev(fct_infreq(market)))) +
+  geom_point(size = 0.6, alpha = 0.7) +
+  labs(
+    title    = "Who reports, and when",
+    subtitle = "Wheat flour, retail — each dot is one market-month",
+    x = NULL, y = NULL,
+    caption  = "Gaps and late entries are why a raw cross-market mean is unsafe"
+  )
+```
+
+Look at that plot before you compute a single average. We return to the fix in
+@sec-index.
+
+# The dplyr 1.2.0 verbs, properly {#sec-verbs}
+
+## `when_any()` and `when_all()`
+
+`filter()` combines its conditions with `&`. To get `|` you used to need
+parentheses and one long unreadable expression. `when_any()` and `when_all()`
+let you build the boolean structure as *nested, named* pieces.
+
+Our staple basket: food items priced per kilo, plus cooking oils and ghee priced
+per litre.
+
+```{r}
+#| label: basket
+basket <- retail |>
+  filter_out(category == "non-food") |>
+  filter(
+    when_any(
+      when_all(unit_std == "per kg",    category != "milk and dairy"),
+      when_all(unit_std == "per litre", str_detect(commodity, regex("oil|ghee", ignore_case = TRUE)))
+    )
+  )
+
+basket |> count(commodity, unit_std, sort = TRUE)
+```
+
+Read that aloud: *keep a row if (it is per-kg and not dairy) or (it is per-litre
+and it is an oil or ghee)*. The code now has the same shape as the sentence.
+`when_any()` and `when_all()` are ordinary vector functions — you can use them in
+`mutate()`, `if_else()`, anywhere.
+
+## Choosing among the four recoding verbs
+
+This is the decision table. Pin it to the wall.
+
+| You want to… | Match on | Use |
+|---|---|---|
+| Build a **new** column from **conditions** | conditions | `case_when()` |
+| Build a **new** column from **values** (a lookup) | values | `recode_values()` |
+| **Update some** values of an existing column, by condition | conditions | `replace_when()` |
+| **Update some** values of an existing column, by value | values | `replace_values()` |
+
+The critical difference is what happens to the rows you did *not* mention:
+
+- `recode_values()` and `case_when()` **discard** them (→ `NA`, or `default`).
+  They are *total* mappings.
+- `replace_values()` and `replace_when()` **keep** them unchanged.
+  They are *partial* mappings.
+
+::: {.callout-warning}
+## The bug this table prevents
+
+```{r}
+#| label: recode-trap
+# WRONG if there is any admin1 you forgot — Islamabad, AJK, Gilgit-Baltistan
+# all become NA, silently.
+basket |>
+  mutate(province = recode_values(
+    admin1,
+    "Punjab"             ~ "Punjab",
+    "Sindh"              ~ "Sindh",
+    "Khyber Pakhtunkhwa" ~ "KP",
+    "Balochistan"        ~ "Balochistan"
+  )) |>
+  count(admin1, province)
+```
+
+Run that and check the `province` column for `NA`. Any dataset with more than four
+admin-1 units will bite you here.
+:::
+
+## The lookup-table interface
+
+For anything with more than a handful of cases, `recode_values()` accepts
+`from`/`to` vectors instead of formulas. A `tribble()` where a cell holds a
+*vector* becomes a list column, and `recode_values()` treats each vector as "any
+of these map to this". This is the cleanest way to handle spelling variants.
+
+```{r}
+#| label: province-lookup
+province_lookup <- tribble(
+  ~from,                                                              ~to,
+  c("Punjab"),                                                        "Punjab",
+  c("Sindh"),                                                         "Sindh",
+  c("Khyber Pakhtunkhwa", "N.W.F.P.", "NWFP",
+    "Federally Administered Tribal Areas", "F.A.T.A."),               "KP",
+  c("Balochistan", "Baluchistan"),                                    "Balochistan",
+  c("Islamabad", "F.C.T.", "Islamabad Capital Territory"),            "Islamabad",
+  c("Azad Kashmir", "Azad Jammu and Kashmir", "AJK"),                 "Azad Jammu & Kashmir",
+  c("Gilgit-Baltistan", "Northern Areas"),                            "Gilgit-Baltistan"
+)
+
+province_lookup
+province_lookup$from   # note: a list column
+```
+
+One lookup, used twice — once on the price data, once on the map. That is the
+whole point: the crosswalk lives in exactly one place.
+
+```{r}
+#| label: apply-lookup
+basket <- basket |>
+  mutate(
+    province = recode_values(
+      admin1,
+      from = province_lookup$from,
+      to   = province_lookup$to
+    )
+  )
+
+# Audit: anything unmatched?
+basket |>
+  filter(is.na(province), !is.na(admin1)) |>
+  count(admin1, sort = TRUE)
+```
+
+If that audit returns rows, add them to the lookup. Once it is empty, switch on
+strict mode so the pipeline fails loudly if WFP ever renames a province:
+
+```{r}
+#| label: strict-lookup
+basket |>
+  filter(!is.na(admin1)) |>
+  mutate(province = recode_values(
+    admin1,
+    from      = province_lookup$from,
+    to        = province_lookup$to,
+    unmatched = "error"
+  )) |>
+  invisible()
+```
+
+## `replace_when()` — surgical edits to one column
+
+`replace_when()` is `base::replace()` with a grammar. Use it to winsorise
+implausible spikes without touching anything else:
+
+```{r}
+#| label: winsorise
+basket <- basket |>
+  mutate(
+    price_w = replace_when(
+      price_std,
+      price_std > quantile(price_std, 0.999, na.rm = TRUE)
+        ~ quantile(price_std, 0.999, na.rm = TRUE)
+    ),
+    .by = c(commodity, unit_std)
+  )
+
+# What actually changed?
+basket |>
+  filter(price_std != price_w) |>
+  select(date, market, commodity, unit_std, price_std, price_w) |>
+  arrange(desc(price_std))
+```
+
+Always print the rows you changed. Winsorising is a defensible choice; doing it
+invisibly is not.
+
+::: {.callout-tip}
+## Why `replace_when()` and not `case_when()`
+
+`case_when()` would force you to write a second branch — `.default = price_std` —
+to preserve the untouched values, and it would let you accidentally change the
+column's type. `replace_when()` guarantees the output has the same type as the
+input and preserves everything you did not name.
+:::
+
+# Building the analysis frames
+
+Give every derived table a name and a clear grain (one row per *what*?). Stating
+the grain in a comment is the cheapest bug-prevention in data work.
+
+```{r}
+#| label: frames
+# Grain: one row per market
+market_meta <- basket |>
+  distinct(market, admin1, province, latitude, longitude)
+
+# Check the grain actually holds — duplicate coordinates for one market are common
+market_meta |> count(market, sort = TRUE) |> filter(n > 1)
+```
+
+If that returns rows, the same market name carries more than one coordinate pair.
+Resolve it explicitly rather than letting a join silently multiply your data:
+
+```{r}
+#| label: fix-market-grain
+market_meta <- basket |>
+  summarise(
+    latitude  = median(latitude,  na.rm = TRUE),
+    longitude = median(longitude, na.rm = TRUE),
+    .by = c(market, admin1, province)
+  ) |>
+  distinct(market, .keep_all = TRUE)
+```
+
+```{r}
+#| label: frames-2
+# Grain: one row per commodity-month (national)
+national_monthly <- basket |>
+  summarise(
+    price_pkr = mean(price_w,  na.rm = TRUE),
+    price_usd = mean(usdprice, na.rm = TRUE),
+    n_markets = n_distinct(market),
+    .by = c(date, commodity, unit_std)
+  ) |>
+  arrange(commodity, date)
+
+# Grain: one row per province-commodity-year
+province_year <- basket |>
+  summarise(
+    price_pkr = mean(price_w, na.rm = TRUE),
+    n_markets = n_distinct(market),
+    .by = c(province, commodity, year)
+  )
+```
+
+## Pick your reference commodity from the data, not from memory
+
+Commodity labels are country-specific and change over time. Never hard-code a
+string you have not seen in the file.
+
+```{r}
+#| label: find-commodities
+basket |>
+  distinct(commodity, unit_std) |>
+  filter(str_detect(commodity, regex("wheat|rice|sugar|oil|ghee|lentil|pulse",
+                                     ignore_case = TRUE))) |>
+  arrange(commodity) |>
+  print(n = Inf)
+```
+
+Copy the exact string you want from that output into the next chunk.
+
+```{r}
+#| label: wheat
+wheat <- basket |>
+  filter(str_detect(commodity, regex("^wheat flour", ignore_case = TRUE)))
+
+# Grain: one row per market-month
+wheat_market <- wheat |>
+  summarise(price_pkr = mean(price_w, na.rm = TRUE), .by = c(date, market, province))
+
+# Grain: one row per month
+wheat_national <- national_monthly |>
+  filter(str_detect(commodity, regex("^wheat flour", ignore_case = TRUE)))
+```
+
+# Analysis I — Inflation
+
+## Month-on-month and year-on-year
+
+```{r}
+#| label: inflation
+national_monthly <- national_monthly |>
+  arrange(commodity, date) |>
+  mutate(
+    mom = price_pkr / lag(price_pkr)      - 1,
+    yoy = price_pkr / lag(price_pkr, 12)  - 1,
+    .by = commodity
+  )
+```
+
+::: {.callout-warning}
+## `lag()` counts rows, not months
+
+`lag(price_pkr, 12)` gives you the price twelve *rows* earlier. If a commodity has
+a reporting gap, that is not twelve months earlier — and your "year-on-year"
+number is quietly wrong. Make the panel complete first.
+:::
+
+```{r}
+#| label: inflation-safe
+national_monthly <- national_monthly |>
+  complete(commodity, date) |>          # insert explicit NA rows for missing months
+  arrange(commodity, date) |>
+  mutate(
+    mom = price_pkr / lag(price_pkr)     - 1,
+    yoy = price_pkr / lag(price_pkr, 12) - 1,
+    .by = commodity
+  )
+```
+
+Now a gap produces an honest `NA` instead of a fabricated growth rate. The habit
+generalises: **any time you use `lag()`, `lead()`, `diff()` or `cumsum()` on a
+panel, complete the panel first.**
+
+## Where were the big moves?
+
+```{r}
+#| label: big-moves
+national_monthly |>
+  filter(!is.na(yoy)) |>
+  slice_max(yoy, n = 15) |>
+  select(date, commodity, price_pkr, yoy)
+```
+
+# Analysis II — Nominal, USD, and real
+
+`usdprice` is *not* a real price. It is the same nominal price converted at that
+month's exchange rate. The gap between the PKR and USD series is the exchange rate
+story, which is interesting but is not deflation.
+
+```{r}
+#| label: pkr-vs-usd
+wheat_national |>
+  select(date, price_pkr, price_usd) |>
+  pivot_longer(c(price_pkr, price_usd), names_to = "series", values_to = "value") |>
+  mutate(series = recode_values(series,
+    "price_pkr" ~ "Nominal PKR/kg",
+    "price_usd" ~ "Nominal USD/kg"
+  )) |>
+  ggplot(aes(date, value)) +
+  geom_line(linewidth = 0.7) +
+  facet_wrap(~ series, scales = "free_y") +
+  labs(
+    title    = "Wheat flour: local currency versus US dollars",
+    subtitle = "The difference between these panels is exchange rate movement, not inflation",
+    x = NULL, y = NULL
+  )
+```
+
+## A genuine real price
+
+To deflate you need a price index. World Bank WDI carries annual CPI for Pakistan;
+PBS publishes monthly CPI, which is better if you can get it into R.
+
+```{r}
+#| label: real-prices
+cpi <- WDI::WDI(
+  country   = "PK",
+  indicator = c(cpi = "FP.CPI.TOTL"),
+  start     = 2004,
+  end       = as.integer(format(Sys.Date(), "%Y"))
+) |>
+  as_tibble() |>
+  select(year, cpi) |>
+  filter_out(is.na(cpi))
+
+base_year <- cpi |> slice_max(year) |> pull(year)
+base_cpi  <- cpi |> filter(year == base_year) |> pull(cpi)
+
+wheat_real <- wheat_national |>
+  summarise(price_pkr = mean(price_pkr, na.rm = TRUE), .by = year) |>
+  inner_join(cpi, by = join_by(year)) |>
+  mutate(price_real = price_pkr * base_cpi / cpi)
+
+wheat_real |>
+  pivot_longer(c(price_pkr, price_real), names_to = "series", values_to = "value") |>
+  mutate(series = recode_values(series,
+    "price_pkr"  ~ "Nominal",
+    "price_real" ~ paste0("Real (", base_year, " prices)")
+  )) |>
+  ggplot(aes(year, value, colour = series)) +
+  geom_line(linewidth = 0.8) +
+  scale_y_continuous(labels = label_number(prefix = "Rs ")) +
+  labs(
+    title    = "Wheat flour, nominal versus real",
+    subtitle = "Deflated by headline CPI",
+    x = NULL, y = "Rs per kg", colour = NULL
+  )
+```
+
+::: {.callout-note}
+## Interpret this carefully
+
+Headline CPI *contains* food. Deflating a food price by headline CPI gives you the
+price of wheat flour **relative to the general basket** — a relative price, not a
+purchasing-power-adjusted price. That is usually what you want for a food security
+argument, but say so explicitly in your write-up.
+:::
+
+# Analysis III — Affordability
+
+A price is only meaningful against an income. The same WFP file contains a daily
+wage series under `non-food` — which is exactly why we did not throw those rows
+away at the start.
+
+```{r}
+#| label: wages
+wages <- prices_actual |>
+  filter(str_detect(commodity, regex("wage", ignore_case = TRUE))) |>
+  summarise(wage_pkr = mean(price, na.rm = TRUE), .by = c(date, market))
+
+wages |> count(market, sort = TRUE)
+```
+
+```{r}
+#| label: affordability
+affordability <- wheat_market |>
+  inner_join(wages, by = join_by(date, market)) |>
+  mutate(kg_per_day_wage = wage_pkr / price_pkr)
+
+affordability |>
+  summarise(kg_per_day_wage = mean(kg_per_day_wage, na.rm = TRUE),
+            n_markets = n_distinct(market),
+            .by = date) |>
+  ggplot(aes(date, kg_per_day_wage)) +
+  geom_line(linewidth = 0.7) +
+  geom_smooth(method = "loess", se = FALSE, linewidth = 0.5, colour = "firebrick") +
+  labs(
+    title    = "How much wheat flour does a day of unskilled labour buy?",
+    subtitle = "Kilograms per daily wage, mean across reporting markets",
+    x = NULL, y = "kg per day's wage",
+    caption  = "Source: WFP VAM Food Prices Database via HDX"
+  )
+```
+
+This single chart is often more persuasive to a policy audience than any price
+series, because it answers the question they actually have. Note the `inner_join()`:
+it silently restricts you to market-months where *both* a wheat price and a wage
+were reported. Check how much that costs you:
+
+```{r}
+#| label: join-cost
+nrow(wheat_market)
+nrow(affordability)
+```
+
+# Analysis IV — Seasonality
+
+A raw boxplot by calendar month conflates seasonality with the trend: if prices
+rise steadily and your sample starts in March, March looks cheap. Strip the trend
+first by including a year effect.
+
+```{r}
+#| label: seasonality-raw
+wheat |>
+  ggplot(aes(month_lab, price_w)) +
+  geom_boxplot(outlier.size = 0.5, outlier.alpha = 0.4) +
+  labs(title = "Raw monthly distribution — trend and season confounded",
+       x = NULL, y = "Rs per kg")
+```
+
+```{r}
+#| label: seasonality-model
+library(marginaleffects)
+
+season_data <- wheat_national |>
+  filter(!is.na(price_pkr)) |>
+  mutate(
+    year_f  = factor(year(date)),
+    month_f = factor(month(date, label = TRUE, abbr = TRUE), ordered = FALSE)
+  )
+
+fit_season <- lm(log(price_pkr) ~ year_f + month_f, data = season_data)
+
+season_effects <- avg_predictions(fit_season, variables = "month_f") |>
+  as_tibble() |>
+  mutate(across(c(estimate, conf.low, conf.high), exp))
+
+season_effects |>
+  ggplot(aes(month_f, estimate)) +
+  geom_pointrange(aes(ymin = conf.low, ymax = conf.high)) +
+  labs(
+    title    = "Wheat flour seasonality, net of year effects",
+    subtitle = "Predicted price by calendar month, holding the year fixed",
+    x = NULL, y = "Rs per kg"
+  )
+```
+
+Reading it: the pattern should track the wheat harvest and the release of
+government stocks. If it does not, that is a finding worth chasing, not a bug to
+paper over.
+
+# Analysis V — Market integration {#sec-index}
+
+## Dispersion across markets
+
+If markets are well integrated, arbitrage keeps prices close. The spread and the
+coefficient of variation across markets are simple, defensible diagnostics.
+
+```{r}
+#| label: dispersion
+dispersion <- wheat_market |>
+  filter(!is.na(price_pkr)) |>
+  summarise(
+    n_markets = n(),
+    cheapest  = min(price_pkr),
+    dearest   = max(price_pkr),
+    spread    = dearest - cheapest,
+    cv        = sd(price_pkr) / mean(price_pkr),
+    .by = date
+  ) |>
+  filter(n_markets >= 5)      # a spread over 2 markets is not a spread
+
+dispersion |> slice_max(spread, n = 10)
+```
+
+The `n_markets >= 5` filter matters. Both `min()` and `max()` are order statistics:
+they mechanically widen as the sample grows. Comparing a 3-market spread with a
+20-market spread tells you about coverage, not integration. The CV is more robust,
+which is why it is worth reporting alongside.
+
+## Does distance explain price gaps?
+
+The law of one price says that markets further apart should show bigger price gaps,
+bounded by transport costs. This is testable with what you already have.
+
+```{r}
+#| label: distances
+markets_sf <- market_meta |>
+  filter_out(is.na(latitude) | is.na(longitude)) |>
+  st_as_sf(coords = c("longitude", "latitude"), crs = 4326)
+
+dist_km <- st_distance(markets_sf) |>
+  units::set_units("km") |>
+  units::drop_units()
+
+dimnames(dist_km) <- list(markets_sf$market, markets_sf$market)
+
+pair_distance <- dist_km |>
+  as_tibble(rownames = "market_a") |>
+  pivot_longer(-market_a, names_to = "market_b", values_to = "distance_km") |>
+  filter(market_a < market_b)
+```
+
+```{r}
+#| label: pair-gaps
+pair_gaps <- wheat_market |>
+  select(date, market, price_pkr) |>
+  inner_join(
+    wheat_market |> select(date, market, price_pkr),
+    by            = join_by(date),
+    relationship  = "many-to-many",
+    suffix        = c("_a", "_b")
+  ) |>
+  filter(market_a < market_b) |>
+  mutate(gap = abs(price_pkr_a - price_pkr_b)) |>
+  summarise(
+    mean_gap = mean(gap, na.rm = TRUE),
+    n_months = n(),
+    .by = c(market_a, market_b)
+  ) |>
+  filter(n_months >= 24) |>
+  inner_join(pair_distance, by = join_by(market_a, market_b))
+
+pair_gaps |>
+  ggplot(aes(distance_km, mean_gap)) +
+  geom_point(alpha = 0.6) +
+  geom_smooth(method = "lm", se = TRUE, linewidth = 0.6) +
+  labs(
+    title    = "Law of one price: do distant markets diverge?",
+    subtitle = "Mean absolute wheat flour price gap against great-circle distance",
+    x = "Distance between markets (km)", y = "Mean absolute gap (Rs/kg)"
+  )
+```
+
+```{r}
+#| label: lop-model
+lm(mean_gap ~ distance_km, data = pair_gaps) |> summary()
+```
+
+Note `relationship = "many-to-many"` in the join. dplyr 1.1+ warns on unexpected
+many-to-many joins because they are usually mistakes. Here it is intentional — we
+*want* every market crossed with every market within a month — so we say so. Never
+silence that warning by deleting it; declare intent instead.
+
+## A composition-safe index {#sec-chained}
+
+Back to Decision 4. The fix for an unbalanced panel is a **matched-sample chained
+index**: compute the month-on-month price relative *within each market*, average
+those relatives across only the markets present in both months, then chain.
+
+```{r}
+#| label: chained-index
+wheat_chained <- wheat_market |>
+  complete(market, date) |>                 # explicit gaps, so lag() is honest
+  arrange(market, date) |>
+  mutate(rel = price_pkr / lag(price_pkr), .by = market) |>
+  summarise(
+    gm        = exp(mean(log(rel), na.rm = TRUE)),   # geometric mean of relatives
+    n_matched = sum(!is.na(rel)),
+    .by = date
+  ) |>
+  arrange(date) |>
+  mutate(
+    gm    = replace_when(gm, is.na(gm) ~ 1),        # first month has no relative
+    index = 100 * cumprod(gm)
+  )
+```
+
+```{r}
+#| label: index-comparison
+naive_index <- wheat_national |>
+  arrange(date) |>
+  filter(!is.na(price_pkr)) |>
+  mutate(index = 100 * price_pkr / first(price_pkr)) |>
+  select(date, index) |>
+  mutate(method = "Naive cross-market mean")
+
+bind_rows(
+  naive_index,
+  wheat_chained |> select(date, index) |> mutate(method = "Matched-sample chained")
+) |>
+  ggplot(aes(date, index, colour = method)) +
+  geom_line(linewidth = 0.7) +
+  labs(
+    title    = "Why composition matters",
+    subtitle = "Two wheat flour indices from identical raw data",
+    x = NULL, y = "Index (first month = 100)", colour = NULL
+  )
+```
+
+If the two lines diverge materially, the naive average was measuring changes in who
+reported, not changes in what things cost. Show this plot to anyone who asks why
+your numbers differ from a published series.
+
+## Indexing each market to its own start
+
+Useful for a different question: which markets have seen the steepest increases?
+
+```{r}
+#| label: market-index
+wheat_market_index <- wheat_market |>
+  filter(!is.na(price_pkr)) |>
+  arrange(market, date) |>
+  mutate(index = 100 * price_pkr / first(price_pkr), .by = market)
+```
+
+Because `mutate()` with `.by` does not reorder rows, the `arrange()` beforehand is
+load-bearing. `first()` returns the first row *as the data is currently sorted* —
+this is a classic silent error.
+
+# Visualisation
+
+The plots below share a deliberate structure: one idea per chart, an informative
+subtitle carrying the method, and a source caption. In official publications the
+caption is not decoration — it is provenance.
+
+```{r}
+#| label: plot-staples
+top_commodities <- basket |>
+  count(commodity, sort = TRUE) |>
+  slice_head(n = 4) |>
+  pull(commodity)
+
+p_staples <- national_monthly |>
+  filter(commodity %in% top_commodities) |>
+  ggplot(aes(date, price_pkr, colour = commodity)) +
+  geom_line(linewidth = 0.7) +
+  scale_y_continuous(labels = label_number(prefix = "Rs ")) +
+  labs(
+    title    = "Nominal staple food prices, Pakistan",
+    subtitle = "Retail, actual observations, mean across reporting markets",
+    x = NULL, y = "Rs per kg / litre", colour = NULL,
+    caption  = "Source: WFP VAM Food Prices Database via HDX"
+  )
+
+p_staples
+```
+
+```{r}
+#| label: plot-facets
+p_markets <- wheat_market |>
+  ggplot(aes(date, price_pkr)) +
+  geom_line(linewidth = 0.5) +
+  facet_wrap(~ fct_reorder(market, price_pkr, .fun = max, .na_rm = TRUE)) +
+  scale_y_continuous(labels = label_number(prefix = "Rs ")) +
+  labs(title = "Wheat flour price by market",
+       subtitle = "Panels ordered by peak price",
+       x = NULL, y = NULL,
+       caption = "Source: WFP VAM via HDX")
+
+p_markets
+```
+
+Ordering facets by a meaningful statistic instead of alphabetically turns a wall
+of panels into an argument.
+
+```{r}
+#| label: plot-index
+p_index <- wheat_market_index |>
+  ggplot(aes(date, index, group = market)) +
+  geom_line(linewidth = 0.4, colour = "grey65") +
+  geom_line(
+    data = wheat_chained, aes(date, index, group = 1),
+    linewidth = 1, colour = "firebrick"
+  ) +
+  geom_hline(yintercept = 100, linetype = "dashed", colour = "grey40") +
+  labs(
+    title    = "Each market indexed to its own first observation",
+    subtitle = "Grey = individual markets; red = matched-sample chained national index",
+    x = NULL, y = "Index (= 100)",
+    caption  = "Source: WFP VAM via HDX"
+  )
+
+p_index
+```
+
+```{r}
+#| label: plot-yoy
+p_yoy <- national_monthly |>
+  filter(commodity %in% top_commodities, !is.na(yoy)) |>
+  ggplot(aes(date, yoy, colour = commodity)) +
+  geom_hline(yintercept = 0, colour = "grey50") +
+  geom_line(linewidth = 0.7) +
+  scale_y_continuous(labels = label_percent()) +
+  labs(title = "Year-on-year food price inflation", x = NULL, y = NULL, colour = NULL,
+       caption = "Source: WFP VAM via HDX")
+
+p_yoy
+```
+
+```{r}
+#| label: plot-spread
+p_spread <- dispersion |>
+  ggplot(aes(date)) +
+  geom_ribbon(aes(ymin = cheapest, ymax = dearest), alpha = 0.25, fill = "steelblue") +
+  geom_line(aes(y = (cheapest + dearest) / 2), linewidth = 0.6) +
+  scale_y_continuous(labels = label_number(prefix = "Rs ")) +
+  labs(
+    title    = "Cheapest and dearest market for wheat flour",
+    subtitle = "Months with at least five reporting markets",
+    x = NULL, y = "Rs per kg",
+    caption  = "Source: WFP VAM via HDX"
+  )
+
+p_spread
+```
+
+A ribbon between the min and max carries more information than the spread alone —
+the reader sees both the level and the dispersion.
+
+```{r}
+#| label: plot-heat
+p_heat <- province_year |>
+  filter(str_detect(commodity, regex("^wheat flour", ignore_case = TRUE)),
+         !is.na(province)) |>
+  ggplot(aes(year, fct_reorder(province, price_pkr), fill = price_pkr)) +
+  geom_tile(colour = "white", linewidth = 0.4) +
+  scale_fill_viridis_c(option = "magma", direction = -1,
+                       labels = label_number(prefix = "Rs ")) +
+  scale_x_continuous(expand = expansion(0)) +
+  labs(title = "Wheat flour by province and year", x = NULL, y = NULL, fill = NULL,
+       caption = "Source: WFP VAM via HDX")
+
+p_heat
+```
+
+# Mapping Pakistan, including Jammu & Kashmir {#sec-map}
+
+This section deals with the part that most tutorials get wrong: a map of Pakistan
+that omits Azad Jammu & Kashmir, Gilgit-Baltistan and the wider Jammu & Kashmir
+region is not an acceptable output for a Pakistani institution, and a map that
+shades a disputed territory as though it had data is not acceptable for anyone.
+
+The approach: draw the full territory, show the disputed region with a distinct
+"no data" treatment, and attach a disclaimer.
+
+## Inspect before you join
+
+Natural Earth uses its own spellings, and they change between releases. Always
+look first.
+
+```{r}
+#| label: ne-inspect
+pak_states <- ne_states(country = "Pakistan", returnclass = "sf") |> st_make_valid()
+ind_states <- ne_states(country = "India",    returnclass = "sf") |> st_make_valid()
+
+pak_states |>
+  st_drop_geometry() |>
+  distinct(name, type_en) |>
+  arrange(name) |>
+  print(n = Inf)
+
+ind_states |>
+  st_drop_geometry() |>
+  distinct(name) |>
+  filter(str_detect(name, regex("kashmir|jammu|ladakh", ignore_case = TRUE)))
+```
+
+Depending on your Natural Earth vintage you will see the Pakistan-administered
+units as `Azad Kashmir` and either `Northern Areas` or `Gilgit-Baltistan`, and the
+India-administered unit as `Jammu and Kashmir` (possibly split into `Ladakh` in
+newer releases). The lookup table we built in @sec-verbs already handles both
+spellings — this is the payoff for centralising the crosswalk.
+
+## Assemble the base map
+
+```{r}
+#| label: base-map
+pak_admin <- pak_states |>
+  mutate(
+    province = recode_values(
+      name,
+      from = province_lookup$from,
+      to   = province_lookup$to
+    ),
+    status = "Administered by Pakistan"
+  ) |>
+  select(province, status, geometry)
+
+# Anything Natural Earth calls something our lookup does not know
+pak_admin |> st_drop_geometry() |> filter(is.na(province))
+```
+
+```{r}
+#| label: jk-polygon
+jk_geometry <- ind_states |>
+  filter(str_detect(name, regex("jammu|kashmir|ladakh", ignore_case = TRUE))) |>
+  st_geometry() |>
+  st_union()                                    # dissolve into one polygon
+
+jammu_kashmir <- st_sf(
+  province = "Jammu & Kashmir",
+  status   = "Disputed territory — no reporting market",
+  geometry = jk_geometry
+)
+
+base_map <- bind_rows(pak_admin, jammu_kashmir) |>
+  st_as_sf()
+
+st_crs(base_map)
+base_map |> st_drop_geometry() |> count(status)
+```
+
+Two details:
+
+- `st_union()` dissolves Jammu & Kashmir and Ladakh into a single region so the
+  internal administrative line does not appear on a Pakistani map.
+- `bind_rows()` on `sf` objects works, but the result can lose its `sf` class in
+  some combinations — the trailing `st_as_sf()` is cheap insurance.
+
+## Check the geography joins to the data
+
+```{r}
+#| label: geo-join-check
+province_recent <- province_year |>
+  filter(str_detect(commodity, regex("^wheat flour", ignore_case = TRUE))) |>
+  filter(year == max(year)) |>
+  summarise(price_pkr = mean(price_pkr, na.rm = TRUE), .by = province)
+
+# Provinces in the data with no polygon — a real error, must be empty
+province_recent |>
+  anti_join(st_drop_geometry(base_map), by = join_by(province))
+
+# Polygons with no data — expected, and the point of this section
+base_map |>
+  st_drop_geometry() |>
+  anti_join(province_recent, by = join_by(province))
+```
+
+The first anti-join must return zero rows. If it does not, your recode is
+incomplete and part of your data is falling off the map — literally. The second
+anti-join is *supposed* to return rows: Jammu & Kashmir, and any province where no
+market reported this year. Those become the grey areas.
+
+## The choropleth
+
+```{r}
+#| label: choropleth
+map_data <- base_map |>
+  left_join(province_recent, by = join_by(province))
+
+disputed <- map_data |> filter(str_detect(status, "Disputed"))
+
+# Lambert conformal conic, sensible for a country of Pakistan's shape and latitude
+pak_crs <- "+proj=lcc +lat_1=28 +lat_2=37 +lat_0=30 +lon_0=70 +datum=WGS84 +units=m"
+
+p_map <- ggplot(map_data) +
+  geom_sf(aes(fill = price_pkr), colour = "white", linewidth = 0.3) +
+  geom_sf(
+    data = disputed,
+    aes(linetype = status),
+    fill = "grey92", colour = "grey30", linewidth = 0.5
+  ) +
+  geom_sf_label(
+    data  = disputed,
+    aes(label = str_wrap(province, 12)),
+    size = 3, label.size = 0, fill = alpha("white", 0.7)
+  ) +
+  scale_fill_viridis_c(
+    option = "rocket", direction = -1, na.value = "grey88",
+    labels = label_number(prefix = "Rs "),
+    name   = "Wheat flour\nRs per kg"
+  ) +
+  scale_linetype_manual(values = c("22"), name = NULL) +
+  coord_sf(crs = pak_crs) +
+  labs(
+    title    = paste0("Retail wheat flour price by province, ", max(province_year$year)),
+    subtitle = "Grey areas have no reporting market in the WFP sample",
+    caption  = paste(
+      "Source: WFP VAM Food Prices Database via HDX; boundaries from Natural Earth.",
+      "The boundaries and names shown do not imply official endorsement or acceptance.",
+      "The final status of Jammu & Kashmir has not been agreed by the parties.",
+      sep = "\n"
+    )
+  ) +
+  theme_void(base_size = 12) +
+  theme(
+    plot.caption      = element_text(hjust = 0, size = 8, colour = "grey30"),
+    plot.title        = element_text(face = "bold"),
+    legend.position   = "right"
+  )
+
+p_map
+```
+
+::: {.callout-important}
+## On the disclaimer
+
+The wording above follows the standard UN cartographic convention. Institutions in
+Pakistan generally have their own approved formulation, and official publications
+may additionally be required to show the Line of Control as a non-final boundary.
+Check your organisation's map policy before publishing; the technical mechanism is
+the same whichever wording you are required to use.
+
+To add the Line of Control explicitly, Natural Earth ships a disputed-boundaries
+line layer:
+
+```{r}
+#| label: loc-line
+disputed_lines <- ne_download(
+  scale       = 10,
+  type        = "admin_0_boundary_lines_disputed_areas",
+  category    = "cultural",
+  returnclass = "sf"
+)
+
+p_map + geom_sf(data = disputed_lines, colour = "grey20",
+                linewidth = 0.4, linetype = "13", inherit.aes = FALSE)
+```
+:::
+
+## Market point map
+
+```{r}
+#| label: point-map
+library(ggrepel)
+
+market_recent <- wheat_market |>
+  filter(date == max(date)) |>
+  select(market, price_pkr)
+
+markets_plot <- markets_sf |>
+  left_join(market_recent, by = join_by(market)) |>
+  filter(!is.na(price_pkr))
+
+p_points <- ggplot() +
+  geom_sf(data = base_map, fill = "grey96", colour = "white", linewidth = 0.3) +
+  geom_sf(data = disputed, fill = "grey92", colour = "grey30",
+          linewidth = 0.4, linetype = "22") +
+  geom_sf(data = markets_plot, aes(size = price_pkr, colour = price_pkr)) +
+  geom_text_repel(
+    data = markets_plot,
+    aes(label = market, geometry = geometry),
+    stat = "sf_coordinates", size = 3, min.segment.length = 0,
+    segment.colour = "grey50", max.overlaps = Inf
+  ) +
+  scale_colour_viridis_c(option = "rocket", direction = -1,
+                         labels = label_number(prefix = "Rs ")) +
+  scale_size_continuous(range = c(2, 8), guide = "none") +
+  coord_sf(crs = pak_crs) +
+  labs(
+    title    = "Reporting markets and latest wheat flour price",
+    colour   = "Rs per kg",
+    caption  = "Source: WFP VAM via HDX. Boundaries: Natural Earth.\nDisputed area shown for completeness; no data available."
+  ) +
+  theme_void(base_size = 12) +
+  theme(plot.caption = element_text(hjust = 0, size = 8, colour = "grey30"))
+
+p_points
+```
+
+`geom_text_repel(stat = "sf_coordinates")` is the correct way to label an `sf`
+layer — it extracts coordinates from the geometry column and then repels, which
+`geom_sf_text()` cannot do.
+
+## Small multiples over time
+
+```{r}
+#| label: map-facets
+snapshot_years <- c(2010, 2015, 2020, max(province_year$year))
+
+map_panel <- province_year |>
+  filter(str_detect(commodity, regex("^wheat flour", ignore_case = TRUE)),
+         year %in% snapshot_years) |>
+  summarise(price_pkr = mean(price_pkr, na.rm = TRUE), .by = c(province, year))
+
+# Cross every polygon with every snapshot year, then join — so that provinces
+# with no data still appear (grey) in every panel rather than vanishing.
+p_map_facets <- base_map |>
+  cross_join(tibble(year = snapshot_years)) |>
+  left_join(map_panel, by = join_by(province, year)) |>
+  st_as_sf() |>
+  ggplot() +
+  geom_sf(aes(fill = price_pkr), colour = "white", linewidth = 0.2) +
+  facet_wrap(~ year) +
+  scale_fill_viridis_c(option = "rocket", direction = -1, na.value = "grey88",
+                       labels = label_number(prefix = "Rs ")) +
+  coord_sf(crs = pak_crs) +
+  labs(title = "Wheat flour price by province over time", fill = "Rs per kg",
+       caption = "Grey = no reporting market or disputed territory.\nSource: WFP VAM via HDX.") +
+  theme_void(base_size = 11) +
+  theme(plot.caption = element_text(hjust = 0, size = 8, colour = "grey30"))
+
+p_map_facets
+```
+
+`cross_join()` is the explicit way to build a complete polygon-year grid.
+Left-joining onto that grid guarantees every province appears in every panel, which
+is what makes the small multiples comparable. Joining the other way round — data
+onto polygons — makes provinces silently disappear from panels where they have no
+observation, and the reader has no way to tell absence of data from absence of
+territory.
+
+# Export and reproducibility
+
+```{r}
+#| label: export
+out_fig  <- here("outputs", "figures")
+out_data <- here("outputs", "data")
+walk(c(out_fig, out_data), \(d) dir.create(d, recursive = TRUE, showWarnings = FALSE))
+
+plots <- lst(
+  p_staples, p_markets, p_index, p_yoy, p_spread, p_heat,
+  p_map, p_points, p_map_facets
+)
+
+iwalk(plots, \(p, nm) {
+  ggsave(
+    filename = file.path(out_fig, paste0(nm, ".png")),
+    plot     = p,
+    width    = 9, height = 6, dpi = 300, bg = "white"
+  )
+})
+
+write_csv(national_monthly, file.path(out_data, "national_monthly.csv"))
+write_csv(province_year,    file.path(out_data, "province_year.csv"))
+write_csv(wheat_chained,    file.path(out_data, "wheat_flour_index.csv"))
+```
+
+Three improvements over the obvious version:
+
+- `lst()` auto-names the list from the object names, so `iwalk()` gets names for
+  free. No parallel vector of filenames to fall out of sync.
+- `bg = "white"` — `theme_minimal()` has a transparent background, and a
+  transparent PNG dropped into a Word report renders on a grey or black panel.
+- Figures and data go to separate folders, and `outputs/` should be in
+  `.gitignore` — commit the code that makes them, not the artefacts.
+
+```{r}
+#| label: session
+sessionInfo()
+```
+
+For a workshop, initialise `renv` on day one so every participant is on the same
+package versions:
+
+```{r}
+#| label: renv
+renv::init()
+renv::snapshot()
+```
+
+# Common errors and what they mean
+
+| Symptom | Likely cause | Fix |
+|---|---|---|
+| `could not find function "filter_out"` | dplyr < 1.2.0 | `install.packages("dplyr")` |
+| Every value in a recoded column is `NA` | `recode_values()` on an incomplete mapping | Add cases, or use `replace_values()` |
+| Row count grew after a join | Duplicate keys on one side | Check the grain with `count(key) \|> filter(n > 1)` |
+| `Detected an unexpected many-to-many relationship` | Genuine duplicate keys, or an intended cross | Fix the grain, or declare `relationship = "many-to-many"` |
+| Rows with `NA` disappeared after `filter()` | `filter()` treats `NA` as `FALSE` | Use `filter_out()` |
+| `ymd()` returns all `NA` | Wrong date order in the source | Try `dmy()` / `mdy()`, or `parse_date()` |
+| Provinces missing from the map | Recode mismatch between data and polygons | Run both `anti_join()` checks |
+| `ne_states()` errors on scale 10 | `rnaturalearthhires` not installed | Install from the ropensci r-universe |
+| Nonsensical year-on-year figures | `lag()` across reporting gaps | `complete()` the panel first |
+| PNG has a grey background in Word | Transparent theme background | `ggsave(..., bg = "white")` |
+
+# Exercises
+
+**1. Basket construction.** Rewrite the `basket` filter to also include eggs, which
+are priced per dozen. You will need a third branch in `when_any()` and a
+`unit_to_dozen()` helper. How does adding eggs change `p_staples`?
+
+**2. Wholesale margins.** Build a market-month table of the retail-to-wholesale
+ratio for wheat. Which markets have the widest margins, and is the margin stable
+over time?
+
+**3. Sensitivity to Decision 1.** Re-run `national_monthly` keeping the `aggregate`
+rows. Plot both versions on one chart. How much does the choice matter, and would
+it change any conclusion you would draw?
+
+**4. Provincial inflation.** Compute year-on-year inflation separately by province
+using the matched-sample chained method from @sec-chained. Which province has had
+the most volatile food prices?
+
+**5. Winsorising sensitivity.** Change the winsorising threshold from the 99.9th to
+the 99th percentile. Which results move? Which do not? Write two sentences you
+would be willing to defend in a review meeting.
+
+**6. Affordability by province.** Extend the affordability analysis to produce a
+provincial choropleth of kilograms-per-daily-wage. Keep the Jammu & Kashmir
+treatment from @sec-map.
+
+**7. Districts.** The file has an `admin2` column. Build a district-level map for
+one province. You will need district polygons — GADM via the `geodata` package, or
+official boundaries from the relevant provincial bureau. Document which boundary
+vintage you used and why.
+
+**8. Seasonality by commodity.** Fit the seasonality model for each of the top four
+commodities using `nest()` and `map()`, extract the month effects with
+`marginaleffects`, and present them as a faceted chart.
+
+# Where this goes next
+
+Three natural extensions, roughly in order of effort:
+
+- **A parameterised report.** Make `commodity` and `province` Quarto parameters and
+  render one briefing note per province with `quarto::quarto_render()` in a loop.
+- **A `targets` pipeline.** The cache-download-clean-analyse chain here is exactly
+  what `targets` is for. The download becomes a tracked target with an explicit
+  vintage, and re-running only recomputes what changed.
+- **Joining to other sources.** PSLM and MICS give you household consumption
+  shares; combine them with these prices to build a district cost-of-diet or a
+  food poverty line. That is where price data starts answering policy questions
+  rather than describing markets.

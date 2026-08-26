@@ -48,24 +48,12 @@ population <- get_owid_chart("population")
 # Correct CO₂ dataset link (works)
 co2_data <- get_owid_chart("annual-co2-emissions")
 glimpse(co2_data)
-# COVID-19 dataset (new official source)
-covid_url <- "https://raw.githubusercontent.com/owid/covid-19-data/master/public/data/owid-covid-data.csv"
-covid_data <- read_csv(covid_url, show_col_types = FALSE)
 
 glimpse(life_exp)
 glimpse(gdp_data)
 glimpse(population)
 
-# =============================================================================
-# PART 3: METHOD 2 – COVID-19 Dedicated Dataset (Daily Updated)
-# =============================================================================
-glimpse(covid_data)
 
-covid_data %>%
-  filter(location == "Pakistan") %>%
-  arrange(desc(date)) %>%
-  select(date, total_cases, total_deaths, total_vaccinations, new_cases) %>%
-  head(10)
 
 # =============================================================================
 # PART 4: METHOD 3 – Data Cleaning and Harmonization
@@ -268,50 +256,6 @@ ggplot(gdp_trends, aes(x = year, y = gdpPercap, color = entity)) +
 
 # ---- Remove OWID aggregate regions ----
 
-
-# =============================================================================
-# PART 7: COVID-19 ANALYSIS EXAMPLES
-# =============================================================================
-
-south_asia <- c("Pakistan", "India", "Bangladesh", "Sri Lanka",
-                "Nepal", "Afghanistan", "Bhutan", "Maldives")
-
-covid_sa <- covid_data %>%
-  filter(location %in% south_asia)
-
-# Latest statistics
-covid_latest <- covid_sa %>%
-  group_by(location) %>%
-  filter(date == max(date)) %>%
-  select(location, date, total_cases, total_deaths, total_vaccinations,
-         people_fully_vaccinated, population) %>%
-  mutate(
-    cases_per_million = (total_cases / population) * 1e6,
-    deaths_per_million = (total_deaths / population) * 1e6,
-    vax_per_100 = (total_vaccinations / population) * 100,
-    fully_vax_pct = (people_fully_vaccinated / population) * 100
-  ) %>%
-  arrange(desc(cases_per_million))
-
-print(covid_latest)
-
-# Visualization
-covid_sa %>%
-  ggplot(aes(date, total_cases, color = location)) +
-  geom_line(size = 1) +
-  scale_y_log10(labels = comma) +
-  labs(
-    title = "COVID-19 Total Cases in South Asia",
-    x = "Date", y = "Total Cases (log scale)",
-    caption = "Source: Our World in Data"
-  )
-
-# =============================================================================
-# PART 8: SAVING WORK
-# =============================================================================
-
-write_csv(covid_data, "owid_covid_data.csv")
-write_csv(covid_sa, "covid_south_asia.csv")
 write_csv(WorldProgress, "WorldProgress.csv")
 
 ggsave("covid_cases_south_asia.png", width = 10, height = 6, dpi = 300)

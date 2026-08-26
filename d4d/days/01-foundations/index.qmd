@@ -1,0 +1,35 @@
+---
+title: "Day 1 — Foundations & Data Import"
+subtitle: "From a blank console to a cleaned survey dataset"
+---
+
+## Where the day goes
+
+You arrive with no R. You leave having read a PDHS-style `.sav` file, cleaned its
+column names, reshaped it, and committed the result to Git.
+
+## Sessions
+
+| # | Session | Material |
+|---|---|---|
+| 1 | R, Positron, projects and Git | [`01-rstudio-git-session.qmd`](01-rstudio-git-session.qmd) |
+| 2 | Import: `.sav`, `.dta`, `.xlsx`, `.csv` | [`scripts/import-alifailan.R`](scripts/import-alifailan.R) |
+| 3 | Messy data: `janitor`, missingness, wide ↔ long | [`scripts/clean-dirty-excel.R`](scripts/clean-dirty-excel.R), [`scripts/wide-to-long.R`](scripts/wide-to-long.R) |
+| 4 | First look at survey structure | [`02-demographic-analysis-nhanes.qmd`](02-demographic-analysis-nhanes.qmd) |
+| — | Practice workbook (take home) | [`03-demographic-analysis-workbook.qmd`](03-demographic-analysis-workbook.qmd) |
+
+## Scripts in this folder
+
+- `import-alifailan.R` — reading each of the four common file formats
+- `clean-dirty-excel.R` — `janitor::clean_names()` and friends on a real messy sheet
+- `wide-to-long.R` — `pivot_longer()` / `pivot_wider()`
+- `create-practice-data.R` — generates the synthetic practice dataset
+- `data-packages-fundamentals.R` — the package ecosystem, oriented
+
+## What you should be able to do by 16:30
+
+- open a project and explain why `here::here()` beats `setwd()`
+- read a labelled `.sav` file and keep the labels
+- rename 40 columns in one line
+- describe what is missing in a dataset before analysing it
+- make one commit and push it

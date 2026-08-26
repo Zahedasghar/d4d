@@ -1,0 +1,931 @@
+---
+title: "Quarto for Academic Writing"
+subtitle: "A Complete Guide to Creating Professional Documents"
+author: "Your Name"
+date: today
+format: 
+  html:
+    toc: true
+    toc-depth: 3
+    toc-location: left
+    number-sections: true
+    code-fold: show
+    code-tools: true
+    theme: cosmo
+    embed-resources: true
+  pdf:
+    toc: true
+    number-sections: true
+    colorlinks: true
+  docx:
+    toc: true
+    number-sections: true
+---
+
+# Introduction to Quarto Document Writing
+
+This tutorial will teach you how to create professional academic documents using Quarto. We'll recreate a complete regression analysis document, learning key features along the way.
+
+::: {.callout-note}
+## What You'll Learn
+- Document structure and YAML configuration
+- Working with R code chunks
+- Creating tables with `gt` and `modelsummary`
+- Mathematical equations with LaTeX
+- Cross-referencing figures and tables
+- Professional formatting and styling
+:::
+
+# Setting Up Your Document
+
+## The YAML Header
+
+Every Quarto document starts with a YAML header enclosed in `---`. This controls the document's metadata and output format.
+
+**Basic YAML:**
+
+```yaml
+---
+title: "Your Document Title"
+author: "Your Name"
+date: today
+format: html
+---
+```
+
+**Advanced YAML with Multiple Formats:**
+
+```yaml
+---
+title: "Regression with Interaction Variables"
+author: "Your Name"
+date: today
+format: 
+  html:
+    toc: true
+    toc-depth: 3
+    number-sections: true
+    code-fold: show
+    theme: cosmo
+  pdf:
+    toc: true
+    number-sections: true
+  docx:
+    toc: true
+---
+```
+
+::: {.callout-tip}
+## Pro Tip
+- Use `today` for automatic date updates
+- `toc: true` adds a table of contents
+- `number-sections: true` auto-numbers your sections
+- `code-fold: show` makes code collapsible
+:::
+
+## Document Structure
+
+A well-structured academic document typically includes:
+
+1. **Introduction** - Context and objectives
+2. **Methodology** - Data and methods
+3. **Results** - Analysis and findings
+4. **Discussion** - Interpretation
+5. **Conclusion** - Summary and implications
+
+```markdown
+# Introduction
+
+Your introduction text here...
+
+## Background
+
+More specific context...
+
+# Methodology
+
+## Data Description
+
+## Statistical Methods
+
+# Results
+
+# Discussion
+
+# Conclusion
+```
+
+# Working with R Code
+
+## Loading Packages
+
+Start your document by loading required packages in a code chunk:
+
+````markdown
+```{{r}}
+#| label: setup
+#| message: false
+#| warning: false
+
+library(tidyverse)    # Data manipulation
+library(gt)           # Beautiful tables
+library(modelsummary) # Regression tables
+library(carData)      # Sample data
+```
+````
+
+::: {.callout-important}
+## Best Practice
+Use `#| message: false` and `#| warning: false` to suppress package loading messages in your final document.
+:::
+
+## Code Chunk Options
+
+Code chunks use `#|` (hashpipe) for options:
+
+````markdown
+```{{r}}
+#| label: descriptive-name
+#| echo: true        # Show code
+#| eval: true        # Run code
+#| warning: false    # Hide warnings
+#| message: false    # Hide messages
+#| fig-cap: "Caption for figure"
+
+# Your code here
+```
+````
+
+**Common options:**
+
+| Option | Values | Purpose |
+|--------|--------|---------|
+| `echo` | `true`/`false` | Show/hide code |
+| `eval` | `true`/`false` | Run/don't run code |
+| `include` | `true`/`false` | Include output |
+| `message` | `true`/`false` | Show messages |
+| `warning` | `true`/`false` | Show warnings |
+| `error` | `true`/`false` | Show errors |
+
+## Inline R Code
+
+Mix R code with text using backticks:
+
+```markdown
+The dataset contains `r nrow(Salaries)` observations and 
+`r ncol(Salaries)` variables.
+
+The average salary is $`r round(mean(Salaries$salary), 2)`.
+```
+
+This will render as: "The dataset contains 397 observations and 6 variables."
+
+# Creating Tables
+
+## Simple Summary Tables with gt
+
+The `gt` package creates publication-quality tables:
+
+````markdown
+```{{r}}
+#| label: tbl-summary
+#| tbl-cap: "Summary Statistics by Gender"
+
+Salaries %>%
+  group_by(sex) %>%
+  summarise(avg_salary = mean(salary)) %>%
+  gt() %>%
+  fmt_currency(columns = avg_salary, decimals = 1) %>%
+  cols_label(
+    sex = "Gender",
+    avg_salary = "Average Salary"
+  )
+```
+````
+
+::: {.callout-tip}
+## GT Table Formatting Functions
+- `fmt_currency()` - Format as currency
+- `fmt_number()` - Number formatting
+- `fmt_percent()` - Percentage formatting
+- `cols_label()` - Rename columns
+- `tab_header()` - Add title and subtitle
+:::
+
+## Grouped Summary Tables
+
+Create tables with multiple grouping variables:
+
+````markdown
+```{{r}}
+#| label: tbl-grouped
+#| tbl-cap: "Salary by Gender and Discipline"
+
+Salaries %>%
+  group_by(sex, discipline) %>%
+  summarise(avg_salary = mean(salary), .groups = "drop") %>%
+  gt() %>%
+  fmt_currency(columns = avg_salary, decimals = 2) %>%
+  cols_label(
+    sex = "Gender",
+    discipline = "Discipline",
+    avg_salary = "Average Salary"
+  ) %>%
+  tab_header(
+    title = "Faculty Salaries",
+    subtitle = "By Gender and Discipline"
+  )
+```
+````
+
+## Regression Tables with modelsummary
+
+The `modelsummary` package creates professional regression tables:
+
+````markdown
+```{{r}}
+#| label: tbl-regression
+#| tbl-cap: "Regression Results"
+
+# Fit model
+model1 <- lm(salary ~ sex, data = Salaries)
+
+# Create table
+modelsummary(
+  model1,
+  stars = TRUE,
+  gof_map = c("nobs", "r.squared", "adj.r.squared", "rmse")
+)
+```
+````
+
+## Multiple Regression Models in One Table
+
+Compare multiple models side-by-side:
+
+````markdown
+```{{r}}
+#| label: tbl-all-models
+#| tbl-cap: "Comparison of Regression Models"
+
+# Fit multiple models
+model1 <- lm(salary ~ sex, data = Salaries)
+model2 <- lm(salary ~ sex + discipline, data = Salaries)
+model3 <- lm(salary ~ sex * discipline, data = Salaries)
+model4 <- lm(salary ~ sex * discipline + rank + 
+             yrs.since.phd + yrs.service, data = Salaries)
+
+# Create comparison table
+models <- list(
+  "(1)" = model1,
+  "(2)" = model2,
+  "(3)" = model3,
+  "(4)" = model4
+)
+
+modelsummary(
+  models,
+  stars = TRUE,
+  gof_map = c("nobs", "r.squared", "adj.r.squared", 
+              "aic", "bic", "logLik", "F", "rmse"),
+  coef_rename = c(
+    "sexMale" = "Male",
+    "disciplineB" = "Discipline B",
+    "sexMale:disciplineB" = "Male × Discipline B"
+  )
+)
+```
+````
+
+::: {.callout-note}
+## Customizing Regression Tables
+- `stars = TRUE` - Add significance stars
+- `gof_map` - Select goodness-of-fit statistics
+- `coef_rename` - Rename coefficients for clarity
+- `output = "gt"` - Use gt for more formatting options
+:::
+
+# Mathematical Equations
+
+## Inline Math
+
+Use single dollar signs for inline equations:
+
+```markdown
+The coefficient $\beta_1$ represents the effect of gender on salary.
+
+The p-value is $p < 0.05$.
+```
+
+## Display Math (Numbered)
+
+Use the `equation` environment with tags for numbered equations:
+
+```markdown
+$$
+salary_i = \beta_0 + \beta_1 sex_i + \epsilon_i \tag{1}
+$$
+```
+
+This creates:
+
+$$
+salary_i = \beta_0 + \beta_1 sex_i + \epsilon_i \tag{1}
+$$
+
+## Display Math (Unnumbered)
+
+Use double dollar signs without tags:
+
+```markdown
+$$
+Y = \beta_0 + \beta_1 X_1 + \beta_2 X_2 + \epsilon
+$$
+```
+
+## Common LaTeX Math Symbols
+
+| Symbol | Code | Example |
+|--------|------|---------|
+| Greek letters | `\alpha, \beta, \gamma` | $\alpha, \beta, \gamma$ |
+| Subscript | `x_i` | $x_i$ |
+| Superscript | `x^2` | $x^2$ |
+| Fractions | `\frac{a}{b}` | $\frac{a}{b}$ |
+| Sum | `\sum_{i=1}^{n}` | $\sum_{i=1}^{n}$ |
+| Integral | `\int_a^b` | $\int_a^b$ |
+| Hat | `\hat{y}` | $\hat{y}$ |
+| Bar | `\bar{x}` | $\bar{x}$ |
+
+::: {.callout-tip}
+## Math Mode Tips
+- Use `\text{text}` for text within equations: $\beta_{\text{male}}$
+- Use `\ldots` for ellipsis: $1, 2, 3, \ldots, n$
+- Enclose matrices in `\begin{bmatrix}...\end{bmatrix}`
+:::
+
+# Cross-Referencing
+
+## Referencing Tables
+
+Add labels to tables with `#| label: tbl-name`:
+
+````markdown
+```{{r}}
+#| label: tbl-summary
+#| tbl-cap: "Summary Statistics"
+
+# Your table code
+```
+
+See @tbl-summary for descriptive statistics.
+````
+
+## Referencing Figures
+
+Add labels to figures with `#| label: fig-name`:
+
+````markdown
+```{{r}}
+#| label: fig-scatter
+#| fig-cap: "Salary vs Years Since PhD"
+
+ggplot(Salaries, aes(x = yrs.since.phd, y = salary)) +
+  geom_point() +
+  theme_minimal()
+```
+
+As shown in @fig-scatter, there is a positive relationship.
+````
+
+## Referencing Sections
+
+Add IDs to section headers:
+
+```markdown
+# Introduction {#sec-intro}
+
+# Methods {#sec-methods}
+
+As discussed in @sec-intro, our objective is...
+```
+
+::: {.callout-important}
+## Labeling Rules
+- Tables: `#| label: tbl-name`
+- Figures: `#| label: fig-name`  
+- Sections: `{#sec-name}`
+- Equations: Reference by tag number
+:::
+
+# Advanced Formatting
+
+## Callout Blocks
+
+Create attention-grabbing callouts:
+
+```markdown
+::: {.callout-note}
+This is a note about something important.
+:::
+
+::: {.callout-tip}
+## Pro Tip
+This is a helpful tip for readers.
+:::
+
+::: {.callout-warning}
+Be careful with this approach!
+:::
+
+::: {.callout-important}
+This is critical information.
+:::
+
+::: {.callout-caution}
+Proceed with caution.
+:::
+```
+
+## Column Layouts
+
+Create side-by-side content:
+
+```markdown
+::: {.columns}
+::: {.column width="50%"}
+**Advantages:**
+- Clear interpretation
+- Easy to implement
+- Widely understood
+:::
+
+::: {.column width="50%"}
+**Limitations:**
+- Assumes linearity
+- Sensitive to outliers
+- May miss interactions
+:::
+:::
+```
+
+## Tabbed Content
+
+Organize content in tabs:
+
+```markdown
+::: {.panel-tabset}
+
+## Data Exploration
+
+Your exploratory analysis here...
+
+## Model Results
+
+Your regression results here...
+
+## Diagnostics
+
+Your diagnostic plots here...
+
+:::
+```
+
+## Custom Styling
+
+Apply custom CSS styling:
+
+```markdown
+::: {style="background-color: #f0f0f0; padding: 15px; border-radius: 5px;"}
+This content has a gray background with padding.
+:::
+
+This is [highlighted text]{style="background-color: yellow;"}.
+```
+
+# Complete Example: Regression Analysis
+
+Here's a complete example putting it all together:
+
+````markdown
+---
+title: "Regression with Interaction Variables"
+author: "Zahid Asghar"
+date: today
+format: 
+  html:
+    toc: true
+    number-sections: true
+    code-fold: true
+    theme: cosmo
+---
+
+# Introduction
+
+In this analysis, I examine salary differences between faculty members
+by gender and discipline. The data contains information about 
+`r nrow(Salaries)` faculty members.
+
+::: {.callout-note}
+## Objective
+Explain interaction variables in regression using only binary 
+independent variables.
+:::
+
+# Data Description
+
+```{{r}}
+#| label: tbl-desc
+#| tbl-cap: "Summary Statistics by Gender"
+
+Salaries %>%
+  group_by(sex) %>%
+  summarise(avg_salary = mean(salary)) %>%
+  gt() %>%
+  fmt_currency(columns = avg_salary, decimals = 1)
+```
+
+@tbl-desc shows that male faculty earn more on average.
+
+# Regression Analysis
+
+We estimate the following model:
+
+$$
+salary_i = \beta_0 + \beta_1 sex_i + \epsilon_i \tag{1}
+$$
+
+where $i = 1, 2, \ldots, n$ and $\epsilon_i$ is the error term.
+
+```{{r}}
+#| label: tbl-reg1
+#| tbl-cap: "Basic Regression Results"
+
+model1 <- lm(salary ~ sex, data = Salaries)
+modelsummary(model1, stars = TRUE)
+```
+
+The coefficient $\beta_1 = 14,088$ in @tbl-reg1 indicates male 
+faculty earn $14,088 more than female faculty on average.
+
+## Adding Discipline
+
+```{{r}}
+#| label: tbl-reg2  
+#| tbl-cap: "Regression with Discipline"
+
+model2 <- lm(salary ~ sex + discipline, data = Salaries)
+modelsummary(model2, stars = TRUE)
+```
+
+# Interaction Effects
+
+```{{r}}
+#| label: tbl-reg3
+#| tbl-cap: "Regression with Interaction Term"
+
+model3 <- lm(salary ~ sex * discipline, data = Salaries)
+modelsummary(model3, stars = TRUE)
+```
+
+@tbl-reg3 shows the interaction effect. The coefficient on the 
+interaction term is $-14,109$, indicating the gender gap is 
+smaller in Discipline B.
+
+# Conclusion
+
+::: {.callout-important}
+Interaction terms are essential when relationships vary across 
+subgroups. @tbl-reg3 demonstrates how the effect of gender on 
+salary differs by discipline.
+:::
+````
+
+# Tips for Academic Writing
+
+## Do's
+
+1. **Use descriptive labels**: `tbl-salary-gender` not `tbl-1`
+2. **Add clear captions**: Explain what the table/figure shows
+3. **Reference everything**: Use `@tbl-` and `@fig-` consistently
+4. **Hide setup code**: Use `#| echo: false` for data loading
+5. **Format numbers**: Use `fmt_currency()`, `fmt_number()` etc.
+6. **Add section numbers**: Set `number-sections: true`
+7. **Include TOC**: Help readers navigate long documents
+
+## Don'ts
+
+1. ❌ Don't use vague labels like `tbl-1`, `fig-plot`
+2. ❌ Don't show package loading messages
+3. ❌ Don't forget to caption tables and figures
+4. ❌ Don't use raw R output - format with `gt` or `modelsummary`
+5. ❌ Don't hardcode numbers - use inline code
+6. ❌ Don't mix different table styles in one document
+
+# Workflow Tips
+
+## Iterative Rendering
+
+Render frequently to catch errors early:
+
+- **Keyboard shortcut**: `Ctrl/Cmd + Shift + K`
+- **Command line**: `quarto render document.qmd`
+- **Render to specific format**: `quarto render document.qmd --to pdf`
+
+## Code Organization
+
+Structure your code logically:
+
+```markdown
+# Setup chunk - load packages and data
+# Exploratory analysis - tables and visualizations
+# Model fitting - regression models
+# Results presentation - formatted tables
+# Diagnostics - check model assumptions
+```
+
+## Reproducibility Checklist
+
+✓ Load all required packages at the top
+✓ Set random seed if using random processes
+✓ Use relative file paths, not absolute
+✓ Comment your code clearly
+✓ Include session info at the end
+✓ Test rendering all output formats
+
+# Output Formats
+
+## HTML (Interactive)
+
+Best for sharing online:
+
+```yaml
+format:
+  html:
+    toc: true
+    code-fold: true
+    code-tools: true
+    embed-resources: true
+    theme: cosmo
+```
+
+## PDF (Print)
+
+Best for submission:
+
+```yaml
+format:
+  pdf:
+    toc: true
+    number-sections: true
+    geometry: margin=1in
+    colorlinks: true
+```
+
+## Word (Collaboration)
+
+Best for tracked changes:
+
+```yaml
+format:
+  docx:
+    toc: true
+    number-sections: true
+    reference-doc: custom-template.docx
+```
+
+# Common Issues and Solutions
+
+## Tables Not Appearing
+
+**Problem**: Table code runs but doesn't show in output
+
+**Solution**: Make sure you're using `gt()` or other table function, not just printing
+
+```r
+# Wrong - just prints
+Salaries %>% group_by(sex) %>% summarise(mean(salary))
+
+# Right - creates formatted table
+Salaries %>% group_by(sex) %>% summarise(mean(salary)) %>% gt()
+```
+
+## Cross-References Not Working
+
+**Problem**: `@tbl-name` shows as plain text
+
+**Solution**: Ensure label starts with correct prefix and caption is included
+
+```r
+#| label: tbl-summary    # Correct prefix
+#| tbl-cap: "My table"   # Caption required
+```
+
+## Math Not Rendering
+
+**Problem**: LaTeX equations show as plain text
+
+**Solution**: Check for proper syntax and escaping
+
+```markdown
+# Wrong
+$$
+salary = \beta_0 + \beta_1 * sex
+$$
+
+# Right  
+$$
+salary = \beta_0 + \beta_1 \times sex
+$$
+```
+
+## Code Chunks Producing Errors
+
+**Problem**: Document won't render due to code errors
+
+**Solution**: Test code chunks individually
+
+```r
+#| error: true    # Show error but continue rendering
+#| eval: false    # Don't run problematic code
+```
+
+# Practice Exercise
+
+Create a complete document with:
+
+1. YAML header with HTML and PDF output
+2. Numbered sections with table of contents
+3. Introduction with objectives
+4. Data description with a summary table
+5. At least one regression table
+6. One mathematical equation (numbered)
+7. Cross-references to tables
+8. One callout block
+9. Conclusion section
+
+**Bonus challenges:**
+
+- Add a scatter plot with caption
+- Create a tabbed section with multiple models
+- Use inline R code to report key statistics
+- Format your regression table with `gt`
+
+# Additional Resources
+
+## Documentation
+
+- [Quarto Guide](https://quarto.org/docs/guide/)
+- [Quarto Gallery](https://quarto.org/docs/gallery/)
+- [GT Package](https://gt.rstudio.com/)
+- [Modelsummary Package](https://modelsummary.com/)
+
+## Cheat Sheets
+
+- [Quarto Reference](https://rstudio.github.io/cheatsheets/quarto.pdf)
+- [Markdown Quick Reference](https://www.markdownguide.org/cheat-sheet/)
+
+## Community
+
+- [Posit Community Forum](https://forum.posit.co/)
+- [Stack Overflow - Quarto Tag](https://stackoverflow.com/questions/tagged/quarto)
+- [GitHub Discussions](https://github.com/quarto-dev/quarto-cli/discussions)
+
+# Quick Reference
+
+## Essential YAML Options
+
+```yaml
+---
+title: "Title"
+author: "Author"
+date: today
+format:
+  html:
+    toc: true                 # Table of contents
+    toc-depth: 3              # Depth of TOC
+    number-sections: true     # Number sections
+    code-fold: true          # Collapsible code
+    code-tools: true         # Code viewing tools
+    theme: cosmo             # Visual theme
+    embed-resources: true    # Standalone file
+---
+```
+
+## Code Chunk Options
+
+```r
+#| label: chunk-name        # Unique identifier
+#| echo: true              # Show code
+#| eval: true              # Run code
+#| warning: false          # Hide warnings
+#| message: false          # Hide messages
+#| fig-cap: "Caption"      # Figure caption
+#| tbl-cap: "Caption"      # Table caption
+```
+
+## Cross-References
+
+```markdown
+@tbl-name     # Reference table
+@fig-name     # Reference figure  
+@sec-name     # Reference section
+@eq-name      # Reference equation
+```
+
+## Math Symbols
+
+```latex
+$\alpha, \beta, \gamma$     # Greek letters
+$x_i$                        # Subscript
+$x^2$                        # Superscript
+$\frac{a}{b}$               # Fraction
+$\sum_{i=1}^{n}$            # Sum
+$\bar{x}$                    # Bar
+$\hat{y}$                    # Hat
+```
+
+---
+
+::: {.callout-tip}
+## Final Tip
+The best way to learn Quarto is by doing. Start with simple documents
+and gradually add complexity. Don't be afraid to experiment!
+:::
+
+# Appendix: Complete Working Example
+
+Here's the complete code for the salary analysis document:
+
+````markdown
+---
+title: "Faculty Salary Analysis"
+subtitle: "Gender and Discipline Effects"
+author: "Your Name"
+date: today
+format: 
+  html:
+    toc: true
+    number-sections: true
+    code-fold: true
+    theme: cosmo
+---
+
+```{{r}}
+#| label: setup
+#| message: false
+
+library(tidyverse)
+library(gt)
+library(modelsummary)
+library(carData)
+data(Salaries)
+```
+
+# Introduction
+
+This analysis examines salary differences among `r nrow(Salaries)` 
+faculty members by gender and discipline.
+
+# Descriptive Statistics
+
+```{{r}}
+#| label: tbl-summary
+#| tbl-cap: "Average Salary by Gender"
+
+Salaries %>%
+  group_by(sex) %>%
+  summarise(avg_salary = mean(salary)) %>%
+  gt() %>%
+  fmt_currency(columns = avg_salary)
+```
+
+# Regression Analysis
+
+Our model is:
+
+$$
+salary_i = \beta_0 + \beta_1 sex_i + \beta_2 discipline_i + 
+\beta_3 (sex_i \times discipline_i) + \epsilon_i
+$$
+
+```{{r}}
+#| label: tbl-models
+#| tbl-cap: "Regression Results"
+
+m1 <- lm(salary ~ sex, data = Salaries)
+m2 <- lm(salary ~ sex + discipline, data = Salaries)
+m3 <- lm(salary ~ sex * discipline, data = Salaries)
+
+modelsummary(
+  list("(1)" = m1, "(2)" = m2, "(3)" = m3),
+  stars = TRUE
+)
+```
+
+# Conclusion
+
+@tbl-models reveals significant gender differences in faculty 
+salaries, with important interactions by discipline.
+````
+
+This completes your tutorial on Quarto document writing!

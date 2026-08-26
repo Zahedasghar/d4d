@@ -1,0 +1,40 @@
+# ---- R / Posit / RStudio ----
+.Rhistory
+.Rapp.history
+.RData
+*.RData
+.Ruserdata
+.Rproj.user/
+.Renviron
+.Rprofile.user
+
+# ---- renv ----
+renv/library/
+renv/staging/
+renv/local/
+renv/cellar/
+
+# ---- Quarto build output ----
+_site/
+.quarto/
+_freeze/
+*_files/
+*_cache/
+*.html
+
+# ---- Large data (uncomment if the pack moves to Drive/OSF) ----
+# data/*.DTA
+# data/*.sav
+
+# ---- Editor / OS ----
+.vscode/
+*.code-workspace
+.DS_Store
+Thumbs.db
+~$*
+*.tmp
+~WRL*.tmp
+.secrets
+
+/.quarto/
+**/*.quarto_ipynb

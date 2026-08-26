@@ -1,0 +1,630 @@
+---
+title: "Monthly Import Statistics from Customs Data"
+subtitle: "Pakistan Bureau of Statistics — Trade Statistics Wing"
+author: "Prof. Dr. Zahid Asghar, Member Economic Statistics"
+date: "`r format(Sys.Date(), '%B %Y')`"
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    toc-title: "Contents"
+    number-sections: true
+    code-fold: true
+    code-tools: true
+    theme: cosmo
+    embed-resources: true
+    css: pbs_style.css
+execute:
+  echo: true
+  warning: false
+  message: false
+---
+
+```{r setup}
+#| label: setup
+#| include: false
+
+# ── Package loading ────────────────────────────────────────────────────────────
+library(tidyverse)
+library(lubridate)
+library(scales)
+library(kableExtra)
+library(plotly)
+library(gt)
+library(glue)
+
+# ── Reproducibility seed ───────────────────────────────────────────────────────
+set.seed(2025)
+```
+
+## Overview
+
+This document demonstrates an **end-to-end automated pipeline** for processing
+customs import declarations received by Pakistan Bureau of Statistics from the
+Federal Board of Revenue (FBR). The pipeline:
+
+1.  **Ingests** raw customs declaration records (Bill of Entry data)
+2.  **Validates** and cleans exchange rates and unit values
+3.  **Aggregates** to monthly totals by commodity and origin country
+4.  **Produces** the official monthly import release table (millions USD)
+
+> **Data source:** FBR Customs — Bill of Entry extract. NSO receives this as a
+> delimited flat file or database extract on a monthly cut-off basis.
+
+---
+
+## Synthetic Data Generation {#sec-synth}
+
+The function below mimics the structure of a real FBR customs extract. In
+production, replace `generate_customs_data()` with a call to
+`read_customs_extract()` (see @sec-production).
+
+```{r generate-data}
+#| label: generate-data
+
+# ── Lookup tables ──────────────────────────────────────────────────────────────
+
+hs2_chapters <- tibble(
+  hs2 = c("10","15","27","29","30","38","39","40",
+          "52","61","72","84","85","87","90"),
+  description = c(
+    "Cereals", "Animal/Vegetable Fats", "Mineral Fuels",
+    "Organic Chemicals", "Pharmaceutical Products", "Misc. Chemicals",
+    "Plastics", "Rubber", "Cotton", "Apparel (Knitted)",
+    "Iron & Steel", "Machinery (General)", "Electrical Equipment",
+    "Vehicles", "Optical/Medical Instruments"
+  ),
+  sector = c("Food","Food","Energy","Chemicals","Pharma","Chemicals",
+             "Industrials","Industrials","Textiles","Textiles",
+             "Metals","Machinery","Machinery","Transport","Tech")
+)
+
+origin_countries <- tibble(
+  country_code = c("CHN","ARE","USA","SAU","IND","IDN","KWT","DEU",
+                   "GBR","JPN","MYS","SGP","BEL","FRA","NLD"),
+  country_name  = c("China","UAE","United States","Saudi Arabia","India",
+                    "Indonesia","Kuwait","Germany","United Kingdom",
+                    "Japan","Malaysia","Singapore","Belgium","France",
+                    "Netherlands"),
+  region = c("Asia","Middle East","Americas","Middle East","Asia",
+             "Asia","Middle East","Europe","Europe","Asia",
+             "Asia","Asia","Europe","Europe","Europe")
+)
+
+ports <- c("KHI","LHE","ISB","GWD","SKT")  # Karachi, Lahore, Islamabad, Gwadar, Sialkot
+
+# ── Synthetic PKR/USD daily exchange rate ─────────────────────────────────────
+generate_exchange_rates <- function(start = "2024-01-01",
+                                    end   = "2024-12-31") {
+  dates <- seq(as.Date(start), as.Date(end), by = "day")
+  # Mild depreciation trend + noise
+  n   <- length(dates)
+  rate <- 280 + cumsum(rnorm(n, mean = 0.05, sd = 0.8))
+  rate <- pmax(rate, 275)   # floor
+  tibble(date = dates, pkr_usd = round(rate, 2))
+}
+
+# ── Core customs declaration generator ────────────────────────────────────────
+generate_customs_data <- function(n_records = 18000,
+                                  start_date = "2024-01-01",
+                                  end_date   = "2024-12-31") {
+
+  hs_sample      <- sample(seq_len(nrow(hs2_chapters)), n_records, replace = TRUE,
+                            prob = c(3,2,8,4,5,3,4,2,2,2,5,7,7,6,3) / 63)
+  country_sample <- sample(seq_len(nrow(origin_countries)), n_records, replace = TRUE,
+                            prob = c(25,15,8,10,6,4,8,4,3,3,2,2,2,2,2) / 100)
+
+  # Declaration dates — heavier in Q4
+  weights_month <- c(7,6,7,7,8,8,9,8,9,9,10,12)
+  month_probs   <- rep(weights_month / sum(weights_month), each = 1)
+
+  raw_months <- sample(1:12, n_records, replace = TRUE, prob = month_probs)
+  raw_days   <- sapply(raw_months, function(m) sample(1:28, 1))
+  decl_dates <- as.Date(paste0("2024-", sprintf("%02d", raw_months),
+                                "-", sprintf("%02d", raw_days)))
+
+  # CIF value in USD — log-normal, chapter-specific scale
+  base_values <- c(50,30,200,40,25,20,35,15,20,18,80,120,90,150,60)
+  chapter_scale <- base_values[hs_sample]
+  cif_usd <- round(rlnorm(n_records,
+                           meanlog = log(chapter_scale),
+                           sdlog   = 0.7), 2)
+
+  # Quantity and unit
+  qty_units <- c("MT","KG","LITER","UNIT","SQM","SET","PAIR","BOX")
+  qty       <- round(runif(n_records, 0.5, 5000), 1)
+
+  # Port of entry
+  port_w <- c(55, 20, 8, 10, 7)
+  port   <- sample(ports, n_records, replace = TRUE, prob = port_w / sum(port_w))
+
+  # Assemble declaration table
+  tibble(
+    bill_no       = paste0("BoE-", sprintf("%06d", seq_len(n_records))),
+    decl_date     = decl_dates,
+    hs2           = hs2_chapters$hs2[hs_sample],
+    country_code  = origin_countries$country_code[country_sample],
+    port_of_entry = port,
+    cif_usd       = cif_usd,
+    quantity      = qty,
+    unit          = sample(qty_units, n_records, replace = TRUE),
+    # Introduce ~2 % dirty records for realism
+    cif_usd       = ifelse(runif(n_records) < 0.02, NA_real_, cif_usd),
+    country_code  = ifelse(runif(n_records) < 0.01, "UNK", country_code)
+  )
+}
+
+# ── Generate data ──────────────────────────────────────────────────────────────
+raw_customs   <- generate_customs_data(n_records = 18000)
+exchange_rates <- generate_exchange_rates()
+
+cat(glue("Records generated : {nrow(raw_customs):,}",
+         "Date range        : {min(raw_customs$decl_date)} to {max(raw_customs$decl_date)}",
+         "Missing CIF (raw) : {sum(is.na(raw_customs$cif_usd))}",
+         .sep = "\n"))
+```
+
+---
+
+## Validation & Cleaning {#sec-cleaning}
+
+NSO applies a three-step validation protocol before computing official
+aggregates: **(i)** structural checks, **(ii)** outlier flagging, and
+**(iii)** missing-value imputation.
+
+```{r validate}
+#| label: validate
+
+# ── Step 1: Structural validation ─────────────────────────────────────────────
+validate_customs <- function(df) {
+  df |>
+    mutate(
+      flag_missing_cif     = is.na(cif_usd),
+      flag_unknown_country = country_code == "UNK",
+      flag_future_date     = decl_date > Sys.Date(),
+      flag_zero_qty        = quantity <= 0,
+      flag_any             = flag_missing_cif | flag_unknown_country |
+                             flag_future_date | flag_zero_qty
+    )
+}
+
+validated <- validate_customs(raw_customs)
+
+validation_summary <- validated |>
+  summarise(
+    total_records        = n(),
+    missing_cif          = sum(flag_missing_cif),
+    unknown_country      = sum(flag_unknown_country),
+    future_date          = sum(flag_future_date),
+    zero_qty             = sum(flag_zero_qty),
+    total_flagged        = sum(flag_any),
+    pct_flagged          = round(mean(flag_any) * 100, 2)
+  )
+
+validation_summary |>
+  pivot_longer(everything(), names_to = "Check", values_to = "Count") |>
+  gt() |>
+  tab_header(title = "Validation Summary — Raw Customs Extract") |>
+  cols_label(Check = "Validation Check", Count = "Count / %") |>
+  tab_style(
+    style = cell_fill(color = "#eef4ed"),
+    locations = cells_body(rows = Check == "total_flagged")
+  ) |>
+  opt_stylize(style = 1)
+```
+
+```{r impute}
+#| label: impute
+
+# ── Step 2: Imputation — median CIF by HS2 chapter ───────────────────────────
+hs2_medians <- validated |>
+  filter(!flag_missing_cif) |>
+  group_by(hs2) |>
+  summarise(median_cif = median(cif_usd, na.rm = TRUE), .groups = "drop")
+
+cleaned <- validated |>
+  left_join(hs2_medians, by = "hs2") |>
+  mutate(
+    cif_usd_clean  = coalesce(cif_usd, median_cif),
+    country_clean  = if_else(flag_unknown_country, "OTH", country_code),
+    imputed        = flag_missing_cif
+  ) |>
+  # Drop residual unfixable records (should be ~0 here)
+  filter(!is.na(cif_usd_clean)) |>
+  select(-median_cif, -starts_with("flag_"))
+
+# ── Step 3: Outlier detection — IQR method within HS2 ────────────────────────
+cleaned <- cleaned |>
+  group_by(hs2) |>
+  mutate(
+    q1   = quantile(cif_usd_clean, 0.25),
+    q3   = quantile(cif_usd_clean, 0.75),
+    iqr  = q3 - q1,
+    outlier_flag = cif_usd_clean > (q3 + 3 * iqr)
+  ) |>
+  ungroup()
+
+cat(glue(
+  "Records after cleaning : {nrow(cleaned):,}",
+  "Imputed records        : {sum(cleaned$imputed)}",
+  "Outliers flagged (kept): {sum(cleaned$outlier_flag)}",
+  .sep = "\n"
+))
+```
+
+---
+
+## Monthly Aggregation {#sec-aggregation}
+
+The core NSO processing step: aggregate CIF values to **monthly totals in
+millions of USD**, stratified by HS-2 chapter and country of origin.
+
+```{r aggregate}
+#| label: aggregate
+
+# ── Join commodity and country metadata ───────────────────────────────────────
+enriched <- cleaned |>
+  left_join(hs2_chapters,      by = "hs2") |>
+  left_join(origin_countries,  by = c("country_clean" = "country_code")) |>
+  mutate(
+    year_month = floor_date(decl_date, "month"),
+    month_label = format(decl_date, "%b %Y")
+  )
+
+# ── Grand monthly totals (headline series) ────────────────────────────────────
+monthly_totals <- enriched |>
+  group_by(year_month) |>
+  summarise(
+    n_declarations  = n(),
+    total_cif_musd  = sum(cif_usd_clean, na.rm = TRUE) / 1e6,
+    .groups = "drop"
+  ) |>
+  mutate(
+    month_label = format(year_month, "%b-%Y"),
+    mom_change  = (total_cif_musd / lag(total_cif_musd) - 1) * 100,
+    ytd_musd    = cumsum(total_cif_musd)
+  )
+
+# ── By HS-2 sector ────────────────────────────────────────────────────────────
+monthly_by_sector <- enriched |>
+  group_by(year_month, sector) |>
+  summarise(cif_musd = sum(cif_usd_clean) / 1e6, .groups = "drop")
+
+# ── By origin region ──────────────────────────────────────────────────────────
+monthly_by_region <- enriched |>
+  mutate(region = replace_na(region, "Other")) |>
+  group_by(year_month, region) |>
+  summarise(cif_musd = sum(cif_usd_clean) / 1e6, .groups = "drop")
+
+# ── By port of entry ──────────────────────────────────────────────────────────
+monthly_by_port <- enriched |>
+  group_by(year_month, port_of_entry) |>
+  summarise(cif_musd = sum(cif_usd_clean) / 1e6, .groups = "drop")
+```
+
+---
+
+## Official Release Table {#sec-table}
+
+```{r release-table}
+#| label: release-table
+
+monthly_totals |>
+  select(month_label, n_declarations, total_cif_musd, mom_change, ytd_musd) |>
+  gt() |>
+  tab_header(
+    title    = md("**Pakistan Imports — Monthly Summary**"),
+    subtitle = md("*CIF Value, Millions USD · Reference Year 2024*")
+  ) |>
+  cols_label(
+    month_label    = "Month",
+    n_declarations = "Declarations",
+    total_cif_musd = "CIF (M USD)",
+    mom_change     = "MoM Δ (%)",
+    ytd_musd       = "YTD (M USD)"
+  ) |>
+  fmt_number(columns = c(total_cif_musd, ytd_musd), decimals = 1) |>
+  fmt_number(columns = n_declarations, decimals = 0, use_seps = TRUE) |>
+  fmt_number(columns = mom_change, decimals = 1, suffix = "%") |>
+  tab_style(
+    style = cell_fill(color = "#1a4a2e"),
+    locations = cells_column_labels()
+  ) |>
+  tab_style(
+    style = cell_text(color = "white", weight = "bold"),
+    locations = cells_column_labels()
+  ) |>
+  tab_style(
+    style = cell_fill(color = "#eef4ed"),
+    locations = cells_body(rows = seq(1, 12, 2))
+  ) |>
+  tab_style(
+    style = cell_text(color = "#c0392b", weight = "bold"),
+    locations = cells_body(columns = mom_change,
+                           rows = mom_change < 0)
+  ) |>
+  tab_style(
+    style = cell_text(color = "#1a4a2e", weight = "bold"),
+    locations = cells_body(columns = mom_change,
+                           rows = mom_change > 0)
+  ) |>
+  tab_source_note("Source: FBR Customs Extract processed by PBS Trade Statistics Wing") |>
+  opt_stylize(style = 1)
+```
+
+---
+
+## Charts {#sec-charts}
+
+### Monthly Import Trend
+
+```{r chart-trend}
+#| label: chart-trend
+#| fig-height: 4.5
+
+p1 <- monthly_totals |>
+  plot_ly(x = ~month_label, y = ~total_cif_musd, type = "bar",
+          marker = list(color = "#1a4a2e",
+                        line = list(color = "#b89a3b", width = 1)),
+          name = "Monthly CIF (M USD)") |>
+  add_trace(y = ~ytd_musd / 12, type = "scatter", mode = "lines+markers",
+            name = "Monthly Avg (YTD)",
+            line = list(color = "#b89a3b", width = 2, dash = "dash"),
+            marker = list(color = "#b89a3b", size = 6)) |>
+  layout(
+    title  = list(text = "Pakistan Monthly Imports 2024 (CIF, M USD)",
+                  font = list(family = "Georgia", size = 16, color = "#1a4a2e")),
+    xaxis  = list(title = "", tickangle = -30,
+                  tickfont = list(family = "Georgia")),
+    yaxis  = list(title = "Millions USD",
+                  titlefont = list(family = "Georgia")),
+    legend = list(orientation = "h", x = 0, y = -0.25),
+    plot_bgcolor  = "#f5f0e6",
+    paper_bgcolor = "#f5f0e6",
+    font = list(family = "Georgia")
+  )
+
+p1
+```
+
+### Imports by Sector
+
+```{r chart-sector}
+#| label: chart-sector
+#| fig-height: 4.5
+
+sector_colors <- c(
+  Energy = "#1a4a2e", Machinery = "#2e7d52", Chemicals = "#b89a3b",
+  Food = "#8b6914", Metals = "#4a7a62", Transport = "#c0392b",
+  Pharma = "#6c3483", Tech = "#1a5276", Textiles = "#784212",
+  Industrials = "#515a5a"
+)
+
+p2 <- monthly_by_sector |>
+  plot_ly(x = ~format(year_month, "%b-%Y"), y = ~cif_musd, color = ~sector,
+          colors = sector_colors,
+          type = "bar") |>
+  layout(
+    barmode = "stack",
+    title   = list(text = "Imports by Sector — Monthly Stack (M USD)",
+                   font = list(family = "Georgia", size = 16, color = "#1a4a2e")),
+    xaxis   = list(title = "", tickangle = -30),
+    yaxis   = list(title = "Millions USD"),
+    legend  = list(orientation = "h", x = 0, y = -0.3),
+    plot_bgcolor  = "#f5f0e6",
+    paper_bgcolor = "#f5f0e6",
+    font = list(family = "Georgia")
+  )
+
+p2
+```
+
+### Imports by Origin Region
+
+```{r chart-region}
+#| label: chart-region
+#| fig-height: 4.5
+
+region_annual <- enriched |>
+  mutate(region = replace_na(region, "Other")) |>
+  group_by(region) |>
+  summarise(cif_musd = sum(cif_usd_clean) / 1e6, .groups = "drop") |>
+  arrange(desc(cif_musd))
+
+p3 <- region_annual |>
+  plot_ly(labels = ~region, values = ~cif_musd,
+          type = "pie",
+          textinfo = "label+percent",
+          marker = list(colors = c("#1a4a2e","#b89a3b","#2e7d52",
+                                   "#8b6914","#c0392b","#6c3483"),
+                        line = list(color = "#f5f0e6", width = 1.5))) |>
+  layout(
+    title = list(text = "Annual Imports by Origin Region 2024",
+                 font = list(family = "Georgia", size = 16, color = "#1a4a2e")),
+    plot_bgcolor  = "#f5f0e6",
+    paper_bgcolor = "#f5f0e6",
+    font = list(family = "Georgia")
+  )
+
+p3
+```
+
+### Top 10 Partner Countries
+
+```{r chart-countries}
+#| label: chart-countries
+#| fig-height: 4.5
+
+top_countries <- enriched |>
+  mutate(country_name = replace_na(country_name, "Other")) |>
+  group_by(country_name) |>
+  summarise(cif_musd = sum(cif_usd_clean) / 1e6, .groups = "drop") |>
+  slice_max(cif_musd, n = 10) |>
+  mutate(country_name = fct_reorder(country_name, cif_musd))
+
+p4 <- top_countries |>
+  plot_ly(x = ~cif_musd, y = ~country_name, type = "bar",
+          orientation = "h",
+          marker = list(
+            color = ~cif_musd,
+            colorscale = list(c(0,"#b89a3b"), c(1,"#1a4a2e")),
+            line = list(color = "#f5f0e6", width = 0.5)
+          )) |>
+  layout(
+    title = list(text = "Top 10 Import Origins — Annual 2024 (M USD)",
+                 font = list(family = "Georgia", size = 16, color = "#1a4a2e")),
+    xaxis = list(title = "Millions USD"),
+    yaxis = list(title = ""),
+    plot_bgcolor  = "#f5f0e6",
+    paper_bgcolor = "#f5f0e6",
+    font = list(family = "Georgia")
+  )
+
+p4
+```
+
+---
+
+## Port-wise Breakdown {#sec-ports}
+
+```{r port-table}
+#| label: port-table
+
+port_labels <- c(KHI = "Karachi", LHE = "Lahore", ISB = "Islamabad",
+                 GWD = "Gwadar", SKT = "Sialkot")
+
+enriched |>
+  group_by(port_of_entry) |>
+  summarise(
+    declarations = n(),
+    cif_musd     = round(sum(cif_usd_clean) / 1e6, 1),
+    avg_cif_usd  = round(mean(cif_usd_clean), 0),
+    share_pct    = NA_real_,
+    .groups = "drop"
+  ) |>
+  mutate(
+    share_pct  = round(cif_musd / sum(cif_musd) * 100, 1),
+    port_name  = port_labels[port_of_entry]
+  ) |>
+  arrange(desc(cif_musd)) |>
+  select(port_name, declarations, cif_musd, avg_cif_usd, share_pct) |>
+  gt() |>
+  tab_header(
+    title    = md("**Imports by Port of Entry — 2024**"),
+    subtitle = "CIF Value in Millions USD"
+  ) |>
+  cols_label(
+    port_name    = "Port",
+    declarations = "Declarations",
+    cif_musd     = "CIF (M USD)",
+    avg_cif_usd  = "Avg CIF (USD)",
+    share_pct    = "Share (%)"
+  ) |>
+  fmt_number(columns = c(cif_musd), decimals = 1) |>
+  fmt_number(columns = avg_cif_usd, decimals = 0, use_seps = TRUE) |>
+  fmt_number(columns = declarations, decimals = 0, use_seps = TRUE) |>
+  data_color(
+    columns  = share_pct,
+    palette  = c("#eef4ed", "#1a4a2e")
+  ) |>
+  tab_source_note("Source: FBR Customs Extract · PBS Trade Statistics Wing") |>
+  opt_stylize(style = 1)
+```
+
+---
+
+## Production Integration {#sec-production}
+
+Replace the synthetic generator with this function to connect to the real FBR
+extract. The rest of the pipeline is unchanged.
+
+```{r production-stub}
+#| label: production-stub
+#| eval: false
+
+# ── Option A: CSV extract from shared drive ────────────────────────────────────
+read_customs_extract <- function(path) {
+  read_csv(path,
+    col_types = cols(
+      bill_no       = col_character(),
+      decl_date     = col_date(format = "%d/%m/%Y"),
+      hs2           = col_character(),
+      country_code  = col_character(),
+      port_of_entry = col_character(),
+      cif_usd       = col_double(),
+      quantity      = col_double(),
+      unit          = col_character()
+    )
+  )
+}
+
+# ── Option B: ODBC connection to PBS/FBS Oracle database ─────────────────────
+library(DBI)
+library(odbc)
+
+con <- dbConnect(odbc::odbc(),
+  dsn      = "PBS_FBS_PROD",
+  uid      = Sys.getenv("PBS_DB_USER"),
+  pwd      = Sys.getenv("PBS_DB_PASS")
+)
+
+raw_customs <- dbGetQuery(con, "
+  SELECT bill_no, decl_date, hs2_code AS hs2,
+         country_code, port_code AS port_of_entry,
+         cif_usd, quantity, uom AS unit
+  FROM   customs.bill_of_entry
+  WHERE  decl_date BETWEEN :start AND :end
+", params = list(start = "2024-01-01", end = "2024-12-31"))
+
+dbDisconnect(con)
+```
+
+---
+
+## Headline Figures {#sec-headline}
+
+```{r headline}
+#| label: headline
+
+annual_total <- sum(monthly_totals$total_cif_musd)
+peak_month   <- monthly_totals |> slice_max(total_cif_musd, n = 1)
+top_sector   <- monthly_by_sector |>
+                  group_by(sector) |>
+                  summarise(total = sum(cif_musd)) |>
+                  slice_max(total, n = 1)
+top_region   <- monthly_by_region |>
+                  group_by(region) |>
+                  summarise(total = sum(cif_musd)) |>
+                  slice_max(total, n = 1)
+
+tibble(
+  Indicator = c("Annual Total Imports (2024)",
+                "Peak Import Month",
+                "Peak Month Value",
+                "Largest Import Sector",
+                "Largest Origin Region"),
+  Value = c(
+    paste0("USD ", round(annual_total, 0), " million"),
+    peak_month$month_label,
+    paste0("USD ", round(peak_month$total_cif_musd, 0), " million"),
+    top_sector$sector,
+    top_region$region
+  )
+) |>
+  gt() |>
+  tab_header(title = md("**2024 Import Headline Indicators**")) |>
+  tab_style(
+    style = list(cell_fill(color = "#1a4a2e"), cell_text(color = "white", weight = "bold")),
+    locations = cells_column_labels()
+  ) |>
+  tab_style(
+    style = cell_fill(color = "#eef4ed"),
+    locations = cells_body(rows = seq(1, 5, 2))
+  ) |>
+  opt_stylize(style = 1)
+```
+
+---
+
+*Document generated automatically by the PBS Trade Statistics Wing processing
+pipeline. For methodology queries contact the Economic Statistics Division.*

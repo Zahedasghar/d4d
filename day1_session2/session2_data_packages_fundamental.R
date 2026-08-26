@@ -1,7 +1,7 @@
 ## What are packages in R and Python?
-# Packages are collections of functions, data, and documentation that extend the capabilities of R and Python. They allow users to perform specific tasks without having to write code from scratch. 
+# Packages are collections of functions, data, and documentation that extend the capabilities of R and Python. They allow users to perform specific tasks without having to write code from scratch.
 
-## Installing and Loading Packages in R using pacman 
+## Installing and Loading Packages in R using pacman
 
 if(!requireNamespace("pacman", quietly = TRUE)) {
   install.packages("pacman")
@@ -9,29 +9,32 @@ if(!requireNamespace("pacman", quietly = TRUE)) {
 
 
 
-pacman::p_load(tidyverse, data.table, readxl, janitor, ggplot2, sf, leaflet, rio, lubridate) 
+pacman::p_load(tidyverse, data.table, readxl, janitor, ggplot2, sf, leaflet, rio, lubridate)
 
-# We will first learn how to import data having different formats 
+
+# We will first learn how to import data having different formats
 
 # Importing Excel file
 readxl::read_excel("data/defense.xlsx") %>%
-  as.data.frame() -> military_data 
+  as.data.frame() -> military_data
 
 # Importing CSV file
 
 readr::read_csv("data/education_analysis.csv") %>%
   as.data.frame() -> education_data
 
-# Importing data dta/sav/sas files  using haven 
+# Importing data dta/sav/sas files  using haven
 haven::read_dta()
 
-# Importing various data formats using rio 
+# Importing various data formats using rio
 
-#Importing data from web URLs 
+#Importing data from web URLs
 
 # Importing shapefiles using sf package
 library(sf)
 pakistan_sf <- sf::st_read("data/pakistan_districts.shp")
+
+
 
 ## Importing data from web APIs
 # Using httr and jsonlite packages
@@ -49,9 +52,10 @@ if(!requireNamespace("WDI", quietly = TRUE)) {
   install.packages("WDI")
 }
 library(WDI)
+
 wdi_data <- WDI::WDI(country = "PK", indicator = "SP.POP.TOTL", start = 2000, end = 2020)
 
-# Inspect the imported data  
+# Inspect the imported data
 
 dim()
 
@@ -74,7 +78,7 @@ clean_names()
 
 rename()
 
-## 5 Main verbs of dplyr package 
+## 5 Main verbs of dplyr package
 filter()
 select()
 mutate()
@@ -117,5 +121,5 @@ haven::write_dta(military_data, "military_data_exported.dta")
 # Exporting to SPSS
 haven::write_sav(military_data, "military_data_exported.sav")
 
-# 
+#
 

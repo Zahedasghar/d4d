@@ -1,0 +1,106 @@
+project:
+  type: website
+  output-dir: _site
+  render:
+    - index.qmd
+    - agenda.qmd
+    - setup.qmd
+    - days/**/*.qmd
+    - reference/*.qmd
+    - talks/*.qmd
+    # Not rendered: kept as source only
+    - "!archive/**"
+    - "!instructor/**"
+    - "!README.md"
+    - "!REORGANISATION-REPORT.md"
+
+execute:
+  freeze: auto      # cached results; re-runs only when a .qmd actually changes
+  warning: false
+  message: false
+
+website:
+  title: "Data for Development"
+  description: "5-day workshop — demographic analysis with R, Quarto and AI-assisted workflows"
+  site-url: "https://zahedasghar.github.io/d4d/"
+  repo-url: "https://github.com/Zahedasghar/d4d"
+  repo-actions: [issue, source]
+  page-navigation: true
+  back-to-top-navigation: true
+
+  navbar:
+    left:
+      - text: "Home"
+        file: index.qmd
+      - text: "Agenda"
+        file: agenda.qmd
+      - text: "Setup"
+        file: setup.qmd
+      - text: "Days"
+        menu:
+          - text: "Day 1 — Foundations & Data Import"
+            file: days/01-foundations/index.qmd
+          - text: "Day 2 — EDA & Visualisation"
+            file: days/02-eda-visualisation/index.qmd
+          - text: "Day 3 — Modelling & Spatial"
+            file: days/03-modelling-spatial/index.qmd
+          - text: "Day 4 — Reporting & Dashboards"
+            file: days/04-reporting-dashboards/index.qmd
+          - text: "Day 5 — AI-Assisted Workflows"
+            file: days/05-ai-workflows/index.qmd
+      - text: "Reference"
+        file: reference/r-essentials.qmd
+    right:
+      - icon: github
+        href: https://github.com/Zahedasghar/d4d
+
+  sidebar:
+    style: docked
+    search: true
+    contents:
+      - section: "Day 1 — Foundations"
+        contents:
+          - days/01-foundations/index.qmd
+          - days/01-foundations/01-rstudio-git-session.qmd
+          - days/01-foundations/02-demographic-analysis-nhanes.qmd
+          - days/01-foundations/03-demographic-analysis-workbook.qmd
+      - section: "Day 2 — EDA & Visualisation"
+        contents:
+          - days/02-eda-visualisation/index.qmd
+      - section: "Day 3 — Modelling & Spatial"
+        contents:
+          - days/03-modelling-spatial/index.qmd
+          - days/03-modelling-spatial/01-dhs-model-datasets.qmd
+      - section: "Day 4 — Reporting & Dashboards"
+        contents:
+          - days/04-reporting-dashboards/index.qmd
+          - days/04-reporting-dashboards/01-quarto-basics.qmd
+          - days/04-reporting-dashboards/02-parameterised-reports.qmd
+          - days/04-reporting-dashboards/03-odi-report.qmd
+          - days/04-reporting-dashboards/04-r-user-group.qmd
+      - section: "Day 5 — AI-Assisted Workflows"
+        contents:
+          - days/05-ai-workflows/index.qmd
+          - days/05-ai-workflows/01-data-prompt-manual.qmd
+          - days/05-ai-workflows/02-ai-prompts-library.qmd
+          - days/05-ai-workflows/03-ai-prompts-library-full.qmd
+          - days/05-ai-workflows/04-master-data-prompt-pack.qmd
+          - days/05-ai-workflows/05-prompt-cheatsheet-poster.qmd
+      - section: "Reference"
+        contents:
+          - reference/r-essentials.qmd
+          - reference/five-verbs-data-wrangling.qmd
+          - reference/dummy-variable-regression.qmd
+
+  page-footer:
+    left: "School of Economics, Quaid-i-Azam University, Islamabad"
+    right: "Built with [Quarto](https://quarto.org)"
+
+format:
+  html:
+    theme: [cosmo, assets/scss/website.scss]
+    toc: true
+    toc-depth: 3
+    code-copy: true
+    code-overflow: wrap
+    df-print: paged

@@ -1,0 +1,38 @@
+---
+title: "Day 3 — Modelling & Spatial Analysis"
+subtitle: "Estimates with weights, and estimates on a map"
+---
+
+## Where the day goes
+
+Two halves. The morning fits models to survey data and interprets them for a
+non-technical reader. The afternoon puts district-level estimates onto Pakistan.
+
+## Sessions
+
+| # | Session | Material |
+|---|---|---|
+| 1 | Linear and logistic regression, interpreted | [`scripts/linear-regression.R`](scripts/linear-regression.R), [`scripts/car-price-regression.R`](scripts/car-price-regression.R) |
+| 2 | Weighted demographic indicators from DHS/MICS | [`01-dhs-model-datasets.qmd`](01-dhs-model-datasets.qmd), [`scripts/pdhs-indicators.R`](scripts/pdhs-indicators.R) |
+| 3 | Boundaries, joins, choropleths | [`scripts/pakistan-district-choropleth.R`](scripts/pakistan-district-choropleth.R) |
+| 4 | Interactive maps | [`scripts/pakistan-maps-geoboundaries.R`](scripts/pakistan-maps-geoboundaries.R) |
+
+## Scripts in this folder
+
+- `mics-child.R` — child indicators from MICS
+- `survey-health-indicators.R` — fertility, mortality and child health together
+- `fertility-analysis.R` — a longer worked fertility analysis
+
+## The joining problem
+
+`pakistan-district-choropleth.R` is the session that teaches the real lesson of
+spatial work: district names in a survey almost never match district names in a
+shapefile. The script uses `fuzzyjoin` and then checks the residual non-matches by
+hand. Do not skip the checking step — a silent 12% drop is how maps end up wrong.
+
+## What you should be able to do by 16:30
+
+- fit a weighted model and report it without over-claiming
+- explain a coefficient to a policymaker in one sentence
+- join survey estimates to a shapefile and verify the join
+- produce a choropleth and a leaflet map

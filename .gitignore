@@ -21,3 +21,5 @@ packrat/
 renv/library/
 renv/staging/
 .secrets
+.positai
+hies/sec_6a-consum-Exp.dta

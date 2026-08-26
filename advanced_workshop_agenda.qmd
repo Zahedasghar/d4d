@@ -1,0 +1,232 @@
+---
+title: "Advanced Workshop: Demographic Analysis with R"
+subtitle: "SPDI D4D, Islamabad — Advanced Track (4 Days)"
+author: "Zahid Asghar, School of Economics, QAU"
+date: today
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    toc-location: left
+    code-fold: show
+    code-tools: true
+    theme: cosmo
+    embed-resources: true
+  docx:
+    toc: true
+    toc-depth: 3
+    number-sections: true
+execute:
+  warning: false
+  message: false
+  echo: true
+editor: visual
+---
+
+# Overview
+
+This **Advanced Workshop** builds directly on the 5-day introductory workshop on *Demographic Analysis with R*. Participants are assumed to be comfortable with the basics of R, RStudio/Positron, Quarto, the tidyverse, and simple descriptive demographic analysis.
+
+The goal of this advanced track is to move from *describing* demographic data to **modelling, projecting, mapping, and communicating** it in a fully reproducible, production-grade workflow. Over 4 intensive days, participants will build a complete mini-project: from raw micro-data (DHS / PSLM / Census) to an interactive dashboard and a parameterised policy report.
+
+## Learning Objectives
+
+By the end of the workshop, participants will be able to:
+
+1.  Build reproducible R projects using `renv`, `here`, `targets`, and Git/GitHub.
+2.  Wrangle large demographic datasets using advanced `dplyr`, `tidyr`, and `purrr` (functional programming).
+3.  Work with complex survey data (DHS, PSLM, MICS, LFS) using the `survey` and `srvyr` packages — including weights, strata, and clustering.
+4.  Construct life tables, compute fertility and mortality indicators, and run cohort-component population projections.
+5.  Perform spatial demographic analysis using `sf`, `tmap`, and `mapview` — including small-area estimation and choropleth mapping of districts.
+6.  Create publication-quality and interactive visualisations using advanced `ggplot2`, `plotly`, `gganimate`, and `patchwork`.
+7.  Build **Quarto dashboards** and **Shiny apps** to communicate demographic findings to policymakers.
+8.  Generate **parameterised Quarto reports** — one report template, many districts/provinces.
+9.  Use AI assistants (Copilot, Claude, Positron Assistant) responsibly inside a real analytical workflow.
+
+## Pre-requisites
+
+- Completion of the 5-day introductory workshop, or equivalent working knowledge of base R + tidyverse + basic Quarto.
+- R (≥ 4.3), RStudio or Positron, Quarto (≥ 1.4), Git, and a free GitHub account installed **before** Day 1.
+- Laptop with at least 8 GB RAM (16 GB recommended for spatial day).
+
+------------------------------------------------------------------------
+
+# Day 1 — Reproducible Workflows & Advanced Data Wrangling
+
+**Theme:** *"From messy scripts to production-ready projects."*
+
+## Session 1.1 — Reproducible Project Architecture (09:00 – 10:30)
+
+- Why reproducibility matters in demographic research (replication crisis, policy credibility).
+- RStudio / Positron **Projects** revisited — the `here` package instead of `setwd()`.
+- **`renv`**: locking package versions for future-proof analysis.
+- **Git & GitHub** essentials for researchers: `init`, `commit`, `push`, `pull`, branches, and `.gitignore` for sensitive micro-data.
+- Folder conventions: `data-raw/`, `data/`, `R/`, `reports/`, `outputs/`.
+
+## Session 1.2 — Advanced `dplyr` and `tidyr` (10:45 – 12:30)
+
+- `across()`, `where()`, `if_any()`, `if_all()` for column-wise operations.
+- Window functions: `lag()`, `lead()`, `cumsum()`, `row_number()` for cohort analysis.
+- Long ↔ wide reshaping with `pivot_longer()` / `pivot_wider()` on real census tables.
+- Joining messy data: fuzzy joins and handling district boundary changes over time.
+
+## Session 1.3 — Functional Programming with `purrr` (13:30 – 15:00)
+
+- `map()`, `map_dfr()`, `map2()`, `pmap()` — replacing loops.
+- Reading and binding dozens of files at once (e.g., provincial CSVs).
+- Nested data frames: one row per district, one list-column per model.
+- Safely handling errors with `safely()` and `possibly()`.
+
+## Session 1.4 — Hands-on Lab (15:15 – 17:00)
+
+**Exercise:** Build a reproducible project that ingests raw PSLM/HIES files, cleans them, and produces a tidy, documented dataset committed to GitHub.
+
+------------------------------------------------------------------------
+
+# Day 2 — Survey Data, Life Tables & Population Projections
+
+**Theme:** *"Doing demography properly — weights, rates, and the future."*
+
+## Session 2.1 — Complex Survey Analysis (09:00 – 10:30)
+
+- Why unweighted means from DHS/PSLM are **wrong**.
+- The `survey` and `srvyr` packages: declaring a design with weights, strata, and PSUs.
+- Computing weighted means, proportions, quantiles, and standard errors.
+- Subpopulation analysis: urban/rural, province, wealth quintile.
+- Design effects and effective sample size.
+
+## Session 2.2 — Fertility and Mortality Indicators (10:45 – 12:30)
+
+- Age-specific fertility rates (ASFR), Total Fertility Rate (TFR), Gross and Net Reproduction Rates.
+- Infant, child, and under-5 mortality from DHS birth histories.
+- Introduction to the `DHS.rates` and `demography` packages.
+- Computing confidence intervals for demographic rates.
+
+## Session 2.3 — Life Tables from Scratch (13:30 – 15:00)
+
+- Building a period life table step-by-step in R (nMx → nqx → lx → Lx → Tx → ex).
+- Comparing male vs female life expectancy across provinces.
+- Using the `MortalityLaws` package to fit Gompertz, Makeham, and Heligman-Pollard models.
+
+## Session 2.4 — Cohort-Component Population Projections (15:15 – 17:00)
+
+- Leslie matrix approach.
+- Implementing a 25-year projection for Pakistan using the `popReconstruct` / custom functions.
+- Scenario analysis: high/medium/low fertility assumptions.
+- **Deliverable:** a reproducible projection notebook.
+
+------------------------------------------------------------------------
+
+# Day 3 — Spatial Demography & Advanced Visualisation
+
+**Theme:** *"Where people live matters — making maps and charts that persuade."*
+
+## Session 3.1 — Spatial Data with `sf` (09:00 – 10:30)
+
+- Reading shapefiles and GeoPackages for Pakistan districts.
+- Coordinate reference systems (CRS), projections, and why they matter.
+- Spatial joins: attaching district-level indicators to polygons.
+- Computing areas, centroids, neighbours (`spdep`).
+
+## Session 3.2 — Thematic Mapping (10:45 – 12:30)
+
+- Static maps with `tmap` — choropleths, bubble maps, faceted small multiples.
+- Interactive maps with `mapview` and `leaflet`.
+- Classification schemes: quantile, Jenks, equal interval — and when each misleads.
+- Bivariate choropleths (e.g., TFR × female literacy).
+
+## Session 3.3 — Advanced `ggplot2` (13:30 – 15:00)
+
+- Beyond the basics: `scales`, custom themes, annotation layers.
+- Combining plots with `patchwork` and `cowplot`.
+- Population pyramids done right — animated across years with `gganimate`.
+- Interactive charts with `plotly` and `ggiraph`.
+- Accessibility: colour-blind-safe palettes (`viridis`, `paletteer`).
+
+## Session 3.4 — Hands-on Lab (15:15 – 17:00)
+
+**Exercise:** Produce a one-page district-level demographic profile with a map, a pyramid, and a trend chart — all from a single Quarto document.
+
+------------------------------------------------------------------------
+
+# Day 4 — Dashboards, Parameterised Reports & Communication
+
+**Theme:** *"From analysis to impact — reaching policymakers."*
+
+## Session 4.1 — Quarto Dashboards (09:00 – 10:30)
+
+- The new `format: dashboard` in Quarto 1.4+.
+- Value boxes, tabsets, cards, and layouts.
+- Embedding `plotly`, `leaflet`, and `DT` tables.
+- Publishing dashboards to Quarto Pub / GitHub Pages / Netlify.
+
+## Session 4.2 — Shiny for Demographers (10:45 – 12:30)
+
+- When to use Shiny vs a Quarto dashboard.
+- Reactive programming basics: `reactive()`, `observe()`, `eventReactive()`.
+- Building a mini Shiny app to explore district-level indicators with user-selected filters.
+- Deploying to shinyapps.io (free tier).
+
+## Session 4.3 — Parameterised Quarto Reports (13:30 – 15:00)
+
+- Using YAML `params:` to generate one report per district/province.
+- Rendering many reports in a loop with `quarto::quarto_render()` + `purrr`.
+- Branding: custom Typst and Word templates, logos, cover pages.
+- Exporting to HTML, PDF (via Typst), and Word in one build.
+
+## Session 4.4 — Capstone Presentations & AI-Assisted Workflows (15:15 – 17:00)
+
+- Participants present their mini-projects (5 min each).
+- Live demo: using **Claude / Copilot / Positron Assistant** to debug, refactor, and document code responsibly.
+- Guidelines for citing AI assistance in research outputs.
+- Workshop wrap-up, feedback, certificates, and next steps.
+
+------------------------------------------------------------------------
+
+# Tools & Packages Used
+
+```{r}
+#| eval: false
+
+if (!require(pacman)) install.packages("pacman")
+library(pacman)
+
+p_load(
+  # Core
+  tidyverse, here, renv, janitor, scales,
+  # Reporting
+  quarto, knitr, kableExtra, gt, DT, flexdashboard,
+  # Functional programming & pipelines
+  purrr, furrr, targets, tarchetypes,
+  # Survey & demography
+  survey, srvyr, demography, DHS.rates, MortalityLaws, popReconstruct,
+  # Spatial
+  sf, tmap, mapview, leaflet, spdep,
+  # Advanced viz
+  ggplot2, plotly, gganimate, patchwork, cowplot, ggrepel,
+  ggiraph, paletteer, viridis,
+  # Interactive apps
+  shiny, bslib, shinyWidgets
+)
+```
+
+# Expected Outcomes
+
+Each participant will leave the workshop with:
+
+- A **GitHub repository** containing a fully reproducible mini-project.
+- A **Quarto dashboard** deployed online.
+- A **parameterised policy report** (HTML + Word + PDF) for a district of their choice.
+- The confidence to run their own advanced demographic analyses and mentor others.
+
+# Suggested Reading
+
+- Preston, Heuveline & Guillot (2001). *Demography: Measuring and Modeling Population Processes.*
+- Wickham, Çetinkaya-Rundel & Grolemund (2023). *R for Data Science* (2nd ed.).
+- Wickham (2019). *Advanced R* (2nd ed.).
+- Lovelace, Nowosad & Muenchow (2025). *Geocomputation with R.*
+- Quarto documentation: <https://quarto.org/docs/guide/>
+
+------------------------------------------------------------------------
+
+*Prepared by Zahid Asghar, School of Economics, Quaid-i-Azam University, for SPDI Data for Development (D4D), Islamabad.*

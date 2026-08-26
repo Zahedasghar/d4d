@@ -1,0 +1,23 @@
+# Normalise line endings: repo stores LF, Windows checkouts get CRLF.
+* text=auto
+
+*.R      text
+*.r      text
+*.qmd    text
+*.Rmd    text
+*.yml    text
+*.scss   text
+*.css    text
+*.md     text
+
+# Binary / never diff
+*.xlsx   binary
+*.sav    binary
+*.dta    binary
+*.DTA    binary
+*.shp    binary
+*.dbf    binary
+*.png    binary
+*.jpg    binary
+*.pdf    binary
+*.docx   binary

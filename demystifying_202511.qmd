@@ -3,7 +3,7 @@ title: "From Survey to Insights: Results in Just Minutes"
 title-block-banner: true
 author: "Zahid Asghar"
 format: 
-  html:
+  docx:
     theme: [default, custom-theme.scss]
     toc: true
     toc_depth: 2

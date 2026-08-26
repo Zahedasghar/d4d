@@ -1,0 +1,54 @@
+/*-- scss:defaults --*/
+
+// Website theme for the d4d workshop site.
+// Deliberately separate from custom-theme.scss, which is a revealjs slide theme
+// (it contains .reveal selectors that are inert outside a presentation).
+// Palette is kept identical so slides and site look like one family.
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&display=swap');
+
+$midnight-blue: #2C3E50;
+$slate-gray:    #34495E;
+$turquoise:     #16A085;
+$orange:        #E67E22;
+$light-bg:      #F8F9FA;
+
+$primary:   $turquoise;
+$secondary: $slate-gray;
+$body-color: $midnight-blue;
+$link-color: $turquoise;
+
+$font-family-sans-serif: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+$font-family-monospace:  'Fira Code', 'Courier New', monospace;
+$font-size-root: 17px;
+
+$code-block-bg: $light-bg;
+$code-color: $orange;
+
+/*-- scss:rules --*/
+
+h1, h2, h3 {
+  color: $midnight-blue;
+  font-weight: 600;
+}
+
+h2 {
+  border-bottom: 2px solid rgba($turquoise, 0.35);
+  padding-bottom: 0.25rem;
+  margin-top: 2rem;
+}
+
+.callout {
+  border-radius: 6px;
+}
+
+div.sourceCode {
+  border-left: 3px solid $turquoise;
+  border-radius: 0 4px 4px 0;
+}
+
+.navbar-brand {
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}

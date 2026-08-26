@@ -1,0 +1,386 @@
+country,iso3,region,cum2324_usd_m,cum2223_usd_m,jun24_usd_m,jun23_usd_m,n_hs_codes,yoy_chg_pct,share_pct
+Afghanistan,AFG,South Asia,45.99323928571428,0,443.8950214285714,107.33346785714285,1084,Inf,8.05
+United Arab Emirates,ARE,Middle East & North Africa,44.726167857142855,0,2004.53795,241.40194285714287,2075,Inf,7.82
+United Kingdom,GBR,Europe & Central Asia,34.49909642857143,0,149.53607857142856,283.51115,1523,Inf,6.03
+Indonesia,IDN,East Asia & Pacific,32.68539285714286,0,16.620525,3.0027714285714286,226,Inf,5.72
+Philippines,PHL,East Asia & Pacific,26.22120357142857,0,82.84662499999999,27.088874999999998,182,Inf,4.59
+U.S.America,USA,North America,22.790364285714286,0,596.5008821428572,644.6782392857143,1675,Inf,3.99
+Germany,DEU,Europe & Central Asia,21.72916785714286,0,39.926607142857144,79.23238571428571,957,Inf,3.8
+Saudi Arabia,SAU,Middle East & North Africa,20.1124,0,106.63187857142857,73.84442857142857,1152,Inf,3.52
+Turkey,TUR,Europe & Central Asia,15.843003571428572,0,108.43801428571429,16.944992857142857,565,Inf,2.77
+Belgium,BEL,Europe & Central Asia,14.242375000000001,0,89.84109285714285,125.53648214285714,672,Inf,2.49
+Uzbekistan,UZB,Europe & Central Asia,12.426060714285713,0,44.286696428571425,12.350989285714286,261,Inf,2.17
+Bangladesh,BGD,South Asia,11.867639285714287,0,103.72444285714286,192.34623214285713,585,Inf,2.08
+China,CHN,East Asia & Pacific,11.672385714285715,0,1130.993225,738.38915,702,Inf,2.04
+Canada,CAN,North America,11.539878571428572,0,136.89625357142856,55.084942857142856,976,Inf,2.02
+Qatar,QAT,Middle East & North Africa,11.538635714285714,0,263.0184892857143,46.789325,660,Inf,2.02
+Viet Nam,VNM,East Asia & Pacific,11.072285714285714,0,116.31515,4.499232142857143,345,Inf,1.94
+Sri Lanka,LKA,South Asia,10.635567857142858,0,15.976517857142857,24.778142857142857,499,Inf,1.86
+Singapore,SGP,East Asia & Pacific,10.301142857142857,0,72.46311785714286,13.190221428571428,390,Inf,1.8
+Iraq,IRQ,Middle East & North Africa,9.419128571428573,0,15.656778571428573,0.5730607142857143,258,Inf,1.65
+Romania,ROU,Europe & Central Asia,8.997275,0,6.039807142857143,7.437132142857142,254,Inf,1.57
+Netherlands,NLD,Europe & Central Asia,8.546546428571428,0,6.1280785714285715,168.5360642857143,750,Inf,1.49
+Oman,OMN,Middle East & North Africa,8.507321428571428,0,198.81090357142858,18.299792857142858,712,Inf,1.49
+Bahrain,BHR,Middle East & North Africa,7.412439285714286,0,99.31680714285714,22.25705,530,Inf,1.3
+O.Asia(Tai.For.Pe.Ki,NA,Other/Unclassified,6.482210714285714,0,141.52485000000001,25.933625000000003,173,Inf,1.13
+Italy,ITA,Europe & Central Asia,6.133442857142857,0,355.993625,45.98381071428572,774,Inf,1.07
+Italy                         38,ITA,Europe & Central Asia,5.703146428571428,0,0,0,1,Inf,1
+Spain,ESP,Europe & Central Asia,5.627546428571429,0,128.33816785714285,189.22828928571428,693,Inf,0.98
+Kuwait,KWT,Middle East & North Africa,5.376878571428572,0,507.26016785714285,51.20511428571429,517,Inf,0.94
+U.S.America                  125,USA,North America,4.640303571428571,0,0,0,1,Inf,0.81
+Malaysia,MYS,East Asia & Pacific,4.632846428571429,0,37.163174999999995,28.24048571428571,635,Inf,0.81
+France,FRA,Europe & Central Asia,4.485275,0,68.98380357142858,35.95016428571429,657,Inf,0.78
+Thailand,THA,East Asia & Pacific,4.122285714285714,0,58.811703571428566,57.59802142857143,450,Inf,0.72
+Australia,AUS,East Asia & Pacific,3.9938357142857144,0,80.722175,107.44683571428571,886,Inf,0.7
+Japan,JPN,East Asia & Pacific,3.593060714285714,0,52.23653928571429,6.792282142857143,476,Inf,0.63
+Poland,POL,Europe & Central Asia,3.180710714285714,0,12.683432142857143,13.924460714285713,367,Inf,0.56
+"United Kingdom               2,294",GBR,Europe & Central Asia,2.9300714285714284,0,0,0,1,Inf,0.51
+Greece,GRC,Europe & Central Asia,2.9118178571428572,0,12.0362,7.988778571428571,427,Inf,0.51
+Poland                        91,POL,Europe & Central Asia,2.874614285714286,0,0,0,1,Inf,0.5
+Brazil,BRA,Latin America & Caribbean,2.848925,0,13.374489285714287,9.370928571428571,281,Inf,0.5
+Lithuania,LTU,Europe & Central Asia,2.831410714285714,0,3.5967535714285717,0.33279285714285717,126,Inf,0.5
+South Africa,ZAF,Sub-Saharan Africa,2.7134964285714287,0,22.92320714285714,12.844817857142857,621,Inf,0.47
+Mauritius,MUS,Sub-Saharan Africa,2.557117857142857,0,0.6308892857142857,0.257825,303,Inf,0.45
+Kenya,KEN,Sub-Saharan Africa,2.244382142857143,0,12.912832142857143,1.1784857142857144,368,Inf,0.39
+Sweden,SWE,Europe & Central Asia,2.213942857142857,0,25.13993214285714,38.41867857142857,414,Inf,0.39
+New Zealand,NZL,East Asia & Pacific,1.9980892857142858,0,2.0826285714285713,1.2545607142857143,281,Inf,0.35
+Slovenia,SVN,Europe & Central Asia,1.9533392857142857,0,12.826196428571428,12.090257142857142,206,Inf,0.34
+Spain                         52,ESP,Europe & Central Asia,1.924825,0,0,0,1,Inf,0.34
+Denmark,DNK,Europe & Central Asia,1.8311785714285713,0,6.958542857142858,26.709374999999998,349,Inf,0.32
+Russian Federation,RUS,Europe & Central Asia,1.7550678571428573,0,13.475582142857144,6.247064285714286,148,Inf,0.31
+Somalia,SOM,Sub-Saharan Africa,1.65405,0,19.29693214285714,1.2979964285714285,194,Inf,0.29
+Netherlands                  188,NLD,Europe & Central Asia,1.6110892857142858,0,0,0,1,Inf,0.28
+Mexico,MEX,Latin America & Caribbean,1.57805,0,2.2551285714285716,0.6228035714285715,223,Inf,0.28
+Tunisia,TUN,Middle East & North Africa,1.5567499999999999,0,3.7135821428571427,1.1385714285714286,148,Inf,0.27
+"Korea, Republic of",KOR,East Asia & Pacific,1.523782142857143,0,205.67807142857143,5.265407142857143,332,Inf,0.27
+Philippines                  110,PHL,East Asia & Pacific,1.512075,0,0,0,1,Inf,0.26
+"Australia                   16,680",AUS,East Asia & Pacific,1.3531678571428571,0,0,0,1,Inf,0.24
+"Belgium                     26,412",BEL,Europe & Central Asia,1.3357535714285713,0,0,0,1,Inf,0.23
+China                         44,CHN,East Asia & Pacific,1.32955,0,0,0,1,Inf,0.23
+U.R.of Tanzania,TZA,Sub-Saharan Africa,1.2956107142857143,0,194.29839642857144,5.461692857142857,589,Inf,0.23
+Chile,CHL,Latin America & Caribbean,1.2585535714285714,0,3.590839285714286,10.598589285714286,263,Inf,0.22
+Tajikistan,TJK,Europe & Central Asia,1.1872392857142857,0,0.8286607142857143,17.591271428571428,62,Inf,0.21
+United Kingdom                22,GBR,Europe & Central Asia,1.1582928571428572,0,0,0,1,Inf,0.2
+Portugal,PRT,Europe & Central Asia,1.1564142857142856,0,8.350817857142857,3.671957142857143,329,Inf,0.2
+Argentina,ARG,Latin America & Caribbean,1.1490321428571428,0,10.826246428571428,11.271217857142856,164,Inf,0.2
+"Canada                        2,503",CAN,North America,1.1082035714285714,0,0.029242857142857143,0,1,Inf,0.19
+Austria,AUT,Europe & Central Asia,1.108025,0,3.9471392857142855,1.2011535714285715,262,Inf,0.19
+Jordan,JOR,Middle East & North Africa,1.0744714285714285,0,44.264003571428574,4.954942857142857,283,Inf,0.19
+Cambodia Fr.Kampuche,KHM,East Asia & Pacific,1.0684928571428571,0,4.2562428571428566,3.711825,88,Inf,0.19
+Hong Kong S.A.Re.Chi,HKG,East Asia & Pacific,1.06225,0,1.5011142857142856,2.7059214285714286,442,Inf,0.19
+Bulgaria,BGR,Europe & Central Asia,1.0324392857142857,0,47.44732142857143,10.637914285714286,210,Inf,0.18
+"Italy                       49,140",ITA,Europe & Central Asia,1.0085178571428572,0,1.5012357142857142,0,1,Inf,0.18
+Egypt(U.A.R.),EGY,Middle East & North Africa,0.9751714285714286,0,6.610703571428571,29.097649999999998,292,Inf,0.17
+Lebanon,LBN,Middle East & North Africa,0.9069464285714286,0,4.066092857142857,0.8329178571428572,106,Inf,0.16
+Belgium                      250,BEL,Europe & Central Asia,0.8180285714285714,0,0,0,1,Inf,0.14
+"Sweden                      8,453",SWE,Europe & Central Asia,0.8097964285714285,0,0,0,1,Inf,0.14
+Gambia,GMB,Sub-Saharan Africa,0.7941964285714286,0,0.39983928571428573,0.3935142857142857,83,Inf,0.14
+U.S.America                     478,USA,North America,0.7746178571428571,0,0,0,1,Inf,0.14
+Cameroon,CMR,Sub-Saharan Africa,0.7644,0,64.39722142857144,0.5977321428571428,87,Inf,0.13
+Sudan,SDN,Sub-Saharan Africa,0.7413571428571428,0,3.9237357142857143,0.38399285714285714,97,Inf,0.13
+Ireland,IRL,Europe & Central Asia,0.7405607142857142,0,1.1630749999999999,1.4138428571428572,343,Inf,0.13
+"France                       1,118",FRA,Europe & Central Asia,0.7144,0,0,0,1,Inf,0.12
+Algeria,DZA,Middle East & North Africa,0.6984071428571429,0,7.177939285714285,1.6376678571428571,143,Inf,0.12
+Colombia,COL,Latin America & Caribbean,0.6868,0,5.290496428571428,6.304803571428572,185,Inf,0.12
+Czech Republic,CZE,Europe & Central Asia,0.6763821428571428,0,2.839067857142857,1.7961964285714285,278,Inf,0.12
+"Germany                     2,070",DEU,Europe & Central Asia,0.6476464285714286,0,0,0,1,Inf,0.11
+France                             62,FRA,Europe & Central Asia,0.6327214285714285,0,0,0,1,Inf,0.11
+Kazakstan,KAZ,Europe & Central Asia,0.624225,0,44.82405000000001,2.7192892857142854,246,Inf,0.11
+Estonia                      188,EST,Europe & Central Asia,0.6182214285714286,0,0,0,1,Inf,0.11
+Yemen,YEM,Middle East & North Africa,0.6169678571428571,0,22.69126071428571,0.6072071428571428,167,Inf,0.11
+Norway,NOR,Europe & Central Asia,0.6014035714285715,0,1.5343642857142856,0.6610642857142858,227,Inf,0.11
+D.R.of Congo,COD,Sub-Saharan Africa,0.6002214285714286,0,16.941,0.5523357142857143,109,Inf,0.1
+Senegal,SEN,Sub-Saharan Africa,0.5989142857142857,0,3.8002285714285717,0.4406535714285714,180,Inf,0.1
+"Sri Lanka                   28,410",LKA,South Asia,0.5891785714285714,0,0,0,1,Inf,0.1
+Benin,BEN,Sub-Saharan Africa,0.581025,0,3.9018285714285716,1.6249607142857143,68,Inf,0.1
+Latvia,LVA,Europe & Central Asia,0.5796642857142857,0,0.007125,0.07786071428571428,56,Inf,0.1
+Italy                             162,ITA,Europe & Central Asia,0.5644642857142858,0,0,0,1,Inf,0.1
+Madagascar,MDG,Sub-Saharan Africa,0.5319642857142858,0,0.03748214285714286,1.2123357142857143,114,Inf,0.09
+"Afghanistan                 20,247",AFG,South Asia,0.5231642857142857,0,0,0,1,Inf,0.09
+Djibouti,DJI,Middle East & North Africa,0.521375,0,6.962064285714286,2.8293035714285715,260,Inf,0.09
+Croatia,HRV,Europe & Central Asia,0.5057107142857142,0,2.4080500000000002,3.6465,195,Inf,0.09
+Finland,FIN,Europe & Central Asia,0.48059285714285715,0,2.2408678571428573,5.814217857142857,205,Inf,0.08
+"Greece                      7,528",GRC,Europe & Central Asia,0.4771285714285714,0,0,0,1,Inf,0.08
+"Bahrain                      10,558",BHR,Middle East & North Africa,0.4513142857142857,0,0.24854642857142858,0,1,Inf,0.08
+VAL,NA,Other/Unclassified,0.44373214285714285,0,0,0,1,Inf,0.08
+Uruguay,URY,Latin America & Caribbean,0.44135714285714284,0,2.4543964285714286,1.4532714285714285,145,Inf,0.08
+Switzerland,CHE,Europe & Central Asia,0.441025,0,12.654689285714285,4.6098107142857145,245,Inf,0.08
+Ecuador,ECU,Latin America & Caribbean,0.43865,0,0.9916714285714286,1.1947642857142857,93,Inf,0.08
+Germany                       19,DEU,Europe & Central Asia,0.4014142857142857,0,0,0,1,Inf,0.07
+Mozambique,MOZ,Sub-Saharan Africa,0.3674892857142857,0,1.3388964285714287,0.4649642857142857,285,Inf,0.06
+"Venezuela,Bolivar. R",VEN,Latin America & Caribbean,0.34350714285714284,0,0.17035357142857144,0.11345,42,Inf,0.06
+Dominican Republic,DOM,Latin America & Caribbean,0.3386071428571429,0,1.35005,1.9354607142857143,58,Inf,0.06
+Maldives,MDV,South Asia,0.3337535714285714,0,5.079410714285714,0.470175,159,Inf,0.06
+Swaziland,SWZ,Sub-Saharan Africa,0.3320071428571429,0,0.016192857142857144,0.013521428571428571,23,Inf,0.06
+Botswana,BWA,Sub-Saharan Africa,0.32966071428571425,0,0.26529642857142854,0.021660714285714287,57,Inf,0.06
+"Angola                       12,261",AGO,Sub-Saharan Africa,0.3175,0,0,0,1,Inf,0.06
+Ethiopia,ETH,Sub-Saharan Africa,0.3147035714285714,0,0.002082142857142857,0.005692857142857143,30,Inf,0.06
+DOZ,NA,Other/Unclassified,0.30995,0,0.2121392857142857,0.002857142857142857,29,Inf,0.05
+"Bangladesh                  15,000",BGD,South Asia,0.30966785714285716,0,0,0,1,Inf,0.05
+"Canada                      7,228",CAN,North America,0.3074857142857143,0,0,0,1,Inf,0.05
+Brazil                       132,BRA,Latin America & Caribbean,0.30235357142857144,0,0,0,1,Inf,0.05
+Seychelles,SYC,Sub-Saharan Africa,0.29245,0,2.6954285714285717,0.1530142857142857,75,Inf,0.05
+Spain                              30,ESP,Europe & Central Asia,0.29028571428571426,0,0,0,1,Inf,0.05
+Slovakia/Slovak R.,SVK,Europe & Central Asia,0.2881214285714286,0,2.4925107142857144,8.062689285714287,100,Inf,0.05
+"United Kingdom                6,025",GBR,Europe & Central Asia,0.2812678571428571,0,0,0,1,Inf,0.05
+Zimbabwe,ZWE,Sub-Saharan Africa,0.2718607142857143,0,4.760810714285714,0.12283571428571428,102,Inf,0.05
+Azerbaijan,AZE,Europe & Central Asia,0.2670321428571429,0,4.110971428571428,3.7984428571428572,104,Inf,0.05
+Peru,PER,Latin America & Caribbean,0.26099285714285714,0,0.5888392857142858,0.3688392857142857,91,Inf,0.05
+Colombia                      60,COL,Latin America & Caribbean,0.255975,0,0,0,1,Inf,0.04
+Ghana,GHA,Sub-Saharan Africa,0.2533642857142857,0,109.2826857142857,1.3226142857142857,194,Inf,0.04
+Guatemala,GTM,Latin America & Caribbean,0.2515,0,2.509082142857143,0.8364392857142857,63,Inf,0.04
+Nigeria,NGA,Sub-Saharan Africa,0.2456142857142857,0,5.1787535714285715,0.05173928571428572,173,Inf,0.04
+Comoros,COM,Sub-Saharan Africa,0.23954642857142858,0,0.14507142857142857,0.018339285714285714,15,Inf,0.04
+"Cameroon                     17,084",CMR,Sub-Saharan Africa,0.23947142857142859,0,0.04222857142857143,0,1,Inf,0.04
+Libya,LBY,Middle East & North Africa,0.23857499999999998,0,0.5972428571428572,0.3340821428571428,110,Inf,0.04
+"Germany                     7,527",DEU,Europe & Central Asia,0.2193642857142857,0,0,0,1,Inf,0.04
+Suriname,SUR,Latin America & Caribbean,0.21832142857142856,0,0.06481071428571429,0,20,Inf,0.04
+"United Kingdom              85,669",GBR,Europe & Central Asia,0.2151,0,0,0,1,Inf,0.04
+Kyrgyzstan/Kyrgyz R.,KGZ,Europe & Central Asia,0.21091071428571428,0,2.984342857142857,5.253989285714286,99,Inf,0.04
+Belgium                        413,BEL,Europe & Central Asia,0.20463928571428572,0,0,0,1,Inf,0.04
+U.S.America                        79,USA,North America,0.20401785714285714,0,0,0,1,Inf,0.04
+"Algeria                      1,800",DZA,Middle East & North Africa,0.19852857142857142,0,0,0,1,Inf,0.03
+U.S.America                    348,USA,North America,0.1936642857142857,0,0,0,1,Inf,0.03
+Timor Leste,TLS,East Asia & Pacific,0.18660714285714286,0,14.912217857142856,0.3086535714285714,10,Inf,0.03
+"Congo, Republic of",COG,Sub-Saharan Africa,0.1845107142857143,0,0.8259321428571429,0.1766964285714286,29,Inf,0.03
+Angola,AGO,Sub-Saharan Africa,0.18090714285714285,0,75.82851071428571,8.104596428571428,117,Inf,0.03
+"Spain                       17,653",ESP,Europe & Central Asia,0.17262857142857144,0,0,0,1,Inf,0.03
+Guinea,GIN,Sub-Saharan Africa,0.17020357142857143,0,0.20276071428571427,0.003357142857142857,188,Inf,0.03
+Panama,PAN,Latin America & Caribbean,0.16987857142857143,0,0.4126464285714286,0.22495357142857142,101,Inf,0.03
+Australia                        80,AUS,East Asia & Pacific,0.16793214285714286,0,0,0,1,Inf,0.03
+Malta,MLT,Middle East & North Africa,0.16565714285714286,0,0.4360607142857143,0.1631142857142857,55,Inf,0.03
+Hungary,HUN,Europe & Central Asia,0.16380357142857144,0,0.9538214285714286,0.5222571428571429,136,Inf,0.03
+"Korea, Republic of             625",KOR,East Asia & Pacific,0.16331428571428572,0,0,0,1,Inf,0.03
+Turkmenistan,TKM,Europe & Central Asia,0.15808214285714287,0,0.268,0.8484607142857143,23,Inf,0.03
+"Spain                       63,614",ESP,Europe & Central Asia,0.15621428571428572,0,0,0,1,Inf,0.03
+Uganda,UGA,Sub-Saharan Africa,0.15560357142857142,0,0.8178607142857143,0.5344571428571429,84,Inf,0.03
+"Ireland                     13,018",IRL,Europe & Central Asia,0.15307142857142858,0,0,0,1,Inf,0.03
+Morocco,MAR,Middle East & North Africa,0.15012857142857142,0,0.29265714285714284,0.038282142857142855,128,Inf,0.03
+Bangladesh                      976,BGD,South Asia,0.14641071428571428,0,0,0,1,Inf,0.03
+Togo,TGO,Sub-Saharan Africa,0.14539285714285716,0,1.8072071428571428,0.9765571428571428,62,Inf,0.03
+CUBM,NA,Other/Unclassified,0.13334285714285715,0,0.016296428571428573,0,5,Inf,0.02
+Brunei Darussalam,BRN,East Asia & Pacific,0.13093214285714286,0,2.958385714285714,0.17554642857142858,58,Inf,0.02
+Bangladesh                         -,BGD,South Asia,0.12932142857142856,0,0,0,1,Inf,0.02
+"Afghanistan                  1,806",AFG,South Asia,0.1250892857142857,0,0,0,1,Inf,0.02
+Mauritania,MRT,Sub-Saharan Africa,0.12298214285714285,0,0.29081071428571426,0.2614142857142857,49,Inf,0.02
+"Germany                     25,000",DEU,Europe & Central Asia,0.11979285714285715,0,0,0,1,Inf,0.02
+Albania,ALB,Europe & Central Asia,0.11158214285714285,0,2.9646285714285714,1.4210464285714286,111,Inf,0.02
+"Japan                        1,930",JPN,East Asia & Pacific,0.10985714285714286,0,0,0,1,Inf,0.02
+"Germany                      2,076",DEU,Europe & Central Asia,0.10619642857142857,0,0,0,1,Inf,0.02
+"Co,te d,Ivoire(Fr.Iv",CIV,Sub-Saharan Africa,0.10520714285714286,0,36.36163928571428,3.53935,58,Inf,0.02
+"Saudi Arabia                 3,647",SAU,Middle East & North Africa,0.1051,0,0,0,1,Inf,0.02
+Canada                         3,CAN,North America,0.10450714285714285,0,0,0,1,Inf,0.02
+Turkey                         333,TUR,Europe & Central Asia,0.10321785714285714,0,0,0,1,Inf,0.02
+SQM,NA,Other/Unclassified,0.09777857142857144,0,0.04525714285714286,0,7,Inf,0.02
+"Saudi Arabia                13,000",SAU,Middle East & North Africa,0.0912,0,0,0,1,Inf,0.02
+"United Kingdom               15,794",GBR,Europe & Central Asia,0.09107142857142857,0,0.15700357142857144,0,1,Inf,0.02
+Trinidad and Tobago,TTO,Latin America & Caribbean,0.0846642857142857,0,0.6705035714285714,0.36153214285714286,102,Inf,0.01
+"Germany                      5,927",DEU,Europe & Central Asia,0.08129285714285714,0,0,0,1,Inf,0.01
+Sierra Leone,SLE,Sub-Saharan Africa,0.08102142857142858,0,4.657946428571428,0.026610714285714286,33,Inf,0.01
+Jamaica,JAM,Latin America & Caribbean,0.080525,0,0.2981392857142857,0.3097857142857143,30,Inf,0.01
+France                         474,FRA,Europe & Central Asia,0.07849285714285714,0,0,0,1,Inf,0.01
+Cyprus,CYP,Europe & Central Asia,0.07302857142857143,0,15.292164285714286,1.7078607142857143,137,Inf,0.01
+Estonia,EST,Europe & Central Asia,0.07248214285714286,0,0.25691785714285714,0.849775,111,Inf,0.01
+"New Zealand                  6,147",NZL,East Asia & Pacific,0.07244285714285714,0,0,0,1,Inf,0.01
+Somalia                        791,SOM,Sub-Saharan Africa,0.07034642857142857,0,0,0,1,Inf,0.01
+Cape Verde,CPV,Sub-Saharan Africa,0.06863571428571429,0,0.007767857142857143,0,1,Inf,0.01
+United Arab Emirates            56,ARE,Middle East & North Africa,0.06579642857142858,0,0,0,1,Inf,0.01
+Liberia,LBR,Sub-Saharan Africa,0.06534285714285715,0,6.988967857142857,0,13,Inf,0.01
+Georgia,GEO,Europe & Central Asia,0.056607142857142856,0,0.4400857142857143,0.019175,74,Inf,0.01
+Netherlands                    939,NLD,Europe & Central Asia,0.05307142857142857,0,0,0,1,Inf,0.01
+Iran ( Islamic R.),IRN,Middle East & North Africa,0.04723928571428571,0,0,0,3,Inf,0.01
+"United Arab Emirates         13,473",ARE,Middle East & North Africa,0.045764285714285716,0,0.4941714285714286,0,1,Inf,0.01
+Rwanda,RWA,Sub-Saharan Africa,0.044475,0,0.05537142857142857,9.821428571428572e-4,21,Inf,0.01
+Aruba,ABW,Latin America & Caribbean,0.04188571428571428,0,0.07760714285714286,0.10895357142857143,15,Inf,0.01
+Poland                          45,POL,Europe & Central Asia,0.041617857142857144,0,0,0,1,Inf,0.01
+Serbia,SRB,Europe & Central Asia,0.040542857142857144,0,0.0546,0.01719285714285714,60,Inf,0.01
+Vanuatu,VUT,East Asia & Pacific,0.03728214285714286,0,0.004121428571428571,0.027767857142857143,16,Inf,0.01
+Uzbekistan                     670,UZB,Europe & Central Asia,0.03692857142857143,0,0,0,1,Inf,0.01
+Belarus,BLR,Europe & Central Asia,0.03637142857142857,0,0.025085714285714284,0.03458571428571429,25,Inf,0.01
+Costa Rica,CRI,Latin America & Caribbean,0.0361,0,0.06935,0.6037964285714286,54,Inf,0.01
+Netherlands                    390,NLD,Europe & Central Asia,0.036025,0,0,0,1,Inf,0.01
+KG     -,NA,Other/Unclassified,0.035628571428571426,0,0,0,2,Inf,0.01
+"U.S.America                  1,632",USA,North America,0.035514285714285714,0,0,0,1,Inf,0.01
+"Italy                       49,530",ITA,Europe & Central Asia,0.03345,0,0,0,1,Inf,0.01
+"Brazil                       26,266",BRA,Latin America & Caribbean,0.032025,0,0,0,1,Inf,0.01
+"United Kingdom              12,901",GBR,Europe & Central Asia,0.031164285714285714,0,0,0,1,Inf,0.01
+Egypt(U.A.R.)                      -,EGY,Middle East & North Africa,0.030939285714285714,0,0,0,3,Inf,0.01
+Armenia,ARM,Europe & Central Asia,0.030703571428571427,0,0.22799285714285714,0.021814285714285717,17,Inf,0.01
+U.S.America                   37,USA,North America,0.028875,0,0,0,1,Inf,0.01
+Russian Federation              26,RUS,Europe & Central Asia,0.02867857142857143,0,0,0,1,Inf,0.01
+Kiribati,KIR,East Asia & Pacific,0.02859642857142857,0,0,0,1,Inf,0.01
+U.S.America                  378,USA,North America,0.028375,0,0,0,1,Inf,0
+Paraguay,PRY,Latin America & Caribbean,0.028025,0,0.09776071428571428,0.0083,39,Inf,0
+"United Arab Emirates          2,440",ARE,Middle East & North Africa,0.027692857142857144,0,0,0,1,Inf,0
+CARAT,NA,Other/Unclassified,0.02665,0,0,0,1,Inf,0
+Yemen                              -,YEM,Middle East & North Africa,0.026228571428571427,0,0,0,2,Inf,0
+Guyana,GUY,Latin America & Caribbean,0.023307142857142856,0,0.11092142857142857,0.0021285714285714285,69,Inf,0
+"Oman                           2,370",OMN,Middle East & North Africa,0.022385714285714287,0,0,0,1,Inf,0
+Puerto Rico,PRI,Latin America & Caribbean,0.020889285714285714,0,0.09337142857142856,0.033232142857142856,29,Inf,0
+"United Arab Emirates         9,500",ARE,Middle East & North Africa,0.0193,0,0,0,1,Inf,0
+"United Arab Emirates          9,560",ARE,Middle East & North Africa,0.018160714285714287,0,0.022139285714285716,0,1,Inf,0
+United Arab Emirates               -,ARE,Middle East & North Africa,0.017535714285714286,0,0,0,6,Inf,0
+Zambia,ZMB,Sub-Saharan Africa,0.017325,0,0.384525,0.09634642857142857,58,Inf,0
+Australia                      58,AUS,East Asia & Pacific,0.016260714285714285,0,0,0,1,Inf,0
+"Saudi Arabia                  2,000",SAU,Middle East & North Africa,0.016107142857142858,0,0.03426785714285714,0,1,Inf,0
+Malawi,MWI,Sub-Saharan Africa,0.015367857142857143,0,0.216125,0.0036785714285714286,54,Inf,0
+French Polynesia,PYF,East Asia & Pacific,0.014732142857142857,0,0.027360714285714283,0.02102142857142857,24,Inf,0
+Romania                        337,ROU,Europe & Central Asia,0.014592857142857144,0,0,0,1,Inf,0
+Germany                       710,DEU,Europe & Central Asia,0.013964285714285714,0,0,0,1,Inf,0
+Burundi,BDI,Sub-Saharan Africa,0.013607142857142858,0,0,0.004475,8,Inf,0
+Brazil                         26,BRA,Latin America & Caribbean,0.013410714285714286,0,0,0,1,Inf,0
+Belize,BLZ,Latin America & Caribbean,0.012882142857142858,0,0.004746428571428572,0,21,Inf,0
+"Japan                        2,424",JPN,East Asia & Pacific,0.012453571428571428,0,0,0,1,Inf,0
+"U.S.America                  1,526",USA,North America,0.012378571428571428,0,0,0,1,Inf,0
+Bermuda,BMU,North America,0.011685714285714285,0,0.013889285714285713,0.05108214285714286,39,Inf,0
+Bosnia & Herzegovina,BIH,Europe & Central Asia,0.011175000000000001,0,5.428571428571429e-4,0.012235714285714286,30,Inf,0
+Grenada,GRD,Latin America & Caribbean,0.009310714285714285,0,1.9642857142857144e-4,0,9,Inf,0
+Italy                           465,ITA,Europe & Central Asia,0.008946428571428572,0,0,0,1,Inf,0
+Myanmar,MMR,East Asia & Pacific,0.008421428571428571,0,0.008671428571428571,0.08430357142857142,27,Inf,0
+"Netherlands                 21,840",NLD,Europe & Central Asia,0.008378571428571428,0,0.21546785714285716,0,1,Inf,0
+Fiji,FJI,East Asia & Pacific,0.008360714285714286,0,0.21530357142857143,0.2468607142857143,85,Inf,0
+Barbados,BRB,Latin America & Caribbean,0.007975,0,0.223475,0.26678928571428573,58,Inf,0
+U.S.America                        -,USA,North America,0.007182142857142857,0,0,0,2,Inf,0
+Gabon,GAB,Sub-Saharan Africa,0.006378571428571428,0,0.5152321428571429,0.24239642857142857,26,Inf,0
+Saudi Arabia                       -,SAU,Middle East & North Africa,0.006203571428571429,0,0,0,6,Inf,0
+Guadeloupe,GLP,Latin America & Caribbean,0.005607142857142857,0,0.011282142857142857,0,6,Inf,0
+"Guyana                       7,000",GUY,Latin America & Caribbean,0.004846428571428572,0,0,0,1,Inf,0
+Antigua and Barbuda,ATG,Latin America & Caribbean,0.0046642857142857146,0,0.010614285714285713,0.016485714285714284,11,Inf,0
+Bolivia,BOL,Latin America & Caribbean,0.0046214285714285715,0,0.035817857142857144,0.06147142857142857,23,Inf,0
+"France                        2,860",FRA,Europe & Central Asia,0.004428571428571428,0,0.005614285714285714,0,1,Inf,0
+Poland                         411,POL,Europe & Central Asia,0.0043607142857142855,0,0,0,1,Inf,0
+"Singapore                      1,440",SGP,East Asia & Pacific,0.004353571428571429,0,0.015171428571428572,0,1,Inf,0
+Reunion,REU,Other/Unclassified,0.004028571428571428,0,5.555457142857143,0.937375,49,Inf,0
+Malaysia                      50,MYS,East Asia & Pacific,0.00325,0,0,0,1,Inf,0
+El Salvador,SLV,Latin America & Caribbean,0.0031821428571428573,0,0.3326678571428571,0.27731428571428574,38,Inf,0
+Afghanistan                        -,AFG,South Asia,0.0031,0,0,0,8,Inf,0
+"Korea, Republic of            27",KOR,East Asia & Pacific,0.0027392857142857145,0,0,0,1,Inf,0
+St. Lucia,LCA,Latin America & Caribbean,0.0027392857142857145,0,0.016667857142857144,0.11588214285714286,17,Inf,0
+Macedonia,MKD,Europe & Central Asia,0.0026785714285714286,0,0.0021214285714285714,0,13,Inf,0
+Mongolia,MNG,East Asia & Pacific,0.0023464285714285714,0,0,0,9,Inf,0
+China                          5,CHN,East Asia & Pacific,0.0020285714285714286,0,0,0,1,Inf,0
+Papua New Guinea,PNG,East Asia & Pacific,0.0018535714285714286,0,0.010642857142857143,0.02494285714285714,21,Inf,0
+Uzbekistan                     751,UZB,Europe & Central Asia,0.00185,0,0,0,1,Inf,0
+Malaysia                       220,MYS,East Asia & Pacific,0.0017285714285714285,0,0,0,1,Inf,0
+NO MAP,NA,Other/Unclassified,0.00165,0,0,0,1,Inf,0
+St.Vincent/Grenadine,VCT,Latin America & Caribbean,0.0015392857142857144,0,4.642857142857143e-5,0.02352142857142857,10,Inf,0
+Nepal,NPL,South Asia,0.0014892857142857143,0,0.14777500000000002,0.001825,37,Inf,0
+Uruguay                            -,URY,Latin America & Caribbean,0.0014821428571428572,0,0,0,1,Inf,0
+Iceland,ISL,Europe & Central Asia,0.0010857142857142858,0,0.050367857142857145,5.178571428571428e-4,31,Inf,0
+Honduras,HND,Latin America & Caribbean,0.0010714285714285715,0,0.523025,1.2283214285714283,30,Inf,0
+French Guiana,GUF,Latin America & Caribbean,0.0010607142857142857,0,0,0,6,Inf,0
+"Viet Nam                     4,667",VNM,East Asia & Pacific,9.071428571428571e-4,0,0,0,1,Inf,0
+United Arab Emirates           262,ARE,Middle East & North Africa,7.928571428571429e-4,0,0,0,1,Inf,0
+KG    -,NA,Other/Unclassified,7.214285714285714e-4,0,0,0,1,Inf,0
+Canada                        180,CAN,North America,7.107142857142858e-4,0,0,0,1,Inf,0
+Cayman Islands,CYM,Latin America & Caribbean,6.428571428571429e-4,0,8.178571428571428e-4,0.002092857142857143,12,Inf,0
+Mali,MLI,Sub-Saharan Africa,5.821428571428571e-4,0,0,0,7,Inf,0
+Jordan                         569,JOR,Middle East & North Africa,5.714285714285715e-4,0,0,0,1,Inf,0
+Ukraine,UKR,Europe & Central Asia,3.928571428571429e-4,0,2.373192857142857,0.4471107142857143,25,Inf,0
+Belgium                            -,BEL,Europe & Central Asia,3.5357142857142857e-4,0,0,0,1,Inf,0
+China                              -,CHN,East Asia & Pacific,3.5357142857142857e-4,0,0,0,1,Inf,0
+Malaysia                       -,MYS,East Asia & Pacific,3.5e-4,0,0,0,1,Inf,0
+Norway                        2,NOR,Europe & Central Asia,3.1785714285714284e-4,0,0,0,1,Inf,0
+Hong Kong S.A.Re.Chi          -,HKG,East Asia & Pacific,3.071428571428571e-4,0,0,0,1,Inf,0
+Argentina                     -,ARG,Latin America & Caribbean,2.892857142857143e-4,0,0,0,1,Inf,0
+Montenegro,MNE,Europe & Central Asia,2.8214285714285716e-4,0,0.07364642857142857,1.5357142857142856e-4,7,Inf,0
+Japan                              -,JPN,East Asia & Pacific,2.785714285714286e-4,0,0,0,1,Inf,0
+United Kingdom                -,GBR,Europe & Central Asia,2.785714285714286e-4,0,0,0,3,Inf,0
+Fiji                               -,FJI,East Asia & Pacific,2.5714285714285715e-4,0,0,0,2,Inf,0
+Canada                        -,CAN,North America,2.5e-4,0,0,0,4,Inf,0
+South Africa                  -,ZAF,Sub-Saharan Africa,2.5e-4,0,0,0,3,Inf,0
+Australia                          -,AUS,East Asia & Pacific,2.4642857142857143e-4,0,0,0,1,Inf,0
+Burkina Faso(Fr.Up.V,BFA,Sub-Saharan Africa,2.4642857142857143e-4,0,8.357142857142858e-4,0.05904285714285714,13,Inf,0
+Italy                              -,ITA,Europe & Central Asia,2.3214285714285714e-4,0,0,0,2,Inf,0
+Germany                            -,DEU,Europe & Central Asia,2.2857142857142857e-4,0,0,0,1,Inf,0
+Sri Lanka                      -,LKA,South Asia,2.2857142857142857e-4,0,0,0,1,Inf,0
+Kuwait                         -,KWT,Middle East & North Africa,2.2142857142857142e-4,0,0,0,1,Inf,0
+Malaysia                     11,MYS,East Asia & Pacific,2.1785714285714285e-4,0,0,0,1,Inf,0
+Dominican Republic                 -,DOM,Latin America & Caribbean,2.1428571428571427e-4,0,0,0,1,Inf,0
+New Zealand                   -,NZL,East Asia & Pacific,2.107142857142857e-4,0,0,0,1,Inf,0
+Mozambique                         -,MOZ,Sub-Saharan Africa,2.0714285714285716e-4,0,0,0,2,Inf,0
+Uzbekistan                         -,UZB,Europe & Central Asia,2.0357142857142858e-4,0,0,0,1,Inf,0
+China                         -,CHN,East Asia & Pacific,1.9642857142857144e-4,0,0,0,2,Inf,0
+France                             -,FRA,Europe & Central Asia,1.7857142857142857e-4,0,0,0,1,Inf,0
+Canada                             -,CAN,North America,1.75e-4,0,0,0,1,Inf,0
+Canada                         -,CAN,North America,1.7142857142857143e-4,0,0,0,1,Inf,0
+Iraq                               -,IRQ,Middle East & North Africa,1.6785714285714285e-4,0,0,0,1,Inf,0
+Ecuador                            -,ECU,Latin America & Caribbean,1.6428571428571428e-4,0,0,0,1,Inf,0
+United Kingdom                     -,GBR,Europe & Central Asia,1.5357142857142856e-4,0,0,0,5,Inf,0
+Luxembourg,LUX,Europe & Central Asia,1.5e-4,0,0,0,4,Inf,0
+Oman                               -,OMN,Middle East & North Africa,1.25e-4,0,0,0,2,Inf,0
+NOBEDS,NA,Other/Unclassified,1.2142857142857143e-4,0,0,0,1,Inf,0
+South Africa                   -,ZAF,Sub-Saharan Africa,1.2142857142857143e-4,0,0,0,2,Inf,0
+Djibouti                           -,DJI,Middle East & North Africa,1.1428571428571428e-4,0,0,0,1,Inf,0
+Greece                             -,GRC,Europe & Central Asia,1.1071428571428571e-4,0,0,0,1,Inf,0
+Sri Lanka                     -,LKA,South Asia,1.0714285714285715e-4,0,0,0,2,Inf,0
+Cook Islands,COK,East Asia & Pacific,1.0714285714285714e-4,0,0,0,2,Inf,0
+Qatar                          -,QAT,Middle East & North Africa,1.0357142857142856e-4,0,0,0,2,Inf,0
+Oman                          -,OMN,Middle East & North Africa,1e-4,0,0,0,2,Inf,0
+Australia                     3,AUS,East Asia & Pacific,9.285714285714286e-5,0,0,0,1,Inf,0
+WOOD,NA,Other/Unclassified,9.285714285714286e-5,0,0,0,1,Inf,0
+Trinidad and Tobago           9,TTO,Latin America & Caribbean,8.928571428571429e-5,0,0,0,1,Inf,0
+Spain                         -,ESP,Europe & Central Asia,8.214285714285714e-5,0,0,0,3,Inf,0
+Australia                      -,AUS,East Asia & Pacific,6.785714285714286e-5,0,0,0,2,Inf,0
+Bahrain                            -,BHR,Middle East & North Africa,6.0714285714285715e-5,0,0,0,2,Inf,0
+Germany                        -,DEU,Europe & Central Asia,5e-5,0,0,0,2,Inf,0
+United Arab Emirates           -,ARE,Middle East & North Africa,5e-5,0,0,0,2,Inf,0
+Ireland                       -,IRL,Europe & Central Asia,4.2857142857142856e-5,0,0,0,1,Inf,0
+Czech Republic                     -,CZE,Europe & Central Asia,3.928571428571428e-5,0,0,0,1,Inf,0
+Kazakstan                          -,KAZ,Europe & Central Asia,3.928571428571428e-5,0,0,0,1,Inf,0
+Bahamas,BHS,Latin America & Caribbean,3.571428571428572e-5,0,0.03271428571428572,0.037260714285714286,9,Inf,0
+Canada                        4,CAN,North America,3.2142857142857144e-5,0,0,0,1,Inf,0
+Fiji                          -,FJI,East Asia & Pacific,3.2142857142857144e-5,0,0,0,1,Inf,0
+Germany                       1,DEU,Europe & Central Asia,3.2142857142857144e-5,0,0,0,1,Inf,0
+Nigeria                         -,NGA,Sub-Saharan Africa,3.2142857142857144e-5,0,0,0,1,Inf,0
+Portugal                        -,PRT,Europe & Central Asia,3.2142857142857144e-5,0,0,0,1,Inf,0
+Saudi Arabia                   -,SAU,Middle East & North Africa,3.2142857142857144e-5,0,0,0,1,Inf,0
+Libya                          -,LBY,Middle East & North Africa,2.857142857142857e-5,0,0,0,1,Inf,0
+Mozambique                     -,MOZ,Sub-Saharan Africa,2.857142857142857e-5,0,0,0,1,Inf,0
+Poland                          -,POL,Europe & Central Asia,2.857142857142857e-5,0,0,0,1,Inf,0
+Spain                          -,ESP,Europe & Central Asia,2.857142857142857e-5,0,0,0,2,Inf,0
+Tunisia                       -,TUN,Middle East & North Africa,2.857142857142857e-5,0,0,0,1,Inf,0
+U.S.America                  16,USA,North America,2.857142857142857e-5,0,0,0,1,Inf,0
+Ukraine                       -,UKR,Europe & Central Asia,2.857142857142857e-5,0,0,0,1,Inf,0
+Zimbabwe                       -,ZWE,Sub-Saharan Africa,2.857142857142857e-5,0,0,0,1,Inf,0
+France                          -,FRA,Europe & Central Asia,2.5e-5,0,0,0,1,Inf,0
+France                         -,FRA,Europe & Central Asia,2.5e-5,0,0,0,2,Inf,0
+Germany                       -,DEU,Europe & Central Asia,2.5e-5,0,0,0,1,Inf,0
+Italy                          -,ITA,Europe & Central Asia,2.5e-5,0,0,0,1,Inf,0
+U.S.America                   2,USA,North America,2.5e-5,0,0,0,1,Inf,0
+United Kingdom                 10,GBR,Europe & Central Asia,2.5e-5,0,0,0,1,Inf,0
+Ireland                         -,IRL,Europe & Central Asia,2.1428571428571428e-5,0,0,0,1,Inf,0
+Japan                           -,JPN,East Asia & Pacific,2.1428571428571428e-5,0,0,0,1,Inf,0
+Malaysia                      -,MYS,East Asia & Pacific,2.1428571428571428e-5,0,0,0,1,Inf,0
+Netherlands                   -,NLD,Europe & Central Asia,2.1428571428571428e-5,0,0,0,1,Inf,0
+Romania                       -,ROU,Europe & Central Asia,2.1428571428571428e-5,0,0,0,1,Inf,0
+Saudi Arabia                  -,SAU,Middle East & North Africa,2.1428571428571428e-5,0,0,0,3,Inf,0
+Solomon Islands,SLB,East Asia & Pacific,2.1428571428571428e-5,0,0.047339285714285716,0,4,Inf,0
+U.S.America                   -,USA,North America,2.1428571428571428e-5,0,0,0,3,Inf,0
+Netherlands                    -,NLD,Europe & Central Asia,1.785714285714286e-5,0,0,0,2,Inf,0
+U.S.America                    -,USA,North America,1.785714285714286e-5,0,0,0,1,Inf,0
+United Kingdom                    -,GBR,Europe & Central Asia,1.785714285714286e-5,0,0,0,2,Inf,0
+Afghanistan                       -,AFG,South Asia,1.4285714285714285e-5,0,0,0,2,Inf,0
+Bahrain                        -,BHR,Middle East & North Africa,1.4285714285714285e-5,0,0,0,1,Inf,0
+Canada                          -,CAN,North America,1.4285714285714285e-5,0,0,0,1,Inf,0
+Switzerland                     -,CHE,Europe & Central Asia,1.4285714285714285e-5,0,0,0,1,Inf,0
+Tunisia                         -,TUN,Middle East & North Africa,1.4285714285714285e-5,0,0,0,1,Inf,0
+Canada                       269,CAN,North America,1.0714285714285714e-5,0,0,0,1,Inf,0
+Pakistan,PAK,South Asia,1.0714285714285714e-5,0,0,0,4,Inf,0
+Azerbaijan                    -,AZE,Europe & Central Asia,7.142857142857143e-6,0,0,0,1,Inf,0
+Bangladesh                   365,BGD,South Asia,7.142857142857143e-6,0,0,0,1,Inf,0
+Croatia                       -,HRV,Europe & Central Asia,7.142857142857143e-6,0,0,0,1,Inf,0
+Denmark                        -,DNK,Europe & Central Asia,7.142857142857143e-6,0,0,0,1,Inf,0
+France                        -,FRA,Europe & Central Asia,7.142857142857143e-6,0,0,0,2,Inf,0
+Greece                        -,GRC,Europe & Central Asia,7.142857142857143e-6,0,0,0,1,Inf,0
+Namibia,NAM,Sub-Saharan Africa,7.142857142857143e-6,0,0,0,6,Inf,0
+Poland                        -,POL,Europe & Central Asia,7.142857142857143e-6,0,0,0,1,Inf,0
+United Arab Emirates         10,ARE,Middle East & North Africa,7.142857142857143e-6,0,0,0,1,Inf,0
+Afghanistan                   94,AFG,South Asia,3.5714285714285714e-6,0,0,0,1,Inf,0
+Belgium                        -,BEL,Europe & Central Asia,3.5714285714285714e-6,0,0,0,1,Inf,0
+Denmark                       -,DNK,Europe & Central Asia,3.5714285714285714e-6,0,0,0,2,Inf,0
+Germany                         -,DEU,Europe & Central Asia,3.5714285714285714e-6,0,0,0,1,Inf,0
+Iceland                       -,ISL,Europe & Central Asia,3.5714285714285714e-6,0,0,0,1,Inf,0
+Jamaica                       -,JAM,Latin America & Caribbean,3.5714285714285714e-6,0,0,0,1,Inf,0
+U.S.America                   8,USA,North America,3.5714285714285714e-6,0,0,0,1,Inf,0
+United Arab Emirates         31,ARE,Middle East & North Africa,3.5714285714285714e-6,0,0,0,1,Inf,0

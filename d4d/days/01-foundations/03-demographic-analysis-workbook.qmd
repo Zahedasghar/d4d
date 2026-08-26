@@ -1,0 +1,585 @@
+---
+title: "Demographic Analysis Practice Workbook"
+subtitle: "Hands-on Exercises with NHANES Data"
+author: "Your Name Here"
+date: today
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    code-fold: show
+    code-tools: true
+    theme: cosmo
+---
+
+## Introduction
+
+This workbook accompanies the **Demographic Analysis Using R** workshop. Work through these exercises to practice the skills you learned in the session.
+
+**Learning Objectives:**
+
+- Import and explore demographic/health data
+- Clean and transform variables
+- Calculate demographic indicators
+- Analyze health patterns by age, sex, and socioeconomic factors
+- Create visualizations
+- Export results
+
+## Setup
+
+### Load Packages
+
+```{r setup, message=FALSE}
+library(tidyverse)
+library(rio)
+library(modelsummary)
+library(NHANES)
+
+# Set default theme for plots
+theme_set(theme_minimal(base_size = 12))
+```
+
+### Load Data
+
+```{r load-data}
+# Load NHANES dataset
+data("NHANES")
+
+# Create clean dataset
+nhanes_data <- NHANES %>%
+  as_tibble() %>%
+  select(
+    ID, Gender, Age, AgeDecade, Race1, Education, 
+    MaritalStatus, HomeOwn,
+    Height, Weight, BMI, BPSysAve, BPDiaAve,
+    Diabetes, PhysActive, SmokeNow,
+    HHIncome, Poverty
+  ) %>%
+  distinct(ID, .keep_all = TRUE)
+```
+
+---
+
+## Part 1: Data Exploration (Guided)
+
+### Exercise 1.1: Initial Exploration
+
+**Task:** Explore the basic structure of the dataset
+
+```{r ex1-1}
+# How many rows and columns?
+dim(nhanes_data)
+
+# What are the variable names?
+names(nhanes_data)
+
+# Get a glimpse of the data
+glimpse(nhanes_data)
+```
+
+### Exercise 1.2: Summary Statistics
+
+**Task:** Generate summary statistics for key variables
+
+```{r ex1-2}
+# Summary of numeric variables
+summary(nhanes_data %>% select(Age, BMI, BPSysAve))
+
+# Count of categorical variables
+table(nhanes_data$Gender)
+table(nhanes_data$Diabetes)
+```
+
+### Exercise 1.3: Missing Data Assessment
+
+**Task:** Check for missing values in key variables
+
+```{r ex1-3}
+# Calculate percentage missing for each variable
+nhanes_data %>%
+  summarise(
+    across(everything(), 
+           ~ sum(is.na(.)) / n() * 100)
+  ) %>%
+  pivot_longer(everything(),
+               names_to = "variable",
+               values_to = "pct_missing") %>%
+  arrange(desc(pct_missing))
+```
+
+**Question:** Which variables have the most missing data? Why might this be?
+
+---
+
+## Part 2: Data Cleaning (Your Turn!)
+
+### Exercise 2.1: Create Age Groups
+
+**Task:** Create standard demographic age groups
+
+```{r ex2-1}
+# Create age groups: 0-17, 18-34, 35-49, 50-64, 65+
+nhanes_clean <- nhanes_data %>%
+  mutate(
+    age_group = case_when(
+      # YOUR CODE HERE
+      Age < 18 ~ "0-17",
+      # Complete the rest...
+      TRUE ~ NA_character_
+    ),
+    age_group = factor(age_group, 
+                      levels = c("0-17", "18-34", "35-49", "50-64", "65+"))
+  )
+
+# Check your work
+table(nhanes_clean$age_group, useNA = "always")
+```
+
+::: {.callout-tip}
+## Hint
+Use `case_when()` with conditions like `Age >= 18 & Age < 35 ~ "18-34"`
+:::
+
+### Exercise 2.2: Create BMI Categories
+
+**Task:** Create WHO BMI categories
+
+- Underweight: BMI < 18.5
+- Normal: BMI 18.5-24.9
+- Overweight: BMI 25-29.9
+- Obese: BMI ≥ 30
+
+```{r ex2-2}
+nhanes_clean <- nhanes_clean %>%
+  mutate(
+    bmi_category = case_when(
+      # YOUR CODE HERE
+      
+      TRUE ~ NA_character_
+    ),
+    bmi_category = factor(bmi_category,
+                         levels = c("Underweight", "Normal", 
+                                   "Overweight", "Obese"))
+  )
+
+# Verify your work
+table(nhanes_clean$bmi_category, useNA = "always")
+```
+
+### Exercise 2.3: Create Hypertension Indicator
+
+**Task:** Define hypertension as SBP ≥ 140 OR DBP ≥ 90
+
+```{r ex2-3}
+nhanes_clean <- nhanes_clean %>%
+  mutate(
+    hypertension = case_when(
+      # YOUR CODE HERE - use BPSysAve and BPDiaAve
+      
+      TRUE ~ NA_character_
+    )
+  )
+
+# Check
+table(nhanes_clean$hypertension, useNA = "always")
+```
+
+---
+
+## Part 3: Descriptive Analysis
+
+### Exercise 3.1: Age-Sex Distribution
+
+**Task:** Calculate the number and percentage of males and females in each age group
+
+```{r ex3-1}
+# YOUR CODE HERE
+nhanes_clean %>%
+  filter(!is.na(age_group), !is.na(Gender)) %>%
+  # Continue...
+```
+
+::: {.callout-tip}
+## Hint
+Use `count()` then `group_by()` and `mutate()` to calculate percentages
+:::
+
+### Exercise 3.2: Diabetes Prevalence by Age
+
+**Task:** Calculate diabetes prevalence for each age group
+
+```{r ex3-2}
+# YOUR CODE HERE
+
+```
+
+**Questions:**
+
+1. Which age group has the highest diabetes prevalence?
+2. Does the pattern make sense demographically?
+
+### Exercise 3.3: Health Indicators by Gender
+
+**Task:** Compare mean BMI, diabetes prevalence, and physical activity between males and females
+
+```{r ex3-3}
+# YOUR CODE HERE
+
+```
+
+### Exercise 3.4: Socioeconomic Gradients
+
+**Task:** Analyze obesity prevalence by education level (adults only)
+
+```{r ex3-4}
+# Filter for adults (Age >= 25)
+# Group by education
+# Calculate obesity prevalence
+
+# YOUR CODE HERE
+
+```
+
+---
+
+## Part 4: Advanced Analysis
+
+### Exercise 4.1: Multiple Group Comparisons
+
+**Task:** Calculate diabetes prevalence by age group AND gender
+
+```{r ex4-1}
+# YOUR CODE HERE
+
+```
+
+### Exercise 4.2: Creating a Summary Table
+
+**Task:** Create a comprehensive health summary table with:
+
+- Number of observations
+- Mean age
+- Mean BMI  
+- Diabetes prevalence
+- Hypertension prevalence
+
+Stratified by Gender and Age Group
+
+```{r ex4-2}
+# YOUR CODE HERE
+
+```
+
+### Exercise 4.3: Prevalence Ratios
+
+**Task:** Calculate obesity prevalence ratios by education, using "College+" as reference
+
+```{r ex4-3}
+# Step 1: Calculate prevalence by education
+obesity_by_ed <- nhanes_clean %>%
+  filter(Age >= 25, !is.na(education_level), !is.na(bmi_category)) %>%
+  # YOUR CODE HERE
+  
+# Step 2: Calculate ratios
+# YOUR CODE HERE
+
+```
+
+---
+
+## Part 5: Data Visualization
+
+### Exercise 5.1: Population Pyramid
+
+**Task:** Create a population pyramid showing age-sex distribution
+
+```{r ex5-1, fig.width=10, fig.height=6}
+# YOUR CODE HERE
+# Hint: Make male counts negative, use coord_flip()
+
+```
+
+### Exercise 5.2: BMI Distribution
+
+**Task:** Create a histogram of BMI distribution, colored by gender
+
+```{r ex5-2, fig.width=10, fig.height=6}
+# YOUR CODE HERE
+
+```
+
+### Exercise 5.3: Diabetes by Age (Line Plot)
+
+**Task:** Create a line plot showing diabetes prevalence by age group, separate lines for males and females
+
+```{r ex5-3, fig.width=10, fig.height=6}
+# YOUR CODE HERE
+
+```
+
+### Exercise 5.4: Education and Health (Bar Chart)
+
+**Task:** Create a grouped bar chart showing BMI categories by education level
+
+```{r ex5-4, fig.width=10, fig.height=6}
+# YOUR CODE HERE
+
+```
+
+---
+
+## Part 6: Mini-Project
+
+### Cardiovascular Risk Profile
+
+**Goal:** Create a comprehensive analysis of cardiovascular risk factors
+
+**Steps:**
+
+1. Create risk factor indicators
+2. Calculate prevalence by demographic groups
+3. Visualize patterns
+4. Export results
+
+#### Step 1: Define Risk Factors
+
+```{r project-step1}
+cv_risk_data <- nhanes_clean %>%
+  filter(Age >= 18) %>%
+  mutate(
+    # Hypertension (already created)
+    has_hypertension = hypertension == "Yes",
+    
+    # Obesity (BMI >= 30)
+    # YOUR CODE HERE
+    
+    # Diabetes
+    # YOUR CODE HERE
+    
+    # Physical inactivity
+    # YOUR CODE HERE
+    
+    # Current smoking
+    # YOUR CODE HERE
+    
+    # Count total risk factors
+    risk_count = rowSums(
+      select(., has_hypertension, has_obesity, has_diabetes,
+             inactive, current_smoker),
+      na.rm = TRUE
+    )
+  )
+```
+
+#### Step 2: Calculate Prevalence
+
+```{r project-step2}
+cv_risk_summary <- cv_risk_data %>%
+  filter(!is.na(age_group), !is.na(Gender)) %>%
+  group_by(age_group, Gender) %>%
+  summarise(
+    # YOUR CODE HERE
+    # Calculate prevalence for each risk factor
+    
+    .groups = "drop"
+  )
+```
+
+#### Step 3: Create Visualization
+
+```{r project-step3, fig.width=11, fig.height=6}
+# Create a multi-line plot showing trends for each risk factor
+# YOUR CODE HERE
+
+```
+
+#### Step 4: Export Results
+
+```{r project-step4, eval=FALSE}
+# Export your summary table
+export(cv_risk_summary, "cv_risk_results.csv")
+
+# Save your plot
+ggsave("cv_risk_plot.png", last_plot(), 
+       width = 11, height = 6, dpi = 300)
+```
+
+---
+
+## Part 7: Challenge Exercises
+
+### Challenge 1: Age Standardization
+
+**Task:** Calculate age-standardized diabetes prevalence for males and females using the total NHANES population as the standard
+
+```{r challenge1}
+# This is advanced - try your best!
+
+# Step 1: Reference population (age distribution)
+
+# Step 2: Age-specific rates by gender
+
+# Step 3: Calculate standardized rates
+
+```
+
+### Challenge 2: Health Inequality Index
+
+**Task:** Calculate the Relative Index of Inequality (RII) for diabetes by education
+
+*This requires ranking education categories and fitting a regression model*
+
+```{r challenge2}
+# Very advanced - research the method first!
+
+```
+
+### Challenge 3: Interactive Dashboard
+
+**Task:** Create a function that takes a health outcome and produces a summary table and visualization
+
+```{r challenge3}
+analyze_health_outcome <- function(data, outcome_var) {
+  # YOUR CODE HERE
+  # Should return both a table and a plot
+}
+
+# Test your function
+# analyze_health_outcome(nhanes_clean, "Diabetes")
+```
+
+---
+
+## Solutions
+
+::: {.callout-note collapse="true"}
+## Exercise 2.1 Solution: Create Age Groups
+
+```{r sol-2-1, eval=FALSE}
+nhanes_clean <- nhanes_data %>%
+  mutate(
+    age_group = case_when(
+      Age < 18 ~ "0-17",
+      Age >= 18 & Age < 35 ~ "18-34",
+      Age >= 35 & Age < 50 ~ "35-49",
+      Age >= 50 & Age < 65 ~ "50-64",
+      Age >= 65 ~ "65+",
+      TRUE ~ NA_character_
+    ),
+    age_group = factor(age_group, 
+                      levels = c("0-17", "18-34", "35-49", "50-64", "65+"))
+  )
+```
+:::
+
+::: {.callout-note collapse="true"}
+## Exercise 2.2 Solution: Create BMI Categories
+
+```{r sol-2-2, eval=FALSE}
+nhanes_clean <- nhanes_clean %>%
+  mutate(
+    bmi_category = case_when(
+      BMI < 18.5 ~ "Underweight",
+      BMI >= 18.5 & BMI < 25 ~ "Normal",
+      BMI >= 25 & BMI < 30 ~ "Overweight",
+      BMI >= 30 ~ "Obese",
+      TRUE ~ NA_character_
+    ),
+    bmi_category = factor(bmi_category,
+                         levels = c("Underweight", "Normal", 
+                                   "Overweight", "Obese"))
+  )
+```
+:::
+
+::: {.callout-note collapse="true"}
+## Exercise 3.1 Solution: Age-Sex Distribution
+
+```{r sol-3-1, eval=FALSE}
+nhanes_clean %>%
+  filter(!is.na(age_group), !is.na(Gender)) %>%
+  count(age_group, Gender) %>%
+  group_by(age_group) %>%
+  mutate(
+    total = sum(n),
+    percentage = n / total * 100
+  ) %>%
+  select(age_group, Gender, n, percentage)
+```
+:::
+
+::: {.callout-note collapse="true"}
+## Exercise 5.1 Solution: Population Pyramid
+
+```{r sol-5-1, eval=FALSE}
+nhanes_clean %>%
+  filter(!is.na(age_group), !is.na(Gender)) %>%
+  count(age_group, Gender) %>%
+  mutate(
+    n = ifelse(Gender == "male", -n, n)
+  ) %>%
+  ggplot(aes(x = age_group, y = n, fill = Gender)) +
+  geom_col() +
+  coord_flip() +
+  scale_y_continuous(
+    labels = abs,
+    name = "Population Count"
+  ) +
+  scale_fill_manual(values = c("male" = "#4A90E2", "female" = "#E24A90")) +
+  labs(
+    title = "Population Pyramid: NHANES Sample",
+    x = "Age Group"
+  ) +
+  theme_minimal()
+```
+:::
+
+---
+
+## Reflection Questions
+
+1. What surprised you most about the patterns you found in the data?
+
+2. Which demographic groups appear to have the highest health risks?
+
+3. What additional variables would you like to analyze?
+
+4. How might survey weights change your results?
+
+5. What policy implications can you draw from your analysis?
+
+---
+
+## Additional Resources
+
+**R Packages:**
+
+- `tidyverse` - Data wrangling & visualization
+- `survey` - Complex survey analysis
+- `tableone` - Clinical tables
+- `gtsummary` - Publication-ready tables
+
+**Learning:**
+
+- [R for Data Science](https://r4ds.hadley.nz/)
+- [NHANES website](https://wwwn.cdc.gov/nchs/nhanes/)
+- [WHO indicator definitions](https://www.who.int/data/gho)
+
+**Practice Datasets:**
+
+- DHS (Demographic and Health Surveys)
+- MICS (Multiple Indicator Cluster Surveys)
+- World Bank Open Data
+- Our World in Data
+
+---
+
+## Session Information
+
+```{r session-info}
+sessionInfo()
+```
+
+---
+
+**Keep practicing! The best way to learn R is by doing.**

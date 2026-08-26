@@ -8,16 +8,13 @@ format:
   html: 
     code-fold: true
     html-math-method: katex
-  pdf:
-    geometry: 
-      - top=30mm
-      - left=30mm
-  docx: default
+
 #bibliography: references.bib
 execute:
   echo: true
   warning: false
   freeze: auto
+bibliography: references.bib
 ---
 
 In this post I am going to discuss why do we need interaction of variables in regression variables in a simple way. I restrict myself to only a `case` where only independent variables are binary at the first stage. Let's start with loading packages we need to run and do analysis.
@@ -158,7 +155,7 @@ msummary(ILR,fmt = fmt_decimal(digits = 2, pdigits = 3))
 
 ## Why regression when table is so easy
 
-Question is why one needs to do regression analysis if table results are so simple and easy. If one has one or two variables, then of course, table is simple and specially if they are binary or categorical. But as either number of variables increase and are continuous, then doing analysis with tables is quite messy. For example if we have to add some more variables in our regression table which include may include `rank` of a faculty, `years since phd` and`years in service`, doing tabular analysis will be very messy and interpreting results will no more be an easy taks.
+As per [@salman2020; ] this papeQuestion is why one needs to do regression analysis if table results are so simple and easy. If one has one or two variables, then of course, table is simple and specially if they are binary or categorical. But as either number of variables increase and are continuous, then doing analysis with tables is quite messy. For example if we have to add some more variables in our regression table which include may include `rank` of a faculty, `years since phd` and`years in service`, doing tabular analysis will be very messy and interpreting results will no more be an easy taks.
 
 ```{r}
 long_model <- lm(salary ~ sex + discipline + sex*discipline +

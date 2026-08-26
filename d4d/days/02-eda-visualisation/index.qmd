@@ -1,0 +1,37 @@
+---
+title: "Day 2 — Exploratory Analysis & Visualisation"
+subtitle: "Tables and charts that survive a reviewer"
+---
+
+## Where the day goes
+
+Summary statistics are easy; *defensible* summary statistics presented well are not.
+Today is about the gap between the two.
+
+## Sessions
+
+| # | Session | Material |
+|---|---|---|
+| 1 | Publication tables with `gt` and `gtsummary` | [`scripts/gt-summary-tables.R`](scripts/gt-summary-tables.R), [`scripts/gt-tables-basics.R`](scripts/gt-tables-basics.R) |
+| 2 | ggplot2 from the grammar up | [`scripts/nhanes-ggplot-basics.R`](scripts/nhanes-ggplot-basics.R) |
+| 3 | Live indicator data: WDI and OWID | [`scripts/wdi-indicators.R`](scripts/wdi-indicators.R), [`scripts/owid-tutorial.R`](scripts/owid-tutorial.R) |
+| 4 | Chart critique and redesign | [`scripts/gt-bar-defence.R`](scripts/gt-bar-defence.R) |
+
+## Scripts in this folder
+
+- `10-useful-commands.R` — the dplyr verbs you will reach for every day
+- `birthweight-pregnancy.R` — a worked EDA on health data
+- `nhanes-ggplot-advanced.R` — facets, scales, annotation, themes
+
+## A note on API sessions
+
+`wdi-indicators.R` and `owid-tutorial.R` hit live APIs. If the room's connection is
+unreliable, run them before the session and cache the result; the OWID script includes
+fallback approaches for when the primary endpoint is down.
+
+## What you should be able to do by 16:30
+
+- produce a formatted table you would put in a paper, from raw data, in under ten lines
+- choose a chart type by asking what comparison the reader must make
+- pull an indicator series for any country from the World Bank without leaving R
+- say what is wrong with a bad chart in specific terms

@@ -1,0 +1,65 @@
+---
+title: "Data for Development"
+subtitle: "Demographic Analysis Using R — a five-day workshop"
+author: "Prof. Dr. Zahid Asghar · School of Economics, Quaid-i-Azam University"
+date: today
+toc: false
+---
+
+## What you will build
+
+Over five days you move from a raw PDHS `.DTA` file to a published, reproducible
+report. Not five disconnected topics — one pipeline, assembled a piece at a time.
+
+::: {.grid}
+
+::: {.g-col-12 .g-col-md-6}
+### The analytical arc
+
+1. **Import & wrangle** survey data that arrives messy
+2. **Explore** it with tables and charts that survive peer review
+3. **Model** it, with weights, and map it
+4. **Report** it in Quarto — parameterised, so it re-runs next year
+5. **Accelerate** all of the above with AI assistants you can actually trust
+:::
+
+::: {.g-col-12 .g-col-md-6}
+### What you need
+
+- R ≥ 4.3 and [Positron](https://positron.posit.co) (or RStudio)
+- Quarto ≥ 1.4
+- The workshop data pack (`data/`)
+- No prior R required — Day 1 starts from zero
+
+See [Setup](setup.qmd) before Day 1.
+:::
+
+:::
+
+## Start here
+
+| | |
+|---|---|
+| [**Agenda**](agenda.qmd) | Day-by-day session plan and timings |
+| [**Setup**](setup.qmd) | Install R, Positron, Quarto and the packages |
+| [**Day 1**](days/01-foundations/index.qmd) | Foundations and data import |
+| [**Reference**](reference/r-essentials.qmd) | Cheat sheets to keep open while you work |
+
+: {tbl-colwidths="[22,78]"}
+
+## How the material is organised
+
+Each day folder holds three kinds of file:
+
+- `index.qmd` — the session plan for that day
+- `NN-*.qmd` — slides and walkthroughs, in teaching order
+- `scripts/*.R` — the live-coding scripts, runnable on their own
+
+Every script resolves data with `here::here("data/...")`, so you can run any script
+from anywhere in the project without changing your working directory.
+
+::: {.callout-tip}
+## Working alongside the facilitator
+Open the project by double-clicking `d4d.Rproj`. That sets the project root, which
+is what `here::here()` anchors to. Opening a loose `.R` file instead will break paths.
+:::

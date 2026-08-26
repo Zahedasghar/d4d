@@ -67,8 +67,6 @@ pkir <- pkir |>
 pkir <- pkir |> mutate(wt=v005/1000000)
 #pkir$wt <- pkir$v005/1000000
 
-# check with final report Table 7.3
-topline(pkir, modfp, wt )
 
 ########################################################
 

@@ -1,0 +1,203 @@
+/*-- scss:defaults --*/
+$navy:        #0f2440;
+$navy-light:  #1c3a63;
+$gold:        #c9a227;
+$gold-light:  #e4c95f;
+$offwhite:    #f7f5f0;
+$body-grey:   #2b2f36;
+
+$presentation-heading-font: "Georgia", "Cambria", serif;
+
+// Root size drives EVERYTHING. Revealjs default is 40px; this is deliberately
+// larger so code is readable from the back of a training room.
+$presentation-font-size-root: 44px;
+$presentation-line-height: 1.35;
+
+$presentation-h1-font-size: 1.9em;
+$presentation-h2-font-size: 1.35em;
+$presentation-h3-font-size: 1.1em;
+$presentation-heading-line-height: 1.15;
+
+// Code sizing: em values are relative to the root above.
+$code-block-font-size: 0.62em;
+$code-block-line-height: 1.3;
+
+$body-color: $body-grey;
+$body-bg: $offwhite;
+$link-color: $gold;
+$presentation-heading-color: $navy;
+
+/*-- scss:rules --*/
+
+// ---------------------------------------------------------------------------
+// Use the full slide area. Revealjs vertically centres by default, which
+// leaves a code block floating in a sea of white. Top-align and widen.
+// ---------------------------------------------------------------------------
+.reveal .slides {
+  text-align: left;
+}
+
+.reveal .slides section {
+  height: 100%;
+}
+
+.reveal section > * {
+  max-width: 100%;
+}
+
+// ---------------------------------------------------------------------------
+// Code blocks — the main thing participants read
+// ---------------------------------------------------------------------------
+.reveal pre {
+  width: 100%;
+  margin: 0.5em 0;
+  box-shadow: none;
+}
+
+.reveal pre code {
+  font-size: 0.62em;
+  line-height: 1.35;
+  padding: 0.8em 1em;
+  max-height: none;
+  background-color: #1c1c1c;
+  border-left: 6px solid $gold;
+  border-radius: 4px;
+}
+
+// Slides tagged .smaller still need to be legible
+.reveal .smaller pre code {
+  font-size: 0.52em;
+  line-height: 1.28;
+}
+
+.reveal code {
+  font-family: "Fira Code", "Consolas", "Menlo", monospace;
+}
+
+// Inline code inside prose
+.reveal p code,
+.reveal li code,
+.reveal td code {
+  font-size: 0.88em;
+  color: $navy;
+  background-color: rgba(201, 162, 39, 0.13);
+  padding: 0.08em 0.3em;
+  border-radius: 3px;
+}
+
+// ---------------------------------------------------------------------------
+// Headings
+// ---------------------------------------------------------------------------
+.reveal h1, .reveal h2 {
+  color: $navy;
+  font-weight: 700;
+  border-bottom: 3px solid $gold;
+  padding-bottom: 0.15em;
+  margin-bottom: 0.4em;
+}
+
+.reveal h3 {
+  color: $navy-light;
+}
+
+// ---------------------------------------------------------------------------
+// Body text and lists
+// ---------------------------------------------------------------------------
+.reveal p {
+  font-size: 0.82em;
+  line-height: 1.4;
+  margin-bottom: 0.5em;
+}
+
+.reveal ul, .reveal ol {
+  font-size: 0.82em;
+  line-height: 1.45;
+}
+
+.reveal li {
+  margin-bottom: 0.35em;
+}
+
+.reveal .smaller p,
+.reveal .smaller ul,
+.reveal .smaller ol {
+  font-size: 0.70em;
+}
+
+// ---------------------------------------------------------------------------
+// Tables
+// ---------------------------------------------------------------------------
+.reveal table {
+  font-size: 0.62em;
+  line-height: 1.3;
+}
+
+.reveal table th {
+  color: $navy;
+  border-bottom: 2px solid $gold;
+}
+
+// ---------------------------------------------------------------------------
+// Title and section-divider slides
+// ---------------------------------------------------------------------------
+.reveal .title-slide {
+  background: linear-gradient(135deg, $navy 0%, $navy-light 100%);
+}
+
+.reveal .title-slide h1,
+.reveal .title-slide .subtitle,
+.reveal .title-slide .author,
+.reveal .title-slide .institute,
+.reveal .title-slide .date,
+.reveal .title-slide p {
+  color: $offwhite;
+  border: none;
+}
+
+.reveal .title-slide .subtitle {
+  color: $gold-light;
+  font-size: 0.95em;
+}
+
+.reveal section.section-divider h1,
+.reveal section.section-divider h2 {
+  color: $gold-light;
+  border: none;
+  font-size: 2.1em;
+}
+
+// ---------------------------------------------------------------------------
+// Callouts
+// ---------------------------------------------------------------------------
+.reveal .callout {
+  font-size: 0.78em;
+  border-left: 6px solid $gold;
+  margin: 0.5em 0;
+}
+
+.reveal .callout-body,
+.reveal .callout-body-container p {
+  font-size: 1em;
+}
+
+.reveal .callout-note    { border-left-color: $navy-light; }
+.reveal .callout-important { border-left-color: $gold; }
+.reveal .callout-warning { border-left-color: #a6472b; }
+
+// ---------------------------------------------------------------------------
+// Chrome
+// ---------------------------------------------------------------------------
+.reveal a { color: $gold; }
+
+.reveal .slide-number {
+  color: $navy;
+  background-color: transparent;
+  font-size: 0.5em;
+}
+
+.reveal .footer {
+  color: $navy-light;
+  font-size: 0.42em;
+}
+
+.reveal .progress { color: $gold; }

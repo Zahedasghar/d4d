@@ -1,0 +1,211 @@
+---
+title: "Combining the WFP Prices and Markets Files"
+subtitle: "A short workflow for two related HDX downloads"
+author: "Prof. Dr. Zahid Asghar"
+date: today
+format:
+  html:
+    theme: cosmo
+    toc: true
+    code-copy: true
+    df-print: paged
+execute:
+  eval: false
+  echo: true
+  warning: false
+  message: false
+  freeze: auto
+knitr:
+  opts_chunk:
+    comment: "#>"
+---
+
+::: {.callout-note appearance="simple"}
+This is a companion note to the main tutorial, for the specific case where you
+download **two** files from the WFP Food Prices for Pakistan HDX page: the price
+observations and the market/geodata reference table. It walks through the one
+question that actually matters — *what does the second file give you that the
+first doesn't?* — rather than assuming a join is automatically needed.
+:::
+
+# Why there are two files at all
+
+The prices file is one row per market-commodity-month. The markets file is one
+row per market — a static reference table: id, name, admin units, coordinates.
+In principle the markets file is the authoritative source for geography, and the
+prices file just repeats it on every row for convenience.
+
+**Do not assume they agree, and do not assume you need both.** Check first.
+
+# Step 1 — Read both files the same way
+
+Both HDX files carry a HXL tag row (`#date`, `#adm1+name`, ...) as row 1. Read
+everything as character, strip that row, and only convert types afterwards.
+
+```{r}
+#| label: read
+library(tidyverse)
+library(here)
+
+raw_dir <- here("data", "raw")
+list.files(raw_dir, pattern = "\\.csv$")   # confirm the actual filenames first
+
+read_hdx <- function(path) {
+  read_csv(path, col_types = cols(.default = col_character())) |>
+    slice(-1) |>                                 # HXL row — always row 1, both files
+    mutate(across(where(is.character), str_squish))
+}
+
+prices_raw  <- read_hdx(file.path(raw_dir, "wfp_food_prices_pak.csv"))
+markets_raw <- read_hdx(file.path(raw_dir, "wfp_markets_pak.csv"))
+
+glimpse(prices_raw)
+glimpse(markets_raw)
+```
+
+::: {.callout-tip}
+`slice(-1)` rather than `filter_out(str_starts(date, "#"))` — the markets file has
+no `date` column, so positional removal is the one rule that works for either file.
+:::
+
+# Step 2 — Check the schema before writing a single `select()`
+
+The single most common error here is guessing a column name (`market_name`) that
+turns out not to exist. Always look first.
+
+```{r}
+#| label: schema
+names(prices_raw)
+names(markets_raw)
+intersect(names(prices_raw), names(markets_raw))
+```
+
+In this dataset both files carry `market_id`, `market`, `admin1`, `admin2`,
+`latitude`, `longitude`. That overlap is the second thing to notice: a naive join
+on `market_id` will duplicate every one of those columns with `.x`/`.y` suffixes
+unless you decide explicitly which side wins.
+
+# Step 3 — Confirm the markets file is one row per market
+
+Any join against `markets_raw` is only safe if this is true.
+
+```{r}
+#| label: key-check
+markets_raw |> count(market_id) |> filter(n > 1)
+```
+
+Must return zero rows. If it doesn't, resolve the duplicates before going further
+— do not join against a table with a broken grain.
+
+# Step 4 — Do the two files actually agree?
+
+Before deciding what to do with the overlap, check whether it's even a
+disagreement worth resolving.
+
+```{r}
+#| label: reconcile
+check <- prices_raw |>
+  distinct(market_id, market, admin1, admin2, latitude, longitude) |>
+  mutate(across(c(latitude, longitude), as.numeric)) |>
+  inner_join(
+    markets_raw |> mutate(across(c(latitude, longitude), as.numeric)),
+    by     = join_by(market_id),
+    suffix = c("_prices", "_markets")
+  )
+
+check |> filter(market_prices != market_markets)
+check |> filter(admin1_prices != admin1_markets)
+check |> filter(abs(latitude_prices - latitude_markets) > 0.01)
+```
+
+**Two possible outcomes, two different next steps:**
+
+- **All three return zero rows** (the common case). The files fully agree. There
+  is nothing to reconcile, and no metadata join is needed — the prices file is
+  self-sufficient for geography. Skip to Step 5.
+- **Any return rows.** Pick one file as authoritative (usually the markets file —
+  it's the reference table) and drop the losing columns from the prices file
+  before joining:
+
+  ```{r}
+  #| label: reconcile-fix
+  #| eval: false
+  prices <- prices_raw |>
+    select(-market, -admin1, -admin2, -latitude, -longitude)
+
+  combined <- prices |>
+    left_join(
+      markets_raw |> mutate(across(c(latitude, longitude), as.numeric)),
+      by           = join_by(market_id),
+      relationship = "many-to-one"
+    )
+
+  stopifnot(nrow(combined) == nrow(prices))   # row count must not change
+  ```
+
+# Step 5 — What the markets file actually gives you
+
+If Step 4 came back clean, the markets file's real value isn't columns to add —
+it's the markets that **never reported a price at all**. Only the reference table
+knows that; a price table by definition has no rows for a market with no prices.
+
+```{r}
+#| label: coverage-gap
+markets <- markets_raw |>
+  mutate(across(c(latitude, longitude), as.numeric))
+
+markets_no_data <- markets |>
+  anti_join(prices_raw, by = join_by(market_id))
+
+markets_no_data |> select(market_id, market, admin1, admin2)
+
+n_distinct(prices_raw$market_id)   # markets that reported at least once
+nrow(markets_raw)                  # markets in the full sampling frame
+nrow(markets_no_data)              # the coverage gap
+```
+
+That gap is a finding, not a nuisance — state it: *"WFP maintains N reporting
+markets for Pakistan; M of them had at least one price observation in the study
+period."*
+
+# Step 6 — Build one authoritative market table
+
+```{r}
+#| label: market-meta
+prices <- prices_raw |>
+  mutate(
+    date = ymd(date),
+    across(c(latitude, longitude, price, usdprice), as.numeric)
+  )
+
+market_meta <- prices |>
+  distinct(market_id, market, admin1, admin2, latitude, longitude) |>
+  mutate(reporting = TRUE) |>
+  bind_rows(
+    markets_no_data |> mutate(reporting = FALSE)
+  )
+
+market_meta |> count(reporting)
+
+# Every market in the frame accounted for exactly once
+stopifnot(nrow(market_meta) == n_distinct(prices_raw$market_id) + nrow(markets_no_data))
+```
+
+`reporting` is worth carrying all the way to the map: shade non-reporting markets
+as hollow grey points on `p_points` instead of dropping them, and the figure
+becomes a coverage diagnostic rather than just a price map.
+
+# Decision summary
+
+| Question | If yes | If no |
+|---|---|---|
+| Is `markets_raw` one row per `market_id`? | Proceed | Fix duplicates first — never join against a broken key |
+| Do the files agree on shared columns (Step 4)? | Prices file is self-sufficient; skip the join | Pick one authoritative source and drop the loser's columns before joining |
+| Do you need markets with zero observations? | Use `anti_join()` to isolate them; keep as a separate table | `prices` alone is enough |
+
+# Exercise
+
+Redo Step 4 for the `admin2` (district) column, which was not checked above.
+Does agreement hold at the district level as well as the province level? If any
+mismatches turn up, is the prices file or the markets file more likely to be
+right, and how would you decide?

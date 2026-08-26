@@ -1,0 +1,80 @@
+/*-- scss:defaults --*/
+$d4d-navy: #0f2440;
+$d4d-gold: #c9a227;
+$d4d-light: #f7f5ef;
+$d4d-gray: #4a4a4a;
+
+$presentation-heading-font: "Georgia", "Cambria", serif;
+$presentation-font-size-root: 44px;
+$body-color: $d4d-gray;
+$link-color: $d4d-gold;
+$presentation-heading-color: $d4d-navy;
+
+/*-- scss:rules --*/
+.reveal {
+  font-family: "Cambria", "Georgia", serif;
+}
+
+.reveal h1, .reveal h2, .reveal h3 {
+  font-family: $presentation-heading-font;
+  color: $d4d-navy;
+  text-align: left;
+}
+
+.reveal h1 {
+  border-bottom: 4px solid $d4d-gold;
+  padding-bottom: 0.2em;
+}
+
+.reveal .slide-background {
+  background-color: $d4d-light;
+}
+
+.reveal .slides {
+  text-align: left;
+}
+
+.reveal .slides section {
+  text-align: left;
+}
+
+.reveal p, .reveal li {
+  font-size: 0.82em;
+  color: $d4d-gray;
+}
+
+.reveal pre code {
+  font-size: 0.62em;
+  background-color: #fff;
+  border-left: 4px solid $d4d-gold;
+}
+
+.reveal table {
+  font-size: 0.7em;
+}
+
+.reveal table thead {
+  background-color: $d4d-navy;
+  color: white;
+}
+
+.reveal .callout-note {
+  border-left-color: $d4d-gold;
+}
+
+.reveal .callout-important {
+  border-left-color: $d4d-navy;
+}
+
+.footer, .reveal .footer {
+  color: $d4d-navy;
+  font-size: 0.4em;
+}
+
+.reveal .progress {
+  color: $d4d-gold;
+}
+
+.reveal .slide-number {
+  color: $d4d-navy;
+}

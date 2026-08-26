@@ -1,0 +1,100 @@
+---
+title: "Before Day 1"
+subtitle: "Software setup — please complete this before you arrive"
+---
+
+Budget 45 minutes. Everything below is free. If something fails, bring the error
+message to the first session rather than skipping the step.
+
+## 1. Install R (≥ 4.3)
+
+Download from [CRAN](https://cran.r-project.org/). Take the latest release. R 4.3 is
+the floor because the workshop uses the native pipe `|>` and `dplyr` 1.1 syntax
+throughout.
+
+Check inside R:
+
+```r
+getRversion()
+```
+
+## 2. Install an IDE
+
+[**Positron**](https://positron.posit.co) is what the facilitator will be using —
+it handles both R and Python and has a built-in AI assistant we use on Day 5.
+[RStudio](https://posit.co/download/rstudio-desktop/) works for everything except
+the Day 5 assistant demo.
+
+## 3. Install Quarto (≥ 1.4)
+
+Download from [quarto.org](https://quarto.org/docs/get-started/). Positron and recent
+RStudio bundle a copy, but a system install keeps the command line working:
+
+```bash
+quarto check
+```
+
+## 4. Get the project
+
+```bash
+git clone https://github.com/Zahedasghar/d4d.git
+```
+
+No Git yet? Download the ZIP from the repository page — but note that Day 1 covers
+Git, so installing it now saves time later.
+
+Open the folder by **double-clicking `d4d.Rproj`**. This matters: it sets the project
+root that `here::here()` resolves against, and every script in this repository depends
+on that.
+
+## 5. Install the R packages
+
+In the R console, from inside the project:
+
+```r
+source("R/setup-packages.R")
+```
+
+This installs roughly 35 packages and takes 10–20 minutes on a first run. It stops
+with an explicit error listing anything that failed, rather than continuing quietly.
+
+::: {.callout-warning}
+## If the spatial packages fail
+`sf`, `tmap` and `leaflet` need system libraries (GDAL, GEOS, PROJ). On Windows and
+macOS the installer usually handles this; on Linux you may need:
+
+```bash
+sudo apt install libgdal-dev libgeos-dev libproj-dev libudunits2-dev
+```
+
+These are only needed for the Day 3 afternoon. Everything else will run without them.
+:::
+
+## 6. Check the data pack
+
+The `data/` folder should contain the survey files and Pakistan shapefiles. Confirm:
+
+```r
+list.files(here::here("data"))
+```
+
+If `data/` is empty or missing the large `.DTA` and `.sav` files, ask the facilitator —
+some files are distributed separately because of their size.
+
+## 7. Verify
+
+Run this. All four lines should print `TRUE`.
+
+```r
+library(tidyverse)
+library(here)
+
+c(
+  r_version_ok = getRversion() >= "4.3.0",
+  here_finds_root = file.exists(here::here("d4d.Rproj")),
+  data_present = dir.exists(here::here("data")),
+  quarto_found = nzchar(Sys.which("quarto"))
+)
+```
+
+Anything `FALSE` — bring it to the first session.

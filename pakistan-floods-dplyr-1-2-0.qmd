@@ -1,0 +1,330 @@
+---
+title: "Working Smarter with dplyr 1.2.0"
+subtitle: "Pakistan flood exposure, 2000–2024 (EM-DAT × MODIS)"
+author: "Prof. Dr. Zahid Asghar"
+format:
+  revealjs:
+    slide-number: true
+    theme: simple
+    code-line-numbers: false
+    footer: "d4d · Data-for-Development R Training"
+execute:
+  echo: true
+  eval: false   # flip to true once you run this locally — see note on slide 3
+---
+
+## Today's data
+
+Disaggregated EM-DAT flood disaster records, matched to MODIS-derived flood
+maps at the admin1-month level (2000–2024).
+
+Source: Nicole Keeney, [`emdat-modis-flood-dataset`](https://github.com/nicolejkeeney/emdat-modis-flood-dataset)
+
+```{r}
+library(tidyverse)   # dplyr >= 1.2.0 (CRAN, released 2026-02-03)
+
+flood_monthly <- readr::read_csv(
+  "https://raw.githubusercontent.com/nicolejkeeney/emdat-modis-flood-dataset/refs/heads/main/data/emdat_modis_flood_dataset.csv"
+)
+```
+
+`flood_monthly` has one row per **admin1-region × flood-event**, with
+`flooded_population`, `flooded_area`, and normalized versions of each.
+
+::: aside
+`dplyr` 1.2.0 is needed for `filter_out()`, `when_any()`/`when_all()`, and
+`recode_values()`/`replace_values()`/`replace_when()` used later.
+`install.packages("dplyr")` on a machine with CRAN access, or `pak::pak("dplyr")`.
+:::
+
+## A note before we start
+
+I don't have an R interpreter in this sandbox, so every chunk below is
+**hand-verified against the actual CSVs**, not executed. Please run the deck
+top-to-bottom once (`quarto render` or step through in Positron) before you
+teach from it, the usual practice for any new material.
+
+I pulled the three data files and inspected them directly (`curl` + `python3`)
+to check column names, date formats, and the Pakistan subset before writing
+any of the code that follows — that's where the corrections below come from.
+
+## Is this dataset OK for Pakistan? {.smaller}
+
+Broadly **yes for teaching disaggregation, joins, and data-quality workflows**;
+use with real caveats if anyone wants to cite numbers.
+
+- **It's disaster-scale, not comprehensive.** EM-DAT only logs events that
+  cross its threshold (deaths, people affected, a declared emergency, or an
+  international appeal) — routine local flooding won't be here. Treat it as
+  "notable flood events," not a flood monitoring feed.
+- **MODIS + monsoon clouds.** MODIS optical imagery struggles with cloud cover,
+  and Pakistan's floods are dominated by the monsoon (Jul–Sep), exactly when
+  cloud cover is worst. Flag 12 ("no flooded pixels detected") is common for
+  Pakistan and may mean *cloud-obscured*, not *no flood* — worth teaching as a
+  detection-limitation, not ground truth.
+- **Mixed admin1 vintage** — see next slide, this is the big one.
+- **Population**: from NASA's GPW gridded population, not Pakistan's own
+  census — fine for relative exposure, not for official reporting.
+
+## The adm1_code problem {.smaller}
+
+Pakistan's rows use **two different administrative resolutions**:
+
+| adm1_code range | n rows | What it is |
+|---|---|---|
+| 2272–2277 (6 codes) | 269 | The six GAUL "core" units: 4 provinces + ICT + FATA |
+| 40408, 40409 | 54 | Two larger units — population size suggests **Azad Jammu & Kashmir** and **Gilgit-Baltistan** territory totals, but this is my inference from population magnitude, not a confirmed source |
+| 40422–40431 (10 codes) | 90 | Ten smaller units, consistent with **AJK's 10 districts** by count — again inferred, not confirmed |
+
+I verified the 2272–2277 mapping against an FAO GIEWS export that carries GAUL
+codes alongside province names. I could **not** find an authoritative source
+for the 40000-series codes in the time available — before publishing anything
+with those regions named, pull the GAUL 2015 admin1 shapefile's attribute
+table and check by hand.
+
+One more wrinkle: **FATA (2273) merged into Khyber Pakhtunkhwa in 2018** — this
+dataset predates that, so treat 2273 and 2275 as one region for anything
+post-2018.
+
+## Load the rest of the data — with two fixes
+
+```{r}
+flood_adm1_summary <- read_csv(
+  "https://raw.githubusercontent.com/nicolejkeeney/emdat-modis-flood-dataset/refs/heads/main/data/adm1_summary_stats.csv"
+)
+
+# Original code pointed at a GitHub *blob* page (renders HTML, not a CSV) and
+# re-read adm1_summary_stats.csv a second time under a different name.
+# The file we actually want is data_processing_flags.csv:
+flood_processing_flags <- read_csv(
+  "https://raw.githubusercontent.com/nicolejkeeney/emdat-modis-flood-dataset/refs/heads/main/data/data_processing_flags.csv"
+)
+
+flood_processing_flags
+```
+
+```
+  flag flag_meaning
+  <dbl> <chr>
+1     1 Start day originally NaN and was filled with first day of the month
+2     2 End day originally NaN and was filled with last day of the month
+...
+12    No flooded pixels detected by MODIS water detection algorithm
+```
+
+## Quick review of dplyr verbs
+
+```{r}
+pakistan_floods <- flood_monthly |>
+  filter(ISO == "PAK")
+
+glimpse(pakistan_floods)
+
+pakistan_floods |> count(ISO)
+pakistan_floods |> count(adm1_code, sort = TRUE)
+```
+
+`filter()` for **keeping** rows — 415 of them, for Pakistan. Six of the eight
+`adm1_code` groupings above account for most of that count.
+
+## The `mon-yr` bug {.smaller}
+
+```{r}
+pakistan_floods |> distinct(`mon-yr`) |> slice_sample(n = 6)
+```
+
+```
+# A tibble: 6 × 1
+  `mon-yr`
+  <chr>
+1 1-Jul
+2 2-Aug
+3 10-Aug
+4 22-Aug
+5 3-Jul
+6 5-Sep
+```
+
+That's **not** `Jan-00` (month-year) — it's `D-Mon`. Somewhere upstream, a
+spreadsheet auto-converted `"Jul-01"` into a date and re-exported it, silently
+losing the year for 97.6% of all rows in the full dataset (22,794 of 23,344).
+`lubridate::ymd()` on this returns `NA` with a parse-failure warning for
+almost every Pakistan row — a silent, easy-to-miss bug, not a loud one.
+
+**Fix: don't use `mon-yr` at all.** `start_date`/`end_date` are consistently
+`M/D/YY` across all 23,344 rows — build `month` from `start_date` instead.
+
+## Corrected date handling
+
+```{r}
+pakistan_floods <- pakistan_floods |>
+  mutate(
+    start_date = lubridate::mdy(start_date),
+    end_date   = lubridate::mdy(end_date),
+    month      = lubridate::floor_date(start_date, unit = "month"),
+    .keep = "unused"          # drop the unreliable `mon-yr` column
+  )
+
+pakistan_floods |>
+  select(start_date, end_date, month) |>
+  head()
+```
+
+Note the **order**: `start_date` has to be parsed *before* `month` can be
+derived from it — the original code computed `month` from `mon-yr` in the same
+`mutate()` call where `start_date` was still character text.
+
+## Nice names, the dplyr 1.2.0 way
+
+`recode_values()` replaces the old `recode()` / verbose `case_when()` chain
+for mapping codes onto labels:
+
+```{r}
+pakistan_provinces <- tibble::tribble(
+  ~adm1_code, ~province_name,
+  2272,  "Balochistan",
+  2273,  "FATA (merged into KP, 2018)",
+  2274,  "Islamabad Capital Territory",
+  2275,  "Khyber Pakhtunkhwa",
+  2276,  "Punjab",
+  2277,  "Sindh",
+  40408, "Azad Jammu & Kashmir (territory total)*",
+  40409, "Gilgit-Baltistan (territory total)*",
+  # 40422–40431: AJK districts — codes not yet confirmed, see slide 5
+)
+
+pakistan_floods <- pakistan_floods |>
+  mutate(adm1_code = as.numeric(adm1_code)) |>
+  mutate(
+    province_name = recode_values(
+      adm1_code,
+      from = pakistan_provinces$adm1_code,
+      to   = pakistan_provinces$province_name,
+      default = as.character(adm1_code),
+      unmatched = "default"  # keeps the raw code for the unresolved districts
+    )
+  )
+
+pakistan_floods |> count(province_name, sort = TRUE)
+```
+
+## Dropping rows: `filter()` vs `filter_out()`
+
+The `flags` column is semicolon-separated and multi-valued (e.g. `"1; 2; 7"`).
+Flag **6** — *"coordinate mismatch error between floodmap and GPW population
+data"* — genuinely signals an unreliable row, unlike flag 12 (which, per
+slide 4, plausibly reflects real MODIS/cloud limitations rather than bad data).
+
+```{r}
+# Old way — keeping requires the negative case, and you have to remember
+# str_detect() so you don't accidentally drop everything with an NA flags cell:
+pakistan_floods |>
+  filter(!str_detect(flags, "\\b6\\b") | is.na(flags))
+
+# dplyr 1.2.0 way — filter_out() is built for dropping, NAs are kept by default:
+pakistan_floods_clean <- pakistan_floods |>
+  filter_out(str_detect(flags, "\\b6\\b"))
+```
+
+## Combining conditions: `when_any()` / `when_all()`
+
+"High-exposure" flood-months: **Sindh or Punjab** with >1% of population
+flooded, **or** any region with a genuinely large flooded population.
+
+```{r}
+high_exposure <- pakistan_floods_clean |>
+  filter(
+    when_any(
+      province_name %in% c("Sindh", "Punjab") & flooded_population_norm > 0.01,
+      flooded_population > 50000
+    )
+  )
+
+high_exposure |> count(province_name, sort = TRUE)
+```
+
+Reads the same way you'd say it out loud — no `|`/`&` precedence puzzles, and
+no accidental NA-dropping the way plain `filter()` can produce.
+
+## Monthly aggregation — fixing a double-count
+
+```{r}
+# One region can have >1 distinct EM-DAT event in the same month (9 cases for
+# Pakistan). total_population is a static per-region figure, repeated on every
+# row — summing it across overlapping events inflates it. flooded_population
+# is genuinely event-specific and safe to sum.
+
+pakistan_region_month <- pakistan_floods_clean |>
+  summarise(
+    flooded_population = sum(flooded_population, na.rm = TRUE),
+    flooded_area        = sum(flooded_area, na.rm = TRUE),
+    total_population     = first(total_population),   # not summed
+    .by = c(adm1_code, province_name, month)
+  )
+
+pakistan_monthly <- pakistan_region_month |>
+  summarise(
+    flooded_population = sum(flooded_population, na.rm = TRUE),
+    flooded_area        = sum(flooded_area, na.rm = TRUE),
+    total_population     = sum(total_population, na.rm = TRUE),  # safe now
+    .by = month
+  )
+```
+
+## Plot 1 — monthly exposure by region
+
+```{r}
+ggplot(pakistan_region_month, aes(month, flooded_population)) +
+  geom_line() +
+  facet_wrap(~ province_name, scales = "free_y") +
+  labs(
+    title = "Monthly flood exposure by administrative region",
+    subtitle = "Pakistan, EM-DAT × MODIS, 2000–2024",
+    x = NULL,
+    y = "Flooded population (MODIS-derived)",
+    caption = "Source: emdat-modis-flood-dataset (Keeney). *Territory-level codes inferred, see notes."
+  )
+```
+
+`province_name` reads far better in a facet strip than a bare `adm1_code`.
+
+## Plot 2 — normalized exposure
+
+```{r}
+ggplot(pakistan_floods_clean, aes(month, flooded_population_norm)) +
+  geom_line() +
+  facet_wrap(~ province_name) +
+  labs(
+    title = "Normalized monthly flood exposure",
+    subtitle = "Share of regional population flooded",
+    x = NULL,
+    y = "Flooded population ÷ total population"
+  )
+```
+
+`flooded_population_norm` already lives in `pakistan_floods` — no join to
+`flood_adm1_summary` needed for this one. That summary table is still useful
+for a *per-region average across all 24 years* (`event_count`,
+`mean_flooded_population`, …), just not for this monthly view.
+
+## What changed, in one place {.smaller}
+
+1. `flood_processing_flags` — wrong URL (HTML blob page) *and* wrong file;
+   now reads `data_processing_flags.csv` via `raw.githubusercontent.com`.
+2. `month = ymd(\`mon-yr\`)` silently returned `NA` for ~98% of rows because
+   `mon-yr` is corrupted (`"Jul-01"` → `"1-Jul"`, year lost). Now derived from
+   `start_date` after parsing it.
+3. Parse order fixed: dates before deriving `month` from them.
+4. Added `province_name` via `recode_values()` — nice names, dplyr 1.2.0 style.
+5. Added `filter_out()` to drop coordinate-mismatch rows (flag 6) explicitly,
+   keeping `NA`-flag rows rather than silently dropping them.
+6. Fixed a real double-count: `total_population` was being summed across
+   overlapping events in the same region-month.
+7. Switched `group_by() |> summarise(.groups = "drop")` to `.by =`.
+
+## References
+
+- Keeney, N. *EM-DAT MODIS Flood Dataset*. github.com/nicolejkeeney/emdat-modis-flood-dataset
+- Vaughan, D. & Posit team. *dplyr 1.2.0*. opensource.posit.co, 2026-02-04
+- Velásquez, I. *Working Smarter with dplyr 1.2.0*, R-Ladies Rome
+- `data_processing_flags.csv` for the full flag legend (12 codes)

@@ -1,0 +1,75 @@
+/* PBS Trade Statistics — Quarto HTML theme override */
+
+/* ── Typography ─────────────────────────────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap');
+
+body {
+  font-family: 'Crimson Text', Georgia, serif;
+  font-size: 17px;
+  line-height: 1.75;
+  color: #2c3e28;
+  background-color: #faf8f2;
+}
+
+h1, h2, h3, h4 {
+  font-family: 'Playfair Display', Georgia, serif;
+  color: #1a4a2e;
+}
+
+/* ── Quarto title block ─────────────────────────────────────────────────── */
+.quarto-title-meta,
+#title-block-header {
+  border-top:    4px solid #1a4a2e;
+  border-bottom: 1px solid #b89a3b;
+  padding-bottom: 1rem;
+  margin-bottom: 2rem;
+}
+
+.quarto-title > h1.title {
+  font-size: 2.2rem;
+  color: #1a4a2e;
+}
+
+/* ── Section headers ────────────────────────────────────────────────────── */
+h2 {
+  border-bottom: 2px solid #b89a3b;
+  padding-bottom: 4px;
+  margin-top: 2.5rem;
+}
+
+h3 { color: #2e7d52; }
+
+/* ── Code blocks ────────────────────────────────────────────────────────── */
+pre.sourceCode, div.sourceCode {
+  background: #f0ece0;
+  border-left: 3px solid #1a4a2e;
+  border-radius: 4px;
+  font-size: 0.88em;
+}
+
+/* ── Blockquote ─────────────────────────────────────────────────────────── */
+blockquote {
+  border-left: 4px solid #b89a3b;
+  background: #f5f0e6;
+  padding: 0.6rem 1rem;
+  color: #4a5a3a;
+  font-style: italic;
+}
+
+/* ── Table of contents ─────────────────────────────────────────────────── */
+#TOC {
+  border-left: 3px solid #b89a3b;
+  background: #f5f0e6;
+  padding: 1rem;
+}
+
+#TOC a { color: #1a4a2e; }
+#TOC a:hover { color: #b89a3b; }
+
+/* ── gt tables ─────────────────────────────────────────────────────────── */
+.gt_table {
+  font-family: 'Crimson Text', Georgia, serif !important;
+  font-size: 0.93rem !important;
+  border-top: 2px solid #1a4a2e !important;
+  border-bottom: 2px solid #1a4a2e !important;
+}

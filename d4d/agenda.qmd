@@ -1,0 +1,80 @@
+---
+title: "Workshop Agenda"
+subtitle: "Demographic Analysis Using R — five days"
+date: today
+---
+
+::: {.callout-note}
+## This is the authoritative agenda
+Four earlier agenda documents existed in the repository and disagreed with each other
+on which topics belonged to which day. They are preserved in `archive/agendas/` for
+reference. Edit **this** file when the schedule changes.
+:::
+
+**Timing:** Monday–Thursday 10:00–16:30 · Friday 09:30–13:00
+**Audience:** researchers and analysts in social science, health, economics and policy
+**Prerequisite:** none — Day 1 assumes no prior R
+
+---
+
+## Day 1 — Foundations & Data Import
+
+| Time | Session | Material |
+|---|---|---|
+| 10:00–11:30 | R, Positron and the project workflow; Git basics | [`01-rstudio-git-session`](days/01-foundations/01-rstudio-git-session.qmd) |
+| 11:45–13:00 | Reading `.sav` / `.dta` / `.xlsx`; the five verbs | [`import-alifailan.R`](days/01-foundations/scripts/import-alifailan.R) |
+| 14:00–15:15 | Messy data: janitor, missingness, wide ↔ long | [`clean-dirty-excel.R`](days/01-foundations/scripts/clean-dirty-excel.R) |
+| 15:30–16:30 | First look at NHANES / PDHS structure | [`02-demographic-analysis-nhanes`](days/01-foundations/02-demographic-analysis-nhanes.qmd) |
+
+## Day 2 — Exploratory Analysis & Visualisation
+
+| Time | Session | Material |
+|---|---|---|
+| 10:00–11:30 | Publication tables with `gt` and `gtsummary` | [`gt-summary-tables.R`](days/02-eda-visualisation/scripts/gt-summary-tables.R) |
+| 11:45–13:00 | ggplot2 from first principles | [`nhanes-ggplot-basics.R`](days/02-eda-visualisation/scripts/nhanes-ggplot-basics.R) |
+| 14:00–15:15 | Live indicator data: WDI and Our World in Data APIs | [`wdi-indicators.R`](days/02-eda-visualisation/scripts/wdi-indicators.R) |
+| 15:30–16:30 | Chart critique and redesign | [`gt-bar-defence.R`](days/02-eda-visualisation/scripts/gt-bar-defence.R) |
+
+## Day 3 — Modelling & Spatial Analysis
+
+| Time | Session | Material |
+|---|---|---|
+| 10:00–11:30 | Linear and logistic regression, interpreted for policy | [`linear-regression.R`](days/03-modelling-spatial/scripts/linear-regression.R) |
+| 11:45–13:00 | Weighted demographic indicators from DHS/MICS | [`01-dhs-model-datasets`](days/03-modelling-spatial/01-dhs-model-datasets.qmd) |
+| 14:00–15:15 | Pakistan boundaries, joins and choropleths | [`pakistan-district-choropleth.R`](days/03-modelling-spatial/scripts/pakistan-district-choropleth.R) |
+| 15:30–16:30 | Interactive maps with leaflet | [`pakistan-maps-geoboundaries.R`](days/03-modelling-spatial/scripts/pakistan-maps-geoboundaries.R) |
+
+## Day 4 — Reporting & Dashboards
+
+| Time | Session | Material |
+|---|---|---|
+| 10:00–11:30 | Quarto: documents, slides, cross-references | [`01-quarto-basics`](days/04-reporting-dashboards/01-quarto-basics.qmd) |
+| 11:45–13:00 | Parameterised reports — one template, thirty districts | [`02-parameterised-reports`](days/04-reporting-dashboards/02-parameterised-reports.qmd) |
+| 14:00–15:15 | Dashboards | [`penguin-dashboard.Rmd`](days/04-reporting-dashboards/dashboards/penguin-dashboard.Rmd) |
+| 15:30–16:30 | Publishing to GitHub Pages | `quarto publish gh-pages` |
+
+## Day 5 — AI-Assisted Analysis & Capstone
+
+| Time | Session | Material |
+|---|---|---|
+| 09:30–10:45 | Prompting for data work: the CRISP structure | [`01-data-prompt-manual`](days/05-ai-workflows/01-data-prompt-manual.qmd) |
+| 11:00–12:00 | Prompt library; debugging and code-review prompts | [`02-ai-prompts-library`](days/05-ai-workflows/02-ai-prompts-library.qmd) |
+| 12:00–13:00 | Capstone presentations and certificates | — |
+
+---
+
+## Capstone project
+
+An individual analysis demonstrating the full arc:
+
+- import and clean a survey dataset
+- produce at least one weighted estimate
+- one publication-quality table and one chart
+- a model **or** a map
+- delivered as a rendered Quarto report
+
+## Materials provided
+
+Workshop data pack (PDHS, PSLM, MICS), Pakistan shapefiles, all scripts in this
+repository, the prompt libraries in `days/05-ai-workflows/`, and a certificate of
+completion.

@@ -1,0 +1,312 @@
+---
+title: "Advanced Workshop: Demographic Analysis with R"
+subtitle: "SPDI D4D, Islamabad — Advanced Track (4 Days)"
+author: "Zahid Asghar, School of Economics, QAU"
+date: today
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    toc-location: left
+    code-fold: show
+    code-tools: true
+    theme: cosmo
+    embed-resources: true
+  docx:
+    toc: true
+    toc-depth: 3
+    number-sections: true
+execute:
+  warning: false
+  message: false
+  echo: true
+editor: visual
+---
+
+# Overview
+
+This **Advanced Workshop** builds directly on the 5-day introductory workshop on *Demographic Analysis with R*. Participants are assumed to be comfortable with the basics of R, RStudio/Positron, Quarto, the tidyverse, and simple descriptive demographic analysis.
+
+The goal of this advanced track is to move from *describing* demographic data to **modelling, projecting, mapping, automating, and communicating** it in a fully reproducible, production-grade workflow. Over 4 intensive days, participants will build a complete mini-project: from raw micro-data (DHS / PSLM / Census) to an interactive dashboard and a parameterised policy report — orchestrated by a `targets` pipeline and assisted throughout by Claude inside Positron.
+
+## What Makes This Workshop "Advanced"
+
+This is not "more R packages." It is a deliberate move from *writing scripts* to *building reproducible analytical systems*. Three threads run through every day:
+
+1.  **Pipelines, not scripts** — `targets` is woven through Days 1, 2, and 4 so participants meet it three times in three different contexts and feel the payoff each time.
+2.  **Spatial demography done properly** — a full day on the modern geospatial stack (`sf`, `terra`, `tmap` v4, `sfdep`), including spatial autocorrelation and small-area estimation.
+3.  **AI as a daily tool, not a novelty** — Positron Assistant and Claude Code are introduced on Day 1 and used in every session afterwards, with an explicit synthesis on Day 4 about *when* to use which.
+
+## Learning Objectives
+
+By the end of the workshop, participants will be able to:
+
+1.  Build reproducible R projects using `renv`, `here`, Git/GitHub, and `targets` pipelines.
+2.  Wrangle large demographic datasets using advanced `dplyr`, `tidyr`, and `purrr` (functional programming).
+3.  Work with complex survey data (DHS, PSLM, MICS, LFS) using the `survey` and `srvyr` packages — including weights, strata, and clustering.
+4.  Construct life tables, compute fertility and mortality indicators, and run cohort-component population projections as branched `targets` pipelines.
+5.  Perform spatial demographic analysis using `sf`, `terra`, `tmap` v4, and `sfdep` — including bivariate choropleths and spatial autocorrelation (Moran's I, LISA).
+6.  Create publication-quality and interactive visualisations using advanced `ggplot2`, `plotly`, `gganimate`, and `patchwork`.
+7.  Build **Quarto dashboards** to communicate demographic findings to policymakers.
+8.  Generate **parameterised Quarto reports** — one template, many districts, all rebuilt automatically when the underlying data changes.
+9.  Cross the R ↔ Python boundary inside a single Quarto document using `reticulate`, `pandas`, and `geopandas` — and use AI to make the crossing painless.
+10. Use **Positron Assistant** and **Claude Code** responsibly as part of a real analytical workflow, knowing when to reach for which.
+
+## Pre-requisites and Pre-Workshop Checklist
+
+-   Completion of the 5-day introductory workshop, or equivalent working knowledge of base R + tidyverse + basic Quarto.
+-   **R (≥ 4.3), Positron (preferred) or RStudio, Quarto (≥ 1.4), Git, and a free GitHub account installed before Day 1.**
+-   **Spatial libraries installed before Day 3.** `install.packages(c("sf", "terra", "tmap", "sfdep"))` — do this in advance, because on Windows the underlying GDAL/GEOS/PROJ libraries occasionally need extra work and we cannot lose teaching time to system-library debugging.
+-   **An Anthropic API key with $5–10 of credit** (or a Claude Pro/Max subscription) so participants can use Positron Assistant and Claude Code from Day 1 onwards. SPDI may provide a shared key for the workshop; otherwise participants should set one up the day before.
+-   **A Python virtual environment for the polyglot session on Day 4.** Run `reticulate::virtualenv_create("r-polyglot", packages = c("pandas", "geopandas", "scikit-learn"))` before Day 4.
+-   Laptop with at least 8 GB RAM (16 GB recommended for the spatial day).
+
+------------------------------------------------------------------------
+
+# Day 1 — Reproducible Workflows, Advanced Wrangling & Meeting Your AI Tools
+
+**Theme:** *"From messy scripts to production-ready projects."*
+
+## Session 1.1 — Reproducible Project Architecture (09:00 – 10:30)
+
+-   Why reproducibility matters in demographic research (replication crisis, policy credibility).
+-   Positron / RStudio **Projects** revisited — the `here` package instead of `setwd()`.
+-   **`renv`**: locking package versions for future-proof analysis.
+-   **Git & GitHub** essentials for researchers: `init`, `commit`, `push`, `pull`, branches, and `.gitignore` for sensitive micro-data.
+-   Folder conventions: `data-raw/`, `data/`, `R/`, `reports/`, `outputs/`.
+-   **First look at `targets`** (last 15 minutes) — concept only. Show `_targets.R`, run `tar_make()` once, run it again, watch it skip everything. Plant the flag: *"this is where we're heading."*
+-   **Setting up Positron Assistant with your Claude API key** — one-time housekeeping so the tool is ready for the rest of the workshop.
+
+## Session 1.2 — Advanced `dplyr` and `tidyr` (10:45 – 12:30)
+
+-   `across()`, `where()`, `if_any()`, `if_all()` for column-wise operations.
+-   Window functions: `lag()`, `lead()`, `cumsum()`, `row_number()` for cohort analysis.
+-   Long ↔ wide reshaping with `pivot_longer()` / `pivot_wider()` on real census tables.
+-   Joining messy data: fuzzy joins and handling district boundary changes over time.
+
+## Session 1.3 — Functional Programming with `purrr` (13:30 – 14:30)
+
+*Compressed to 60 minutes to make room for `targets` later in the week.*
+
+-   `map()`, `map_dfr()`, `map2()` — replacing loops.
+-   Reading and binding dozens of files at once (e.g., provincial CSVs).
+-   Safely handling errors with `safely()` and `possibly()`.
+
+## Session 1.4 — Hands-on Lab + Meet Claude Code (14:45 – 17:00)
+
+**Exercise:** Build a reproducible project that ingests raw PSLM/HIES files, cleans them, and produces a tidy, documented dataset committed to GitHub.
+
+**Live demo (woven into the lab):**
+
+-   **Positron Assistant in action** — debug a real participant's `dplyr` chain, ask the Assistant to read an error from the console, accept/reject inline edits.
+-   **Meet Claude Code** (the agentic tool inside Positron, distinct from the Assistant). Use Claude Code to scaffold the entire reproducible project structure in two minutes: folders, `renv`, Git, README, starter `_targets.R`. This is the moment participants understand that Claude Code is a *delegation* tool, not a chat tool.
+-   **The two safety rules**, drilled in: (1) keep "Ask before edits" on, always; (2) `git commit` before unleashing Claude Code on a real task.
+
+------------------------------------------------------------------------
+
+# Day 2 — Survey Data, Life Tables & Population Projections (with `targets`)
+
+**Theme:** *"Doing demography properly — weights, rates, and the future."*
+
+## Session 2.1 — Complex Survey Analysis (09:00 – 10:30)
+
+-   Why unweighted means from DHS/PSLM are **wrong**.
+-   The `survey` and `srvyr` packages: declaring a design with weights, strata, and PSUs.
+-   Computing weighted means, proportions, quantiles, and standard errors.
+-   Subpopulation analysis: urban/rural, province, wealth quintile.
+-   Design effects and effective sample size.
+
+## Session 2.2 — Fertility and Mortality Indicators (10:45 – 12:30)
+
+-   Age-specific fertility rates (ASFR), Total Fertility Rate (TFR), Gross and Net Reproduction Rates.
+-   Infant, child, and under-5 mortality from DHS birth histories.
+-   Introduction to the `DHS.rates` and `demography` packages.
+-   Computing confidence intervals for demographic rates.
+
+## Session 2.3 — Life Tables from Scratch (13:30 – 15:00)
+
+-   Building a period life table step-by-step in R (nMx → nqx → lx → Lx → Tx → ex).
+-   Comparing male vs female life expectancy across provinces.
+-   Using the `MortalityLaws` package to fit Gompertz, Makeham, and Heligman-Pollard models.
+-   **AI demo (woven in):** ask Positron Assistant to translate the textbook nMx-to-ex formula into an R function, *then verify it against a published Pakistan life table.* The lesson: AI is fast at boilerplate, dangerous at correctness — always check against ground truth.
+
+## Session 2.4 — Cohort-Component Projections as a `targets` Pipeline (15:15 – 17:00)
+
+This is the **first full encounter with `targets`** — and the killer demo for why it matters.
+
+-   Leslie matrix approach to cohort-component projection.
+-   Implementing a 25-year projection for Pakistan with high/medium/low fertility scenarios.
+-   **Refactoring the projection script into a `targets` pipeline** with branching over scenarios using `tar_map()`. Change one assumption, watch only that branch rerun. The caching becomes visceral when projections are slow.
+-   `tar_visnetwork()` to visualise the dependency graph.
+-   **Live demo:** use **Claude Code** to do the script-to-pipeline refactor in front of the room, with "Ask before edits" on, so participants see every change. This is the agentic AI killer demo of the workshop.
+-   **Deliverable:** a reproducible projection pipeline committed to GitHub.
+
+------------------------------------------------------------------------
+
+# Day 3 — Spatial Demography & Advanced Visualisation
+
+**Theme:** *"Where people live matters — making maps and statistics that persuade."*
+
+> **Orientation (first 10 minutes):** the modern R geospatial stack. The old `sp` / `rgdal` / `rgeos` / `maptools` stack was **retired in October 2023**. The current stack is `sf` (vector), `terra` (raster), `tmap` v4 (mapping — note: v4 is a substantial rewrite from v3, so old tutorials online may be misleading), and `sfdep` (modern tidyverse-friendly spatial statistics). This 10-minute framing saves participants weeks of confusion later.
+
+## Session 3.1 — Foundations: `sf` and `terra` (09:00 – 10:30)
+
+**The big idea to anchor the day:** an `sf` object is just a data frame with a sticky geometry column. Every `dplyr` verb you already know works on it unchanged.
+
+-   Reading spatial files: `st_read()` for shapefiles, GeoPackages (`.gpkg`, the modern replacement for shapefiles), and GeoJSON. Sources: GADM, Natural Earth, `rnaturalearth`.
+-   `dplyr` on `sf` objects: `filter`, `mutate`, `group_by |> summarise()` to dissolve districts into provinces.
+-   **Coordinate reference systems (CRS).** Why WGS84 (EPSG:4326) is fine for storage but wrong for computation. Reprojecting to UTM Zone 42N/43N (EPSG:32642 / 32643) for Pakistan with `st_transform()`. Demonstrate the *wrong* answer you get if you compute area in degrees.
+-   **Spatial joins** with `st_join()` — the moment demographers actually need spatial tools (attaching DHS GPS clusters to districts).
+-   **Quick `terra` segment (~20 min):** load a WorldPop population raster, `crop()` and `mask()` it to a province, then `terra::extract()` for zonal statistics — *for each district polygon, what's the total population from the raster?* This is the killer use case for combining administrative boundaries with high-resolution gridded population data.
+
+## Session 3.2 — Thematic Mapping with `tmap` v4 (10:45 – 12:30)
+
+**The framing:** *"if you can `ggplot`, you can `tmap`."* Both use a layered grammar.
+
+Walk through a build-up of one good map:
+
+1.  Bare polygons: `tm_shape(districts) + tm_polygons()`.
+2.  Add a fill variable: `tm_polygons(fill = "tfr")` → choropleth.
+3.  **Fix the classification.** Show the same TFR data mapped four ways: equal interval, quantile, Jenks, standard deviation. The maps look completely different. **The lesson:** classification is an editorial choice, not a neutral one.
+4.  Fix the colours: sequential vs diverging vs categorical palettes; when to use each; colour-blind safety.
+5.  Add the furniture: `tm_title()`, `tm_compass()`, `tm_scalebar()`, `tm_credits()`. A map without these is not finished.
+6.  **Faceting (small multiples)** with `tm_facets(by = "year")` — TFR change across census rounds.
+
+Then the two things that make `tmap` v4 specifically worth teaching:
+
+-   **`tmap_mode("view")`** — switch from static to interactive (Leaflet-backed) with one line. The same code that produced your print map now produces a zoomable web map.
+-   **Bivariate choropleths** — much easier in v4. Map TFR *and* female literacy on a single map with a 3×3 colour matrix. Two indicators, one map, a much stronger policy story.
+
+**Brief mentions (name-drop only, for the "where to go next" slide):** `mapgl` (modern MapLibre/Mapbox bindings), `ggspatial` (scale bars and north arrows for `geom_sf`), `stars` (raster data cubes), `osmdata` (pull OpenStreetMap features), `exactextractr` (faster zonal stats than `terra::extract` for big rasters).
+
+## Session 3.3 — Spatial Statistics with `sfdep` (13:30 – 15:00)
+
+This is where the day moves from "pretty maps" to "spatial *analysis*."
+
+-   **Neighbours and weights.** Queen vs rook contiguity, k-nearest, distance-based. Build a neighbour list with `sfdep::st_contiguity()` and visualise the neighbour graph overlaid on the map.
+-   **Global Moran's I** — the single most useful spatial statistic for demographers. Is high TFR clustered geographically, or random? Compute with `sfdep::global_moran_test()`. Interpret honestly: significant positive Moran's I means *"fertility is geographically clustered, suggesting shared underlying drivers — culture, infrastructure, female education — rather than random variation."*
+-   **Local indicators (LISA)** with `sfdep::local_moran()` — now you can map *where* the hot spots and cold spots are. For Pakistan, this almost always reveals interesting belts.
+-   **Brief mention:** `spatialreg` and `spaMM` for spatial regression (their next step, not today's).
+
+## Session 3.4 — Hands-on Lab: District Demographic Profile (15:15 – 17:00)
+
+Each participant picks one district and produces a one-page Quarto report containing:
+
+1.  A locator map (where the district sits in Pakistan).
+2.  A choropleth showing the district against all others on one indicator.
+3.  A population pyramid (built from Day 2's survey work).
+4.  A short trend chart.
+5.  Two or three sentences of interpretation.
+
+This template is **deliberately the prototype** for Day 4's parameterised reports session, where the same template will be rendered automatically for *every* district by a `targets` pipeline.
+
+------------------------------------------------------------------------
+
+# Day 4 — Dashboards, Pipelines, Polyglot Workflows & Communication
+
+**Theme:** *"From analysis to impact — automating the last mile."*
+
+## Session 4.1 — Quarto Dashboards (09:00 – 10:30)
+
+-   The `format: dashboard` in Quarto 1.4+.
+-   Value boxes, tabsets, cards, rows and columns.
+-   Embedding `plotly`, `leaflet`, and `DT` tables.
+-   Linked interactivity with `crosstalk` — 70% of the "feel" of Shiny with none of the reactive headaches.
+-   Publishing dashboards to Quarto Pub / GitHub Pages / Netlify.
+
+> **Why dashboards, not Shiny?** A Quarto dashboard is *just a Quarto document with a different YAML header*. Everything participants already know transfers directly. Shiny would require teaching a new mental model (reactivity, `reactive()`, `observe()`, `eventReactive()`) that cannot land in 90 minutes. We name Shiny at the end of the day so participants know it exists and when to graduate to it — but we do not pretend to teach it.
+
+## Session 4.2 — Polyglot Demography: R ↔ Python with AI (10:45 – 12:30)
+
+**The framing:** you are not picking sides between R and Python. You are picking *the right tool for each step* and letting Quarto + `reticulate` handle the seams. R for survey wrangling, life tables, demographic rates, and final mapping. Python for ML, fast spatial algorithms, API calls, and the broader scientific Python ecosystem.
+
+-   **`reticulate` in 15 minutes.** Embedding Python in R; auto-conversion of objects across the boundary (`r.thing` and `py$thing`); managing the Python environment with `virtualenv_create()`; the diagnostic command `py_config()` for when things break.
+-   **Worked example (45 min): district healthcare access in Punjab.** Wrangle PDHS women's recode in R with `srvyr` (R wins — there is no Python equivalent), then hand the `sf` object to a Python chunk that uses `geopandas` + `scikit-learn`'s `BallTree` for fast nearest-facility distances (Python wins for fast spatial nearest-neighbour), then bring the enriched data back to R for a bivariate choropleth in `tmap` (R wins for thematic maps).
+-   **Exercise (20 min):** extend the example with a Python chunk that uses `KMeans` to cluster districts on `(sba_rate, distance_to_facility)`, then map the clusters back in `tmap`.
+-   **The meta-lesson (10 min): AI is the bridge.** No demographer needs to memorise `geopandas` syntax. They need to know *the cross-language move exists* and how to ask Claude (in Positron Assistant) to write the bridge code, then verify the result. This is the workflow that makes polyglot Quarto realistic for working demographers in 2026.
+
+## Session 4.3 — Parameterised Reports with `targets` (13:30 – 15:00)
+
+**This is the third encounter with `targets`** — and the moment everything snaps together.
+
+-   YAML `params:` for one report template, many districts.
+-   `tarchetypes::tar_quarto_rep()` to render one report per district as a branched target. Change the data once, rerun the pipeline, only the affected district reports rebuild. **This is the killer app of `targets` for demographers.**
+-   Branding: custom Typst and Word templates, logos, cover pages.
+-   Exporting to HTML, PDF (via Typst), and Word in one build.
+-   **Live demo:** use **Claude Code** to wire together the template, the rendering loop, and the `_targets.R` integration. Multi-file mechanical work — exactly what agentic AI is for.
+
+## Session 4.4 — Capstone, AI-Workflow Synthesis & Wrap-up (15:15 – 17:00)
+
+-   **Capstone presentations** (5 minutes per participant).
+-   **Explicit AI-workflow synthesis (30 min)** — by now participants have *used* Positron Assistant, browser Claude, and Claude Code for three days. This session gives them the framework to make sense of it:
+    -   **Positron Assistant** = collaborator at your shoulder. Default for live coding, debugging, single-file work.
+    -   **Browser Claude** = thinking partner. For concepts, analysis design, prose, anything that doesn't need access to your data.
+    -   **Claude Code** = delegated junior developer. For multi-file mechanical work: scaffolding projects, refactoring scripts into pipelines, generating parameterised report systems.
+    -   **Verification habits**: never accept code you can't read; always test on a known case; for demographic methods, cross-check against textbooks or published examples.
+    -   **Confidentiality**: never paste DHS individual records (or any data under restrictive agreement) into a third-party AI without checking the data agreement first.
+    -   **Citing AI in research outputs**: brief practical guidance.
+-   **20-minute Shiny teaser** — show one working app, explain reactivity in plain English, point to *Mastering Shiny* (Hadley Wickham). Honest framing: *"Shiny is your next step after this workshop, not during it."*
+-   Workshop wrap-up, feedback, certificates, and next steps.
+
+------------------------------------------------------------------------
+
+# Tools & Packages Used
+
+```{r}
+#| eval: false
+
+if (!require(pacman)) install.packages("pacman")
+library(pacman)
+
+p_load(
+  # Core
+  tidyverse, here, renv, janitor, scales,
+  # Reporting
+  quarto, knitr, kableExtra, gt, DT,
+  # Pipelines
+  targets, tarchetypes,
+  # Functional programming
+  purrr, furrr,
+  # Survey & demography
+  survey, srvyr, demography, DHS.rates, MortalityLaws, popReconstruct,
+  # Spatial (modern stack only)
+  sf, terra, tmap, sfdep, mapview, leaflet, rnaturalearth,
+  # Advanced viz
+  ggplot2, plotly, gganimate, patchwork, cowplot, ggrepel,
+  ggiraph, paletteer, viridis,
+  # Polyglot
+  reticulate
+)
+```
+
+**Python packages (for the polyglot session):** `pandas`, `geopandas`, `scikit-learn`.
+
+**AI tools used throughout:** Positron Assistant (configured with Anthropic API key), Claude Code (extension inside Positron, for agentic multi-file tasks), browser Claude (for design and concept questions).
+
+# Expected Outcomes
+
+Each participant will leave the workshop with:
+
+-   A **GitHub repository** containing a fully reproducible mini-project.
+-   A **`targets` pipeline** that runs the entire analysis end-to-end and only re-runs what changed.
+-   A **Quarto dashboard** deployed online.
+-   A **set of parameterised policy reports** — one per district, all generated automatically from a single template.
+-   A **working polyglot Quarto document** demonstrating the R ↔ Python workflow.
+-   A clear, working intuition for *when* to reach for Positron Assistant, browser Claude, or Claude Code.
+-   The confidence to run their own advanced demographic analyses and mentor others.
+
+# Suggested Reading
+
+-   Preston, Heuveline & Guillot (2001). *Demography: Measuring and Modeling Population Processes.*
+-   Wickham, Çetinkaya-Rundel & Grolemund (2023). *R for Data Science* (2nd ed.).
+-   Wickham (2019). *Advanced R* (2nd ed.).
+-   Lovelace, Nowosad & Muenchow (2025). *Geocomputation with R.*
+-   Pebesma & Bivand (2023). *Spatial Data Science with Applications in R.*
+-   Landau (2021+). *The `targets` R Package User Manual* — <https://books.ropensci.org/targets/>
+-   Wickham (2021). *Mastering Shiny* — for participants who want to graduate to Shiny after the workshop.
+-   Quarto documentation: <https://quarto.org/docs/guide/>
+-   Positron Assistant documentation: <https://positron.posit.co/> (check the latest, this space is moving fast).
+
+------------------------------------------------------------------------
+
+*Prepared by Zahid Asghar, School of Economics, Quaid-i-Azam University, for SPDI Data for Development (D4D), Islamabad.*

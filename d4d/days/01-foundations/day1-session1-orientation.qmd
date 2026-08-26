@@ -1,0 +1,373 @@
+---
+title: "Day 1 · Session 1"
+subtitle: "Orientation: The R Ecosystem & the Data Workflow"
+author: "Prof. Dr. Zahid Asghar"
+institute: "School of Economics, Quaid-i-Azam University · d4d"
+date: today
+format:
+  revealjs:
+    theme: [default, custom-d4d.scss]
+    slide-number: true
+    chalkboard: true
+    preview-links: auto
+    transition: fade
+    controls: true
+    progress: true
+    scrollable: true
+    overflow: scroll
+    logo: ""
+    footer: "d4d · Day 1, Session 1 — Orientation"
+---
+
+# Welcome {background-color="#0f2440"}
+
+## Where Session 1 Fits in Today
+
+This session is a **map, not a marathon**. You will not write production code today — you'll learn what each piece is *for*, so later sessions make sense.
+
+| Session | Focus | Mode |
+|---|---|---|
+| **1 (now)** | The R ecosystem, project workflow, packages, data landscape | Orientation — mostly watching |
+| **2** | Importing real data (csv, Excel, Stata, SPSS) | Hands-on |
+| **3** | Cleaning, recoding, joining | Hands-on |
+| **4** | Mini exercise with your own / provided dataset | Guided practice |
+
+::: {.callout-note}
+Nothing here is timed to the minute — the facilitator will pace it live.
+:::
+
+## By the End of This Session, You Will Be Able To...
+
+::: {.incremental}
+- Explain the difference between **R**, **RStudio/Positron**, and **GitHub**
+- Say what a **package** is and why we don't reinvent `mean()`
+- Name which package/function reads **csv, Excel, Stata, SPSS, JSON**, or a **web API**
+- Recognize the five core **dplyr** verbs by sight
+- Know what "**recoding**" and "**joining**" mean, conceptually
+:::
+
+You will *practice* all of this starting Session 2.
+
+# The R Ecosystem {background-color="#0f2440"}
+
+## What Is R, Really?
+
+::: {.columns}
+::: {.column width="55%"}
+R is a **free, open-source language** for statistics and data analysis — not a single piece of software you double-click.
+
+Think of it in layers:
+
+- **R** — the engine (does the calculations)
+- **RStudio / Positron** — the cockpit (where you sit and drive)
+- **Packages** — the toolkits you bolt onto the engine
+- **GitHub** — the garage where work is stored and shared
+:::
+::: {.column width="45%"}
+::: {.callout-important}
+## Common confusion
+"RStudio" and "R" are **not the same thing**. R does the work; RStudio is just the window you use to talk to it. You could use R without RStudio — but not the other way around.
+:::
+:::
+:::
+
+## Two IDEs, One Family {.smaller}
+
+::: {.columns}
+::: {.column width="50%"}
+### RStudio
+- The long-standing standard (since 2011)
+- Built specifically for R
+- Mature, stable, huge community
+- **What we'll use for live demos this week**
+:::
+::: {.column width="50%"}
+### Positron
+- New IDE from Posit (2024+), built on VS Code
+- Works with R *and* Python in one place
+- Faster, modern interface — still maturing
+- Good to know about; optional to install now
+:::
+:::
+
+::: {.callout-note}
+Both are free, both are made by **Posit** (formerly "RStudio, Inc."). Your choice affects the window you look at, not the R code you write.
+:::
+
+## Posit AI Assistant — Your Copilot, Not Your Pilot
+
+- Built into RStudio/Positron; can suggest code, explain errors, draft comments
+- Useful for: explaining an unfamiliar function, drafting boilerplate, debugging error messages
+- **Not** a substitute for understanding what the code does
+
+::: {.callout-important}
+## Rule of thumb
+If an AI suggestion runs without error, that does **not** mean it's *correct*. Always check the output against what you expect — the same discipline you'd apply to Stata `do`-files or SPSS syntax.
+:::
+
+We'll return to this briefly whenever it's useful, not as a separate deep-dive.
+
+## GitHub — Today, Just the "What" and "Why"
+
+- **Git** = a tool that tracks every change you make to your files, like an infinitely detailed "track changes"
+- **GitHub** = a website where those tracked projects can live, be backed up, and be shared
+
+Why it matters for you:
+
+- Your `d4d` training materials already live at `github.com/Zahedasghar/d4d`
+- It's how you'll receive workshop scripts and datasets
+- It protects you from "final_v3_ACTUALLY_final.R" chaos
+
+::: {.callout-note}
+## Deep dive later
+Cloning, committing, pushing, pull requests — that's a full session on **Day 2/3**. Today: just recognize the name and know it's where the workshop repo lives.
+:::
+
+# Project Workflow {background-color="#0f2440"}
+
+## Why "R Projects" (Not Just Files)
+
+A **Project** (`.Rproj`) anchors your work to one folder, so:
+
+- File paths stop breaking when you move the folder or change laptops
+- Nothing depends on *your* Desktop being organized the same way as someone else's
+- Colleagues (or future-you) can open the project and everything just works
+
+```r
+# Bad — depends on YOUR computer's folder structure
+data <- read_csv("C:/Users/Zahid/Desktop/final/data v2.csv")
+
+# Good — works on anyone's machine, from anywhere in the project
+library(here)
+data <- read_csv(here("data", "cpi_2024.csv"))
+```
+
+## Anatomy of a Tidy Project Folder
+
+```
+my-workshop-project/
+├── my-workshop-project.Rproj
+├── data/              # raw data — never edited by hand
+│   └── cpi_2024.csv
+├── R/                 # scripts
+│   └── 01_import.R
+├── output/             # figures, cleaned data, tables
+└── report.qmd          # the write-up
+```
+
+::: {.callout-note}
+This is the same skeleton your `d4d` repository already follows — you'll see it again in every workshop dataset this week.
+:::
+
+# Packages & Libraries {background-color="#0f2440"}
+
+## What's a Package?
+
+R by itself does the basics. A **package** is a bundle of extra functions someone has written and shared — free, via **CRAN**.
+
+```r
+# Install ONCE per computer
+install.packages("tidyverse")
+
+# Load EVERY time you start a new R session
+library(tidyverse)
+```
+
+::: {.callout-important}
+## Easy to mix up
+`install.packages()` downloads the toolkit. `library()` opens the toolbox for this session. Forgetting `library()` is the #1 reason "it worked yesterday" stops working today.
+:::
+
+## The Packages You'll Meet This Week
+
+| Package | What it's for |
+|---|---|
+| `tidyverse` | Umbrella: `dplyr`, `ggplot2`, `readr`, `tidyr`, `purrr` and more |
+| `janitor` | Cleaning messy column names, quick counts |
+| `haven` | Reading Stata (`.dta`) and SPSS (`.sav`) files |
+| `readxl` | Reading Excel (`.xlsx`) files |
+| `jsonlite` | Reading JSON data |
+| `httr2` | Talking to web APIs |
+| `here` | Reliable file paths inside a Project |
+
+`tidyverse` is a **meta-package** — one `library(tidyverse)` loads about eight packages at once.
+
+# Bringing Data In {background-color="#0f2440"}
+
+## The Landscape, at a Glance
+
+| Format | Package :: Function | You'll see it in |
+|---|---|---|
+| `.csv` | `readr::read_csv()` | PBS, WFP, WDI exports |
+| `.xlsx` | `readxl::read_excel()` | PBS CPI, HDR tables |
+| `.dta` (Stata) | `haven::read_dta()` | PDHS microdata |
+| `.sav` (SPSS) | `haven::read_sav()` | Some survey datasets |
+| `.json` | `jsonlite::fromJSON()` | HDX / API responses |
+| Web API | `httr2::request()` ... | WDI, HDX CKAN API |
+
+Same idea every time: **pick the function that matches the file**, point it at the path, get back a data frame.
+
+## csv & Excel — the Everyday Cases
+
+```r
+library(readr)
+cpi <- read_csv(here("data", "pbs_cpi.csv")) |>
+  janitor::clean_names()   # always the very next step
+
+library(readxl)
+hdr <- read_excel(here("data", "hdr_indicators.xlsx"),
+                   sheet = "Table1")
+```
+
+`janitor::clean_names()` immediately after import is a habit worth building now — it turns `"GDP (current US$)"` into `gdp_current_us`.
+
+## Stata & SPSS — `haven` Handles Both
+
+```r
+library(haven)
+
+# Stata
+pdhs_kr <- read_dta(here("data", "PKKR71FL.DTA"))
+
+# SPSS
+survey <- read_sav(here("data", "survey.sav"))
+```
+
+::: {.callout-note}
+If you're coming from Stata or SPSS, this is often the most reassuring slide of the day — your existing datasets open in R without conversion.
+:::
+
+## JSON & Web APIs — Data That Isn't a File Yet
+
+```r
+library(jsonlite)
+library(httr2)
+
+# A file already saved as JSON
+raw <- fromJSON(here("data", "wfp_prices.json"))
+
+# Pulling data live from a web API (e.g. World Bank WDI)
+resp <- request("https://api.worldbank.org/v2/country/pk/indicator/NY.GDP.MKTP.CD") |>
+  req_url_query(format = "json") |>
+  req_perform()
+
+wdi_data <- resp_body_json(resp)
+```
+
+::: {.callout-important}
+## Not today's task
+Web APIs bring in *live* data instead of a saved file — powerful, but with more moving parts (URLs, keys, rate limits). We'll practice this with real Pakistan-relevant APIs (WDI, HDX) in a later session.
+:::
+
+# From Raw to Ready {background-color="#0f2440"}
+
+## Cleaning: The First Move, Every Time
+
+```r
+library(janitor)
+
+data <- read_csv(here("data", "raw_file.csv")) |>
+  clean_names()          # snake_case, no spaces/symbols
+```
+
+Before anything else, always check:
+
+- `names(data)` — are the column names sane?
+- `glimpse(data)` — what type is each column?
+- `anyNA(data)` — are there missing values you need to know about?
+
+::: {.callout-note}
+This "audit before proceeding" habit — printing what you found before trusting it — will come back throughout the week.
+:::
+
+## The Five Verbs of `dplyr`
+
+| Verb | Does |
+|---|---|
+| `select()` | Choose columns |
+| `filter()` | Choose rows |
+| `mutate()` | Create/change a column |
+| `arrange()` | Sort rows |
+| `summarise()` | Collapse to summary stats |
+
+```r
+data |>
+  filter(year == 2024) |>
+  select(district, cpi) |>
+  arrange(desc(cpi))
+```
+
+Nearly everything you'll do to a dataset this week is some combination of these five.
+
+## Recoding — Turning Codes into Meaning
+
+Raw data often arrives as codes (`1`, `2`, `3`) instead of labels.
+
+```r
+data <- data |>
+  mutate(
+    region = case_match(province_code,
+      1 ~ "Punjab",
+      2 ~ "Sindh",
+      3 ~ "KP",
+      4 ~ "Balochistan",
+      .default = NA_character_
+    )
+  )
+```
+
+`case_when()` is the more general cousin — for conditions rather than exact matches (e.g. turning a continuous age variable into age groups).
+
+## Joining — Combining Two Tables
+
+When information about the same units (districts, households, years) lives in **two separate tables**, a join brings them together.
+
+```r
+combined <- cpi_data |>
+  left_join(population_data, by = join_by(district, year))
+```
+
+| Join type | Keeps |
+|---|---|
+| `left_join()` | Everything in the left table, matched where possible |
+| `inner_join()` | Only rows that match in *both* tables |
+| `anti_join()` | Rows in the left table with **no** match — great for auditing |
+
+::: {.callout-important}
+## A lesson from real PBS/WFP data
+Never assume a shared code column means the same thing in both files — always verify with `anti_join()` before trusting a join. Mismatched region codes or renamed categories cause silent data loss.
+:::
+
+# Wrap-Up {background-color="#0f2440"}
+
+## What You Now Know
+
+::: {.incremental}
+- R, RStudio/Positron, GitHub each play a different role — none of them *is* the other
+- Projects + `here()` keep file paths from breaking
+- Packages extend R; `install.packages()` once, `library()` every session
+- Every file format has a matching import function — the pattern repeats
+- Cleaning, recoding, and joining are the everyday shape of "getting data ready"
+:::
+
+## Coming Up Next in Session 2
+
+We open RStudio, create a real Project, and **import an actual PBS or WFP dataset together** — csv first, then Excel.
+
+::: {.callout-note}
+## Before we move on
+Any names, terms, or steps from this session you'd like re-explained before we start typing?
+:::
+
+## {background-color="#0f2440"}
+
+::: {style="text-align:center; margin-top: 2em;"}
+**Questions?**
+:::
+
+<!--
+FACILITATOR NOTES (not counted in slide numbers)
+- Session 1 is deliberately low-code: the goal is orientation vocabulary, not typing fluency.
+- If time is short, the GitHub and Posit AI slides can be compressed to one slide each.
+- Keep the "Landscape at a Glance" table visible/printed as a handout — participants refer back to it in Session 2.
+-->

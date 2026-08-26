@@ -1,0 +1,37 @@
+---
+title: "Day 4 — Reporting & Dashboards"
+subtitle: "Write it once, re-run it forever"
+---
+
+## Where the day goes
+
+The analysis is done. Today it becomes something a colleague can read and a machine
+can regenerate next year with one command.
+
+## Sessions
+
+| # | Session | Material |
+|---|---|---|
+| 1 | Quarto: documents, slides, cross-references | [`01-quarto-basics.qmd`](01-quarto-basics.qmd) |
+| 2 | Parameterised reports — one template, many districts | [`02-parameterised-reports.qmd`](02-parameterised-reports.qmd), [`scripts/render-parameterised.R`](scripts/render-parameterised.R) |
+| 3 | Dashboards | [`dashboards/penguin-dashboard.Rmd`](dashboards/penguin-dashboard.Rmd) |
+| 4 | Publishing | `quarto publish gh-pages` |
+
+## Also here
+
+- `03-odi-report.qmd` — a worked report in the ODI house style
+- `04-r-user-group.qmd` — the R user group talk
+- `scripts/animated-gif.R` — animation with `gganimate` and `magick`
+
+## The parameterised report idea
+
+One `.qmd` with a `params:` block, plus a `purrr::walk()` loop over district names,
+produces thirty district reports. That is the whole trick, and it is the single
+highest-return thing in this workshop for anyone who produces recurring outputs.
+
+## What you should be able to do by 16:30
+
+- render one source document to HTML, PDF and slides
+- parameterise a report and batch-render it
+- build a dashboard from an existing analysis
+- publish the result to a URL you can share

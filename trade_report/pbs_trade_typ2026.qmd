@@ -1,0 +1,396 @@
+---
+title: "Advance Release on External Trade Statistics"
+subtitle: "For the Month of February, 2026"
+date: "2026-03-01"
+author: "**Pakistan Bureau of Statistics** | Government of Pakistan"
+format:
+  typst:
+    template-partials:
+      - typst-template.typ
+      - typst-show.typ
+    papersize: a4
+execute:
+  warning: false
+  message: false
+  echo: false
+---
+
+```{r setup}
+#| include: false
+library(tidyverse)
+library(knitr)
+library(gt)
+library(scales)
+library(ggplot2)
+
+# ── Shared palette ──────────────────────────────────────────────────────────
+pbs_green      <- "#1a4a2e"
+pbs_green_mid  <- "#2c5a3e"
+pbs_gold       <- "#b89a3b"
+pbs_cream      <- "#fdfaf4"
+pbs_text       <- "#1e2d1e"
+pbs_muted      <- "#5a6a5a"
+dec_red        <- "#c0392b"
+inc_green      <- "#1a6b3a"
+imp_dark       <- "#6b2020"
+bot_dark       <- "#2e3a1a"
+
+theme_pbs <- function(title_col = pbs_green) {
+  theme_minimal(base_size = 11) +
+    theme(
+      plot.title         = element_text(colour = title_col, face = "bold",
+                                        size = 12, margin = margin(b = 6)),
+      plot.caption       = element_text(colour = pbs_muted, size = 8,
+                                        hjust = 0, margin = margin(t = 4)),
+      panel.grid.major.x = element_blank(),
+      panel.grid.minor   = element_blank(),
+      panel.grid.major.y = element_line(colour = "#ddd", linewidth = 0.35),
+      axis.text.x        = element_text(size = 8.5, colour = pbs_text,
+                                        angle = 25, hjust = 1),
+      axis.text.y        = element_text(size = 8.5, colour = pbs_text),
+      axis.title.y       = element_text(size = 9, colour = pbs_muted,
+                                        margin = margin(r = 6)),
+      plot.background    = element_rect(fill = pbs_cream, colour = NA),
+      panel.background   = element_rect(fill = pbs_cream, colour = NA),
+      legend.position    = "none"
+    )
+}
+
+fmt_pct <- function(x) {
+  ifelse(x > 0, paste0("+", x, "%"), paste0(x, "%"))
+}
+
+# ── Shared gt options ───────────────────────────────────────────────────────
+gt_base_opts <- function(tbl, header_col = pbs_green, top_col = pbs_gold) {
+  tbl |>
+    opt_table_font(font = list(google_font("Source Serif 4"), default_fonts())) |>
+    tab_options(
+      table.width                        = pct(100),
+      table.font.size                    = 10,
+      heading.background.color           = header_col,
+      heading.title.font.size            = 11,
+      table.border.top.color             = top_col,
+      table.border.top.width             = px(2),
+      column_labels.border.bottom.color  = top_col,
+      column_labels.border.bottom.width  = px(1.5),
+      source_notes.font.size             = 8
+    )
+}
+```
+
+## EXPORTS
+
+According to the provisional figures compiled by the Pakistan Bureau of Statistics, exports from Pakistan during **February, 2026** amounted to **Rs. 636,939 million** (provisional) as against Rs. 855,496 million in January, 2026 and Rs. 695,549 million during February, 2025 — showing a **decrease of 25.55%** over January, 2026 and of **8.43%** over February, 2025.
+
+In terms of US dollars, exports in February, 2026 totaled **\$ 2,278 million** (provisional) as compared to \$ 3,055 million in January, 2026, showing a decrease of **25.43%** over January, 2026 and **8.51%** as compared to \$ 2,490 million in February, 2025.
+
+Exports during **July – February, 2025–2026** totaled **Rs. 5,757,852 million** (provisional) as against Rs. 6,143,409 million during the corresponding period of last year — a **decrease of 6.28%**. In terms of US dollars, the exports totaled **\$ 20,468 million** (provisional) against \$ 22,073 million — a **decrease of 7.27%**.
+
+```{r export-kpi}
+#| fig-height: 2.2
+#| fig-width: 10
+
+kpi_exp <- tibble(
+  label  = c("Feb 2026 Exports (Rs.)", "Feb 2026 Exports (USD)",
+             "Jul–Feb 2025-26 (Rs.)",  "Jul–Feb 2025-26 (USD)"),
+  value  = c("636,939 mn", "$2,278 mn", "5,757,852 mn", "$20,468 mn"),
+  change = c("▼ 25.55% vs Jan 2026", "▼ 25.43% vs Jan 2026",
+             "▼ 6.28% vs LY Period", "▼ 7.27% vs LY Period"),
+  x = 1:4
+)
+
+ggplot(kpi_exp) +
+  geom_rect(aes(xmin = x - 0.46, xmax = x + 0.46, ymin = 0, ymax = 1),
+            fill = "#f5f0e6", colour = pbs_gold, linewidth = 0.6) +
+  geom_rect(aes(xmin = x - 0.46, xmax = x + 0.46, ymin = 0.85, ymax = 1),
+            fill = pbs_green) +
+  geom_text(aes(x = x, y = 0.925, label = label),
+            colour = "white", size = 2.9, fontface = "bold") +
+  geom_text(aes(x = x, y = 0.58, label = value),
+            colour = pbs_green, size = 4.6, fontface = "bold") +
+  geom_text(aes(x = x, y = 0.24, label = change),
+            colour = dec_red, size = 3.3) +
+  scale_x_continuous(limits = c(0.5, 4.5)) +
+  scale_y_continuous(limits = c(0, 1.05)) +
+  theme_void() +
+  theme(plot.background = element_rect(fill = pbs_cream, colour = NA))
+```
+
+#### Main Commodities of Exports — February 2026
+
+Main commodities of exports during February, 2026 were Readymade garments (Rs. 91,520 mn), Knitwear (Rs. 87,363 mn), Bed wear (Rs. 61,767 mn), Cotton cloth (Rs. 37,057 mn), Rice others (Rs. 32,244 mn), Towels (Rs. 22,768 mn), Cotton yarn (Rs. 20,650 mn), Basmati rice (Rs. 19,969 mn), Madeup Articles excl. Towels & Bedwears (Rs. 16,649 mn) and Meat & meat preparations (Rs. 15,072 mn).
+
+```{r exports-table}
+exports <- tibble(
+  `S.No.` = 1:10,
+  Commodities = c(
+    "Readymade garments", "Knitwear", "Bed wear",
+    "Cotton cloth", "Rice others", "Towels",
+    "Cotton yarn", "Basmati rice",
+    "Madeup Articles (Excl. Towels & Bedwears)",
+    "Meat and meat preparations"
+  ),
+  vs_jan = c(-24.87, -27.13, -28.49, -19.82, -30.84,
+             -30.09,   0.37, -64.24, -26.57,   4.61),
+  vs_feb = c( -0.44, -14.42, -11.40, -10.81, -42.45,
+             -16.28,  43.77, -19.10,  -5.34,  22.23)
+) |>
+  mutate(vs_jan = fmt_pct(vs_jan), vs_feb = fmt_pct(vs_feb))
+
+exports |>
+  gt() |>
+  tab_header(
+    title = md("**Increase (+) / Decrease (−) in Main Export Commodities**")
+  ) |>
+  cols_label(
+    `S.No.`     = "S.No.",
+    Commodities = "Commodities",
+    vs_jan      = "% Change: Feb 2026 vs Jan 2026",
+    vs_feb      = "% Change: Feb 2026 vs Feb 2025"
+  ) |>
+  cols_align(align = "center", columns = c(`S.No.`, vs_jan, vs_feb)) |>
+  cols_align(align = "left",   columns = Commodities) |>
+  tab_source_note(md("*Source: Pakistan Bureau of Statistics (Provisional figures)*")) |>
+  tab_style(style = cell_text(color = dec_red,   weight = "bold"),
+            locations = cells_body(columns = vs_jan, rows = str_starts(vs_jan, "-"))) |>
+  tab_style(style = cell_text(color = inc_green, weight = "bold"),
+            locations = cells_body(columns = vs_jan, rows = str_starts(vs_jan, "\\+"))) |>
+  tab_style(style = cell_text(color = dec_red,   weight = "bold"),
+            locations = cells_body(columns = vs_feb, rows = str_starts(vs_feb, "-"))) |>
+  tab_style(style = cell_text(color = inc_green, weight = "bold"),
+            locations = cells_body(columns = vs_feb, rows = str_starts(vs_feb, "\\+"))) |>
+  tab_style(
+    style = list(cell_fill(color = pbs_green), cell_text(color = "white", weight = "bold")),
+    locations = cells_column_labels()
+  ) |>
+  tab_style(style = cell_fill(color = "#eef4ed"),
+            locations = cells_body(rows = seq(1, 10, by = 2))) |>
+  gt_base_opts(header_col = pbs_green)
+```
+
+```{r exports-chart}
+#| fig-height: 3.6
+#| fig-width: 9
+
+tibble(
+  Commodity = c("Readymade garments", "Knitwear", "Bed wear",
+                "Cotton cloth", "Rice others", "Towels",
+                "Cotton yarn", "Basmati rice",
+                "Madeup Articles", "Meat & prep."),
+  Value = c(91520, 87363, 61767, 37057, 32244,
+            22768, 20650, 19969, 16649, 15072)
+) |>
+  arrange(desc(Value)) |>
+  mutate(Commodity = fct_inorder(Commodity)) |>
+  ggplot(aes(x = Commodity, y = Value, fill = Value)) +
+  geom_col(width = 0.72, colour = pbs_gold, linewidth = 0.35) +
+  scale_fill_gradient(low = "#4a7a5e", high = pbs_green) +
+  scale_y_continuous(
+    labels = comma_format(scale = 1e-3, suffix = "K"),
+    expand = expansion(mult = c(0, 0.12))
+  ) +
+  labs(x = NULL, y = "Rs. Million",
+       title = "Export Commodity Values — February 2026",
+       caption = "Source: PBS (Provisional)") +
+  theme_pbs(title_col = pbs_green)
+```
+
+## IMPORTS
+
+Imports into Pakistan during **February, 2026** amounted to **Rs. 1,489,124 million** (provisional) as against Rs. 1,627,472 million in January, 2026 and Rs. 1,491,293 million during February, 2025 — showing a **decrease of 8.50%** over January, 2026 and **0.15%** over February, 2025.
+
+In terms of US dollars, imports in February, 2026 totaled **\$ 5,318 million** (provisional) as compared to \$ 5,805 million in January, 2026 — a decrease of **8.39%** over January, 2026 and **0.39%** as compared to \$ 5,339 million in February, 2025.
+
+Imports during **July – February, 2025–2026** totaled **Rs. 12,831,985 million** (provisional) as against Rs. 11,722,061 million during the corresponding period of last year — an **increase of 9.47%**. In terms of US dollars, imports totaled **\$ 45,569 million** (provisional) against \$ 42,110 million — an **increase of 8.21%**.
+
+```{r import-kpi}
+#| fig-height: 2.2
+#| fig-width: 10
+
+kpi_imp <- tibble(
+  label  = c("Feb 2026 Imports (Rs.)", "Feb 2026 Imports (USD)",
+             "Jul–Feb 2025-26 (Rs.)",  "Jul–Feb 2025-26 (USD)"),
+  value  = c("1,489,124 mn", "$5,318 mn", "12,831,985 mn", "$45,569 mn"),
+  change = c("▼ 8.50% vs Jan 2026",  "▼ 8.39% vs Jan 2026",
+             "▲ 9.47% vs LY Period", "▲ 8.21% vs LY Period"),
+  chcol  = c(dec_red, dec_red, inc_green, inc_green),
+  x = 1:4
+)
+
+ggplot(kpi_imp) +
+  geom_rect(aes(xmin = x - 0.46, xmax = x + 0.46, ymin = 0, ymax = 1),
+            fill = "#f5f0e6", colour = pbs_gold, linewidth = 0.6) +
+  geom_rect(aes(xmin = x - 0.46, xmax = x + 0.46, ymin = 0.85, ymax = 1),
+            fill = imp_dark) +
+  geom_text(aes(x = x, y = 0.925, label = label),
+            colour = "white", size = 2.9, fontface = "bold") +
+  geom_text(aes(x = x, y = 0.58, label = value),
+            colour = imp_dark, size = 4.4, fontface = "bold") +
+  geom_text(aes(x = x, y = 0.24, label = change, colour = chcol), size = 3.3) +
+  scale_colour_identity() +
+  scale_x_continuous(limits = c(0.5, 4.5)) +
+  scale_y_continuous(limits = c(0, 1.05)) +
+  theme_void() +
+  theme(plot.background = element_rect(fill = pbs_cream, colour = NA))
+```
+
+#### Main Commodities of Imports — February 2026
+
+Main commodities of imports during February, 2026 were Petroleum crude (Rs. 118,498 mn), Palm oil (Rs. 107,980 mn), Petroleum products (Rs. 79,510 mn), Plastic materials (Rs. 71,211 mn), Iron & steel (Rs. 64,739 mn), Natural gas liquified — LNG (Rs. 52,923 mn), Electrical machinery & apparatus (Rs. 51,586 mn), Motor cars ckd/skd (Rs. 44,005 mn), Mobile phones (Rs. 43,560 mn) and Iron & steel scrap (Rs. 42,797 mn).
+
+```{r imports-table}
+imports <- tibble(
+  `S.No.` = 1:10,
+  Commodities = c(
+    "Petroleum crude", "Palm oil", "Petroleum products",
+    "Plastic materials", "Iron & steel",
+    "Natural gas, liquified (LNG)",
+    "Electrical machinery & apparatus",
+    "Motor cars (ckd/skd)", "Mobile phones", "Iron & steel scrap"
+  ),
+  vs_jan = c(  8.04,  4.97,  -7.27,  -7.25, -13.62,
+             -29.29, -13.83,  -3.28, -13.35, -23.83),
+  vs_feb = c( -4.30,  5.55, -39.12,  29.35,  11.19,
+             -25.34, -39.90,  68.91,  18.27,  -1.35)
+) |>
+  mutate(vs_jan = fmt_pct(vs_jan), vs_feb = fmt_pct(vs_feb))
+
+imports |>
+  gt() |>
+  tab_header(
+    title = md("**Increase (+) / Decrease (−) in Main Import Commodities**")
+  ) |>
+  cols_label(
+    `S.No.`     = "S.No.",
+    Commodities = "Commodities",
+    vs_jan      = "% Change: Feb 2026 vs Jan 2026",
+    vs_feb      = "% Change: Feb 2026 vs Feb 2025"
+  ) |>
+  cols_align(align = "center", columns = c(`S.No.`, vs_jan, vs_feb)) |>
+  cols_align(align = "left",   columns = Commodities) |>
+  tab_source_note(md("*Source: Pakistan Bureau of Statistics (Provisional figures)*")) |>
+  tab_style(style = cell_text(color = dec_red,   weight = "bold"),
+            locations = cells_body(columns = vs_jan, rows = str_starts(vs_jan, "-"))) |>
+  tab_style(style = cell_text(color = inc_green, weight = "bold"),
+            locations = cells_body(columns = vs_jan, rows = str_starts(vs_jan, "\\+"))) |>
+  tab_style(style = cell_text(color = dec_red,   weight = "bold"),
+            locations = cells_body(columns = vs_feb, rows = str_starts(vs_feb, "-"))) |>
+  tab_style(style = cell_text(color = inc_green, weight = "bold"),
+            locations = cells_body(columns = vs_feb, rows = str_starts(vs_feb, "\\+"))) |>
+  tab_style(
+    style = list(cell_fill(color = imp_dark), cell_text(color = "white", weight = "bold")),
+    locations = cells_column_labels()
+  ) |>
+  tab_style(style = cell_fill(color = "#f9eaea"),
+            locations = cells_body(rows = seq(1, 10, by = 2))) |>
+  gt_base_opts(header_col = imp_dark)
+```
+
+```{r imports-chart}
+#| fig-height: 3.6
+#| fig-width: 9
+
+tibble(
+  Commodity = c("Petroleum crude", "Palm oil", "Petroleum products",
+                "Plastic materials", "Iron & steel", "LNG",
+                "Electrical machinery", "Motor cars (ckd/skd)",
+                "Mobile phones", "Iron & steel scrap"),
+  Value = c(118498, 107980, 79510, 71211, 64739,
+             52923,  51586, 44005, 43560, 42797)
+) |>
+  arrange(desc(Value)) |>
+  mutate(Commodity = fct_inorder(Commodity)) |>
+  ggplot(aes(x = Commodity, y = Value, fill = Value)) +
+  geom_col(width = 0.72, colour = pbs_gold, linewidth = 0.35) +
+  scale_fill_gradient(low = "#7a4a4a", high = imp_dark) +
+  scale_y_continuous(
+    labels = comma_format(scale = 1e-3, suffix = "K"),
+    expand = expansion(mult = c(0, 0.12))
+  ) +
+  labs(x = NULL, y = "Rs. Million",
+       title = "Import Commodity Values — February 2026",
+       caption = "Source: PBS (Provisional)") +
+  theme_pbs(title_col = imp_dark)
+```
+
+## BALANCE OF TRADE
+
+Based on the provisional figures of imports and exports, the balance of trade in **February, 2026** was **(−) Rs. 852,185 million** and **(−) \$ 3,040 million**. The cumulative balance of trade for **July – February, 2025–2026** stood at **(−) Rs. 7,074,133 million** and **(−) \$ 25,101 million**.
+
+```{r bot-table}
+bot <- tibble(
+  Period                   = c("February, 2026", "July – February, 2025–2026"),
+  `Exports (Rs. mn)`       = c("636,939",        "5,757,852"),
+  `Imports (Rs. mn)`       = c("1,489,124",      "12,831,985"),
+  `Trade Balance (Rs. mn)` = c("(−) 852,185",    "(−) 7,074,133"),
+  `Exports (USD mn)`       = c("2,278",           "20,468"),
+  `Imports (USD mn)`       = c("5,318",           "45,569"),
+  `Trade Balance (USD mn)` = c("(−) 3,040",       "(−) 25,101")
+)
+
+bot |>
+  gt() |>
+  tab_header(title = md("**Balance of Trade Summary**")) |>
+  tab_spanner(
+    label   = "In terms of Rupees (millions)",
+    columns = c(`Exports (Rs. mn)`, `Imports (Rs. mn)`, `Trade Balance (Rs. mn)`)
+  ) |>
+  tab_spanner(
+    label   = "In terms of US Dollars (millions)",
+    columns = c(`Exports (USD mn)`, `Imports (USD mn)`, `Trade Balance (USD mn)`)
+  ) |>
+  cols_align(align = "right", columns = 2:7) |>
+  cols_align(align = "left",  columns = Period) |>
+  tab_style(
+    style = cell_text(color = dec_red, weight = "bold"),
+    locations = cells_body(
+      columns = c(`Trade Balance (Rs. mn)`, `Trade Balance (USD mn)`)
+    )
+  ) |>
+  tab_style(
+    style = list(cell_fill(color = bot_dark), cell_text(color = "white", weight = "bold")),
+    locations = cells_column_labels()
+  ) |>
+  tab_style(
+    style = list(cell_fill(color = bot_dark), cell_text(color = "white", weight = "bold")),
+    locations = cells_column_spanners()
+  ) |>
+  tab_style(style = cell_fill(color = "#eef4ed"),
+            locations = cells_body(rows = 1)) |>
+  gt_base_opts(header_col = bot_dark)
+```
+
+```{r bot-chart}
+#| fig-height: 3.6
+#| fig-width: 7
+
+tibble(
+  Category = c("Exports", "Imports", "Trade Deficit"),
+  USD_mn   = c(2278, 5318, -3040),
+  Type     = c("Positive", "Negative", "Deficit")
+) |>
+  ggplot(aes(x = Category, y = USD_mn, fill = Type)) +
+  geom_col(width = 0.55, colour = pbs_gold, linewidth = 0.4) +
+  geom_hline(yintercept = 0, linewidth = 0.6, colour = "#555") +
+  geom_text(
+    aes(label = paste0("$", comma(abs(USD_mn)), " mn"),
+        vjust = ifelse(USD_mn >= 0, -0.5, 1.5)),
+    fontface = "bold", size = 3.5, colour = pbs_text
+  ) +
+  scale_fill_manual(values = c(
+    "Positive" = pbs_green,
+    "Negative" = "#8b2222",
+    "Deficit"  = dec_red
+  )) +
+  scale_y_continuous(
+    labels = dollar_format(suffix = " mn", prefix = "$"),
+    expand = expansion(mult = c(0.18, 0.15))
+  ) +
+  labs(x = NULL, y = "USD Millions",
+       title = "Balance of Trade — February 2026",
+       caption = "Source: PBS (Provisional)") +
+  theme_pbs(title_col = pbs_text) +
+  theme(axis.text.x = element_text(angle = 0, hjust = 0.5, size = 10))
+```
+
+> **Note:** Source: Pakistan Bureau of Statistics (Provisional figures). Four statements giving quantity and value details of selected commodities of exports and imports for the month of February, 2026 and July – February, 2025–2026, along with data of the previous month and the corresponding period of last year, are enclosed.
