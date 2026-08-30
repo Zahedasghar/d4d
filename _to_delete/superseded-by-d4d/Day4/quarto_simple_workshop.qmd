@@ -1,0 +1,472 @@
+---
+title: "Quarto Basics for Document Writing"
+subtitle: "Simple 2-Hour Workshop"
+author: "Your Name"
+date: today
+format: 
+  revealjs:
+    theme: moon
+    slide-number: true
+    chalkboard: true
+---
+
+# Welcome! {background-color="#43464B"}
+
+## What We'll Cover Today
+
+| Col1 | Col2 | Col3 |
+|------|------|------|
+|      |      |      |
+|      |      |      |
+|      |      |      |
+
+: MY TABLE
+
+**2 Hours, 4 Main Topics:**
+
+1.  Getting Started (30 min)
+2.  Tables & Figures (40 min)
+3.  Equations & References (30 min)
+4.  Practice Time (20 min)
+
+::: fragment
+**Goal:** Create a complete academic document by the end!
+:::
+
+# Part 1: Getting Started {background-color="#2C5F2D"}
+
+## What is Quarto?
+
+::: incremental
+-   Write once → Export to HTML, PDF, Word
+-   Mix text + code + output
+-   Perfect for reports, papers, presentations
+:::
+
+::: fragment
+**File extension:** `.qmd`
+:::
+
+## Your First Document
+
+**Step 1:** Create new file `my-document.qmd`
+
+**Step 2:** Add this at the top:
+
+``` yaml
+---
+title: "My Analysis"
+author: "Your Name"
+format: html
+---
+```
+
+**Step 3:** Add content below
+
+**Step 4:** Render with `Ctrl/Cmd + Shift + K`
+
+## Basic Markdown
+
+``` markdown
+# Main Heading
+## Sub Heading
+
+This is normal text. 
+
+**Bold text** and *italic text*
+
+- Bullet point
+- Another point
+
+1. Numbered item
+2. Second item
+```
+
+## Adding R Code
+
+Write code in chunks:
+
+```` markdown
+```{{r}}
+# Load data
+library(tidyverse)
+
+# Calculate mean
+mean(c(1, 2, 3, 4, 5))
+```
+````
+
+The code runs and shows output in your document!
+
+## Exercise 1 {background-color="#097969"}
+
+**Create your first document (10 min):**
+
+1.  New `.qmd` file
+2.  Add YAML header with title and author
+3.  Write a short introduction
+4.  Add one code chunk that calculates something
+5.  Render it!
+
+# Part 2: Tables & Figures {background-color="#2C5F2D"}
+
+## Making Tables
+
+**Option 1: Markdown table**
+
+``` markdown
+| Name | Value |
+|------|-------|
+| A    | 10    |
+| B    | 20    |
+```
+
+**Option 2: From R code** (better!)
+
+```` markdown
+```{{r}}
+library(gt)
+
+data %>%
+  gt()
+```
+````
+
+## Better Tables with GT
+
+```` markdown
+```{{r}}
+Salaries %>%
+  group_by(sex) %>%
+  summarise(avg_salary = mean(salary)) %>%
+  gt() %>%
+  fmt_currency(columns = avg_salary)
+```
+````
+
+::: fragment
+Creates a beautiful, formatted table!
+:::
+
+## Regression Tables
+
+```` markdown
+```{{r}}
+library(modelsummary)
+
+model <- lm(salary ~ sex, data = Salaries)
+
+modelsummary(model, stars = TRUE)
+```
+````
+
+Shows coefficients, standard errors, and statistics automatically!
+
+## Adding Captions
+
+Add `#|` options at the top of chunk:
+
+```` markdown
+```{{r}}
+#| label: tbl-summary
+#| tbl-cap: "Average Salaries"
+
+Salaries %>%
+  group_by(sex) %>%
+  summarise(avg_salary = mean(salary)) %>%
+  gt()
+```
+````
+
+## Making Plots
+
+```` markdown
+```{{r}}
+#| label: fig-scatter
+#| fig-cap: "Salary vs Experience"
+
+ggplot(Salaries, aes(x = yrs.service, y = salary)) +
+  geom_point() +
+  theme_minimal()
+```
+````
+
+## Exercise 2 {background-color="#097969"}
+
+**Add tables and plots (15 min):**
+
+1.  Create a summary table with `gt()`
+2.  Add a plot with `ggplot` or base R
+3.  Add captions to both using `#| tbl-cap:` and `#| fig-cap:`
+4.  Render and check!
+
+# Part 3: Equations & References {background-color="#2C5F2D"}
+
+## Writing Equations
+
+**Inline:** Use single `$`
+
+``` markdown
+The coefficient $\beta_1$ shows the effect.
+```
+
+**Display:** Use double `$$`
+
+``` markdown
+$$
+y = \beta_0 + \beta_1 x + \epsilon
+$$
+```
+
+## Numbered Equations
+
+Add `\tag{}` for numbers:
+
+``` markdown
+$$
+salary_i = \beta_0 + \beta_1 sex_i + \epsilon_i \tag{1}
+$$
+```
+
+Result: $$
+salary_i = \beta_0 + \beta_1 sex_i + \epsilon_i \tag{1}
+$$
+
+## Common Math Symbols
+
+``` latex
+$\alpha, \beta, \gamma$    # Greek letters
+$x_i$                       # Subscript
+$x^2$                       # Superscript
+$\bar{x}$                   # Mean
+$\hat{y}$                   # Predicted value
+```
+
+## Cross-References
+
+**Reference tables:** `@tbl-name`
+
+``` markdown
+See @tbl-summary for results.
+```
+
+**Reference figures:** `@fig-name`
+
+``` markdown
+As shown in @fig-scatter...
+```
+
+**Reference sections:** `@sec-name`
+
+``` markdown
+# Methods {#sec-methods}
+
+See @sec-methods for details.
+```
+
+## Exercise 3 {background-color="#097969"}
+
+**Add equations and references (10 min):**
+
+1.  Write your regression equation with `$$`
+2.  Add labels to your table and figure
+3.  Reference them in your text with `@tbl-` and `@fig-`
+4.  Render!
+
+# Part 4: Putting It Together {background-color="#2C5F2D"}
+
+## Complete Document Structure
+
+```` markdown
+---
+title: "My Analysis"
+author: "Your Name"
+format: html
+---
+
+# Introduction
+Brief overview
+
+# Methods
+Describe your approach
+
+# Results
+```{{r}}
+# Tables and figures here
+```
+
+# Conclusion
+Summary of findings
+````
+
+## Useful Chunk Options
+
+``` r
+#| echo: false       # Hide code, show output
+#| warning: false    # Hide warnings
+#| message: false    # Hide messages
+#| eval: false       # Don't run code
+```
+
+## Callout Boxes
+
+Make important points stand out:
+
+``` markdown
+::: {.callout-note}
+This is important information!
+:::
+
+::: {.callout-tip}
+Here's a helpful tip.
+:::
+
+::: {.callout-warning}
+Be careful here!
+:::
+```
+
+## Multiple Output Formats
+
+Change YAML to export to different formats:
+
+``` yaml
+format:
+  html:
+    toc: true
+  pdf:
+    toc: true
+  docx:
+    toc: true
+```
+
+Now you can render to HTML, PDF, or Word!
+
+## Final Exercise {background-color="#097969"}
+
+**Create a complete mini-report (20 min):**
+
+Include:
+
+1.  Title and author
+2.  3-4 sections
+3.  At least one table with caption
+4.  At least one equation
+5.  Cross-reference your table
+6.  A brief conclusion
+
+## Common Issues
+
+**Problem:** Code doesn't run
+
+**Solution:** Check for typos, load required packages
+
+------------------------------------------------------------------------
+
+**Problem:** Table doesn't show
+
+**Solution:** Make sure you use `gt()` or similar
+
+------------------------------------------------------------------------
+
+**Problem:** Reference doesn't work
+
+**Solution:** Check label starts with `tbl-` or `fig-`
+
+# Tips & Resources {background-color="#43464B"}
+
+## Quick Tips
+
+::: incremental
+1.  Render often to catch errors early
+2.  Use descriptive labels (`tbl-results`, not `tbl-1`)
+3.  Always add captions to tables and figures
+4.  Hide package loading messages with `#| message: false`
+5.  Keep it simple at first!
+:::
+
+## Essential Resources
+
+-   **Documentation:** [quarto.org](https://quarto.org)
+-   **Gallery:** [quarto.org/docs/gallery](https://quarto.org/docs/gallery)
+-   **Cheat Sheet:** Search "Quarto cheat sheet"
+
+## Keyboard Shortcuts
+
+**Render document:** `Ctrl/Cmd + Shift + K`
+
+**Insert code chunk:** `Ctrl/Cmd + Alt + I`
+
+**Run current chunk:** `Ctrl/Cmd + Shift + Enter`
+
+## Next Steps
+
+After today, try:
+
+-   Creating a presentation (change format to `revealjs`)
+-   Adding more complex visualizations
+-   Publishing to Quarto Pub
+-   Creating a personal website
+
+# Thank You! {background-color="#43464B"}
+
+::: r-fit-text
+Questions?
+:::
+
+::: fragment
+Now you know the essentials!
+
+Keep practicing! 🎉
+:::
+
+# Quick Reference
+
+## Minimal Document Template
+
+```` markdown
+---
+title: "Title"
+author: "Name"
+format: html
+---
+
+# Introduction
+
+Brief intro here.
+
+# Analysis
+
+```{{r}}
+#| label: tbl-results
+#| tbl-cap: "Results"
+
+# Your code
+```
+
+See @tbl-results for findings.
+
+# Conclusion
+
+Summary here.
+````
+
+## Remember
+
+::: incremental
+-   **YAML** at top controls format
+-   **\#** for headings
+-   **Code chunks** between ```` ```{r} ```` and ```` ``` ````
+-   **Labels** for cross-references
+-   **Render** frequently!
+:::
+
+## Practice Makes Perfect
+
+::: r-fit-text
+Start simple,
+
+add complexity
+
+as you learn!
+:::

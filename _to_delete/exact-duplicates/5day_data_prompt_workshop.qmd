@@ -1,0 +1,236 @@
+---
+title: "5-Day Workshop: Data Analysis Using AI Prompts"
+subtitle: "Comprehensive Training Manual"
+author: "Facilitator: Zahid Asghar"
+date: today
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    number-sections: true
+    theme: cosmo
+  pdf:
+    toc: true
+    number-sections: true
+    geometry: margin=1in
+execute:
+  echo: false
+  warning: false
+  message: false
+---
+
+# 🧠 Workshop Overview
+
+This 5-day workshop focuses entirely on learning how to use **AI prompts for data analysis**, regardless of whether the analysis is done in R, Python, Stata, SPSS, Excel, or Tableau.
+
+The workshop emphasizes:
+
+- Prompt engineering for data  
+- Analysis roadmap prompts  
+- EDA prompts  
+- Survey & NHANES prompts  
+- Modeling prompts  
+- Mapping prompts  
+- Storytelling prompts  
+- Debugging prompts  
+- Vibe-coding prompts  
+- Case-based scenario prompts  
+
+---
+
+# Day 1 — Foundations of AI Prompting for Data Analysis
+
+## 1.1 What is a Data Prompt?
+A data prompt guides AI to produce relevant, accurate, and structured analysis.
+
+## 1.2 CRISP Prompting Method
+**C — Context**  
+**R — Role**  
+**I — Input**  
+**S — Steps**  
+**P — Preferred Output**
+
+### Template
+```
+You are a data analysis expert.
+Context: [dataset]
+Task: [goal]
+Steps: [analysis steps]
+Output: [tables, plots, bullet points]
+```
+
+## 1.3 Core Prompts for Day 1
+
+### 🔍 Dataset Understanding
+```
+Provide structure, variable types, missingness, and 10 insights from this dataset.
+```
+
+### 📊 EDA Roadmap
+```
+Create a complete EDA plan with summaries, grouped analysis, and recommended plots.
+```
+
+### 📁 Data Dictionary
+```
+Generate a data dictionary for all variables, including definitions and plausible ranges.
+```
+
+---
+
+# Day 2 — Survey, Health, Demographic & NHANES Prompting
+
+## 2.1 Survey Data Prompts
+```
+Summarize this survey dataset: sampling design, weights, PSUs, strata, key demographics.
+```
+
+## 2.2 NHANES Prompts
+
+### Cleaning & Merging
+```
+Clean NHANES data: demographics, labs, exams. Create BMI category, BP groups, race labels.
+```
+
+### Risk Index
+```
+Create a composite risk index using hypertension, obesity, diabetes, smoking, inactivity.
+```
+
+### Survey-Weighted Model
+```
+Fit a weighted logistic regression predicting hypertension and interpret results simply.
+```
+
+---
+
+# Day 3 — Modeling Prompts
+
+## 3.1 Universal Model Selection
+```
+Choose the best model for this outcome. Compare regression, logistic, random forest, boosting, and explain decision.
+```
+
+## 3.2 Regression Interpretation
+```
+Fit a regression model and explain coefficients in simple English with policy insights.
+```
+
+## 3.3 Classification
+```
+Build a classification model. Provide confusion matrix, feature importance, and interpretation.
+```
+
+## 3.4 Time-Series
+```
+Analyze long-term trends, produce forecasts, and describe patterns.
+```
+
+## 3.5 Panel Data
+```
+Fit FE and RE models, run Hausman test, and interpret results for policymakers.
+```
+
+---
+
+# Day 4 — Maps, Storytelling, Visualization Prompts
+
+## 4.1 Mapping Prompts
+```
+Join spatial data with indicators and create a choropleth map. Explain spatial variation.
+```
+
+## 4.2 Visualization Enhancement
+```
+Improve this plot: labels, theme, color scheme, clarity, interpretability.
+```
+
+## 4.3 Storytelling Prompts
+
+### Narrative Writing
+```
+Write a three-paragraph narrative explaining the findings in simple English.
+```
+
+### Executive Summary
+```
+Write a one-page executive summary with key findings, implications, and recommendations.
+```
+
+### LinkedIn Post
+```
+Convert this analysis into a concise, engaging LinkedIn post.
+```
+
+---
+
+# Day 5 — Debugging, Vibe Coding, Scenario Practice
+
+## 5.1 Debugging
+```
+Find the error in this analysis pipeline, explain the reason, and provide corrected code/output.
+```
+
+## 5.2 Vibe Coding
+```
+Rewrite my analysis code to be cleaner, more readable, modular, and commented.
+```
+
+## 5.3 End-to-End Project Prompt
+```
+Produce an entire analysis workflow:
+cleaning → exploration → modeling → mapping → insights → narrative.
+```
+
+---
+
+# Deliverables
+
+- Prompt libraries  
+- Case studies  
+- Cheat sheets  
+- AI-generated reports  
+- Executive summaries  
+- Mapping prompts  
+- Modeling prompts  
+
+---
+
+# Appendix — Master Prompt Library (100+ Prompts)
+
+## Dataset Prompts
+```
+Explain dataset in 10 bullet points.
+Find anomalies and inconsistencies.
+Generate 10 research questions from this dataset.
+```
+
+## Survey Prompts
+```
+Produce weighted estimates and explain design effects.
+```
+
+## Modeling Prompts
+```
+Run logistic regression and interpret ORs simply.
+Explain model uncertainty.
+```
+
+## Storytelling Prompts
+```
+Turn results into 5 policy recommendations.
+```
+
+## Debug Prompts
+```
+Why is this model output unrealistic? Diagnose and fix.
+```
+
+## Vibe Coding Prompts
+```
+Modernize my code using tidyverse/pythonic structure.
+```
+
+---
+
+# End of Document
