@@ -1,0 +1,1194 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-html/tabby.min.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/light-border.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
+  <meta name="generator" content="quarto-1.9.37">
+
+  <meta name="author" content="Prof.&nbsp;Dr.&nbsp;Zahid Asghar">
+  <meta name="dcterms.date" content="2026-08-30">
+  <title>Data for Development – Day 1 · Session 1</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="../../site_libs/revealjs/dist/reset.css">
+  <link rel="stylesheet" href="../../site_libs/revealjs/dist/reveal.css">
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+      vertical-align: middle;
+    }
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      { color: #003b4f; background-color: #f1f3f5; }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span { color: #003b4f; } /* Normal */
+    code span.al { color: #ad0000; } /* Alert */
+    code span.an { color: #5e5e5e; } /* Annotation */
+    code span.at { color: #657422; } /* Attribute */
+    code span.bn { color: #ad0000; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #003b4f; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #20794d; } /* Char */
+    code span.cn { color: #8f5902; } /* Constant */
+    code span.co { color: #5e5e5e; } /* Comment */
+    code span.cv { color: #5e5e5e; font-style: italic; } /* CommentVar */
+    code span.do { color: #5e5e5e; font-style: italic; } /* Documentation */
+    code span.dt { color: #ad0000; } /* DataType */
+    code span.dv { color: #ad0000; } /* DecVal */
+    code span.er { color: #ad0000; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #ad0000; } /* Float */
+    code span.fu { color: #4758ab; } /* Function */
+    code span.im { color: #00769e; } /* Import */
+    code span.in { color: #5e5e5e; } /* Information */
+    code span.kw { color: #003b4f; font-weight: bold; } /* Keyword */
+    code span.op { color: #5e5e5e; } /* Operator */
+    code span.ot { color: #003b4f; } /* Other */
+    code span.pp { color: #ad0000; } /* Preprocessor */
+    code span.sc { color: #5e5e5e; } /* SpecialChar */
+    code span.ss { color: #20794d; } /* SpecialString */
+    code span.st { color: #20794d; } /* String */
+    code span.va { color: #111111; } /* Variable */
+    code span.vs { color: #20794d; } /* VerbatimString */
+    code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="../../site_libs/revealjs/dist/theme/quarto-e0828b3a4bfbe9c2f9a90e9fe959ea98.css">
+  <link href="../../site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
+  <link href="../../site_libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
+  <link href="../../site_libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
+  <link href="../../site_libs/revealjs/plugin/reveal-chalkboard/font-awesome/css/all.css" rel="stylesheet">
+  <link href="../../site_libs/revealjs/plugin/reveal-chalkboard/style.css" rel="stylesheet">
+  <link href="../../site_libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
+  <style type="text/css">
+    .reveal div.sourceCode {
+      margin: 0;
+      overflow: auto;
+    }
+    .reveal div.hanging-indent {
+      margin-left: 1em;
+      text-indent: -1em;
+    }
+    .reveal .slide:not(.center) {
+      height: 100%;
+      overflow-y: auto;
+    }
+    .reveal .slide.scrollable {
+      overflow-y: auto;
+    }
+    .reveal .footnotes {
+      height: 100%;
+      overflow-y: auto;
+    }
+    .reveal .slide .absolute {
+      position: absolute;
+      display: block;
+    }
+    .reveal .footnotes ol {
+      counter-reset: ol;
+      list-style-type: none; 
+      margin-left: 0;
+    }
+    .reveal .footnotes ol li:before {
+      counter-increment: ol;
+      content: counter(ol) ". "; 
+    }
+    .reveal .footnotes ol li > p:first-child {
+      display: inline-block;
+    }
+    .reveal .slide ul,
+    .reveal .slide ol {
+      margin-bottom: 0.5em;
+    }
+    .reveal .slide ul li,
+    .reveal .slide ol li {
+      margin-top: 0.4em;
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide ul[role="tablist"] li {
+      margin-bottom: 0;
+    }
+    .reveal .slide ul li > *:first-child,
+    .reveal .slide ol li > *:first-child {
+      margin-block-start: 0;
+    }
+    .reveal .slide ul li > *:last-child,
+    .reveal .slide ol li > *:last-child {
+      margin-block-end: 0;
+    }
+    .reveal .slide .columns:nth-child(3) {
+      margin-block-start: 0.8em;
+    }
+    .reveal blockquote {
+      box-shadow: none;
+    }
+    .reveal .tippy-content>* {
+      margin-top: 0.2em;
+      margin-bottom: 0.7em;
+    }
+    .reveal .tippy-content>*:last-child {
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide > img.stretch.quarto-figure-center,
+    .reveal .slide > img.r-stretch.quarto-figure-center {
+      display: block;
+      margin-left: auto;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-left,
+    .reveal .slide > img.r-stretch.quarto-figure-left  {
+      display: block;
+      margin-left: 0;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-right,
+    .reveal .slide > img.r-stretch.quarto-figure-right  {
+      display: block;
+      margin-left: auto;
+      margin-right: 0; 
+    }
+  </style>
+</head>
+<body class="quarto-light">
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide" class="quarto-title-block center">
+  <h1 class="title">Day 1 · Session 1</h1>
+  <p class="subtitle">Orientation: The R Ecosystem &amp; the Data Workflow</p>
+
+<div class="quarto-title-authors">
+<div class="quarto-title-author">
+<div class="quarto-title-author-name">
+Prof.&nbsp;Dr.&nbsp;Zahid Asghar 
+</div>
+        <p class="quarto-title-affiliation">
+            School of Economics, Quaid-i-Azam University · d4d
+          </p>
+    </div>
+</div>
+
+  <p class="date">2026-08-30</p>
+</section>
+<section>
+<section id="welcome" class="title-slide slide level1 center" data-background-color="#0f2440">
+<h1>Welcome</h1>
+
+</section>
+<section id="where-session-1-fits-in-today" class="slide level2">
+<h2>Where Session 1 Fits in Today</h2>
+<p>This session is a <strong>map, not a marathon</strong>. You will not write production code today — you’ll learn what each piece is <em>for</em>, so later sessions make sense.</p>
+<table class="caption-top">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Session</th>
+<th>Focus</th>
+<th>Mode</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>1 (now)</strong></td>
+<td>The R ecosystem, project workflow, packages, data landscape</td>
+<td>Orientation — mostly watching</td>
+</tr>
+<tr class="even">
+<td><strong>2</strong></td>
+<td>Importing real data (csv, Excel, Stata, SPSS)</td>
+<td>Hands-on</td>
+</tr>
+<tr class="odd">
+<td><strong>3</strong></td>
+<td>Cleaning, recoding, joining</td>
+<td>Hands-on</td>
+</tr>
+<tr class="even">
+<td><strong>4</strong></td>
+<td>Mini exercise with your own / provided dataset</td>
+<td>Guided practice</td>
+</tr>
+</tbody>
+</table>
+<div class="callout callout-note callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Note</strong></p>
+</div>
+<div class="callout-content">
+<p>Nothing here is timed to the minute — the facilitator will pace it live.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="by-the-end-of-this-session-you-will-be-able-to" class="slide level2">
+<h2>By the End of This Session, You Will Be Able To…</h2>
+<ul>
+<li class="fragment">Explain the difference between <strong>R</strong>, <strong>RStudio/Positron</strong>, and <strong>GitHub</strong></li>
+<li class="fragment">Say what a <strong>package</strong> is and why we don’t reinvent <code>mean()</code></li>
+<li class="fragment">Name which package/function reads <strong>csv, Excel, Stata, SPSS, JSON</strong>, or a <strong>web API</strong></li>
+<li class="fragment">Recognize the five core <strong>dplyr</strong> verbs by sight</li>
+<li class="fragment">Know what “<strong>recoding</strong>” and “<strong>joining</strong>” mean, conceptually</li>
+</ul>
+<p>You will <em>practice</em> all of this starting Session 2.</p>
+</section></section>
+<section>
+<section id="the-r-ecosystem" class="title-slide slide level1 center" data-background-color="#0f2440">
+<h1>The R Ecosystem</h1>
+
+</section>
+<section id="what-is-r-really" class="slide level2">
+<h2>What Is R, Really?</h2>
+<div class="columns">
+<div class="column" style="width:55%;">
+<p>R is a <strong>free, open-source language</strong> for statistics and data analysis — not a single piece of software you double-click.</p>
+<p>Think of it in layers:</p>
+<ul>
+<li><strong>R</strong> — the engine (does the calculations)</li>
+<li><strong>RStudio / Positron</strong> — the cockpit (where you sit and drive)</li>
+<li><strong>Packages</strong> — the toolkits you bolt onto the engine</li>
+<li><strong>GitHub</strong> — the garage where work is stored and shared</li>
+</ul>
+</div><div class="column" style="width:45%;">
+<div class="callout callout-important callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Common confusion</strong></p>
+</div>
+<div class="callout-content">
+<p>“RStudio” and “R” are <strong>not the same thing</strong>. R does the work; RStudio is just the window you use to talk to it. You could use R without RStudio — but not the other way around.</p>
+</div>
+</div>
+</div>
+</div></div>
+</section>
+<section id="two-ides-one-family" class="slide level2 smaller">
+<h2>Two IDEs, One Family</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<h3 id="rstudio">RStudio</h3>
+<ul>
+<li>The long-standing standard (since 2011)</li>
+<li>Built specifically for R</li>
+<li>Mature, stable, huge community</li>
+<li><strong>What we’ll use for live demos this week</strong></li>
+</ul>
+</div><div class="column" style="width:50%;">
+<h3 id="positron">Positron</h3>
+<ul>
+<li>New IDE from Posit (2024+), built on VS Code</li>
+<li>Works with R <em>and</em> Python in one place</li>
+<li>Faster, modern interface — still maturing</li>
+<li>Good to know about; optional to install now</li>
+</ul>
+</div></div>
+<div class="callout callout-note callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Note</strong></p>
+</div>
+<div class="callout-content">
+<p>Both are free, both are made by <strong>Posit</strong> (formerly “RStudio, Inc.”). Your choice affects the window you look at, not the R code you write.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="posit-ai-assistant-your-copilot-not-your-pilot" class="slide level2">
+<h2>Posit AI Assistant — Your Copilot, Not Your Pilot</h2>
+<ul>
+<li>Built into RStudio/Positron; can suggest code, explain errors, draft comments</li>
+<li>Useful for: explaining an unfamiliar function, drafting boilerplate, debugging error messages</li>
+<li><strong>Not</strong> a substitute for understanding what the code does</li>
+</ul>
+<div class="callout callout-important callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Rule of thumb</strong></p>
+</div>
+<div class="callout-content">
+<p>If an AI suggestion runs without error, that does <strong>not</strong> mean it’s <em>correct</em>. Always check the output against what you expect — the same discipline you’d apply to Stata <code>do</code>-files or SPSS syntax.</p>
+</div>
+</div>
+</div>
+<p>We’ll return to this briefly whenever it’s useful, not as a separate deep-dive.</p>
+</section>
+<section id="github-today-just-the-what-and-why" class="slide level2">
+<h2>GitHub — Today, Just the “What” and “Why”</h2>
+<ul>
+<li><strong>Git</strong> = a tool that tracks every change you make to your files, like an infinitely detailed “track changes”</li>
+<li><strong>GitHub</strong> = a website where those tracked projects can live, be backed up, and be shared</li>
+</ul>
+<p>Why it matters for you:</p>
+<ul>
+<li>Your <code>d4d</code> training materials already live at <code>github.com/Zahedasghar/d4d</code></li>
+<li>It’s how you’ll receive workshop scripts and datasets</li>
+<li>It protects you from “final_v3_ACTUALLY_final.R” chaos</li>
+</ul>
+<div class="callout callout-note callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Deep dive later</strong></p>
+</div>
+<div class="callout-content">
+<p>Cloning, committing, pushing, pull requests — that’s a full session on <strong>Day 2/3</strong>. Today: just recognize the name and know it’s where the workshop repo lives.</p>
+</div>
+</div>
+</div>
+</section></section>
+<section>
+<section id="project-workflow" class="title-slide slide level1 center" data-background-color="#0f2440">
+<h1>Project Workflow</h1>
+
+</section>
+<section id="why-r-projects-not-just-files" class="slide level2">
+<h2>Why “R Projects” (Not Just Files)</h2>
+<p>A <strong>Project</strong> (<code>.Rproj</code>) anchors your work to one folder, so:</p>
+<ul>
+<li>File paths stop breaking when you move the folder or change laptops</li>
+<li>Nothing depends on <em>your</em> Desktop being organized the same way as someone else’s</li>
+<li>Colleagues (or future-you) can open the project and everything just works</li>
+</ul>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a></a><span class="co"># Bad — depends on YOUR computer's folder structure</span></span>
+<span id="cb1-2"><a></a>data <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"C:/Users/Zahid/Desktop/final/data v2.csv"</span>)</span>
+<span id="cb1-3"><a></a></span>
+<span id="cb1-4"><a></a><span class="co"># Good — works on anyone's machine, from anywhere in the project</span></span>
+<span id="cb1-5"><a></a><span class="fu">library</span>(here)</span>
+<span id="cb1-6"><a></a>data <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="fu">here</span>(<span class="st">"data"</span>, <span class="st">"cpi_2024.csv"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="anatomy-of-a-tidy-project-folder" class="slide level2">
+<h2>Anatomy of a Tidy Project Folder</h2>
+<pre><code>my-workshop-project/
+├── my-workshop-project.Rproj
+├── data/              # raw data — never edited by hand
+│   └── cpi_2024.csv
+├── R/                 # scripts
+│   └── 01_import.R
+├── output/             # figures, cleaned data, tables
+└── report.qmd          # the write-up</code></pre>
+<div class="callout callout-note callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Note</strong></p>
+</div>
+<div class="callout-content">
+<p>This is the same skeleton your <code>d4d</code> repository already follows — you’ll see it again in every workshop dataset this week.</p>
+</div>
+</div>
+</div>
+</section></section>
+<section>
+<section id="packages-libraries" class="title-slide slide level1 center" data-background-color="#0f2440">
+<h1>Packages &amp; Libraries</h1>
+
+</section>
+<section id="whats-a-package" class="slide level2">
+<h2>What’s a Package?</h2>
+<p>R by itself does the basics. A <strong>package</strong> is a bundle of extra functions someone has written and shared — free, via <strong>CRAN</strong>.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a></a><span class="co"># Install ONCE per computer</span></span>
+<span id="cb3-2"><a></a><span class="fu">install.packages</span>(<span class="st">"tidyverse"</span>)</span>
+<span id="cb3-3"><a></a></span>
+<span id="cb3-4"><a></a><span class="co"># Load EVERY time you start a new R session</span></span>
+<span id="cb3-5"><a></a><span class="fu">library</span>(tidyverse)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="callout callout-important callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Easy to mix up</strong></p>
+</div>
+<div class="callout-content">
+<p><code>install.packages()</code> downloads the toolkit. <code>library()</code> opens the toolbox for this session. Forgetting <code>library()</code> is the #1 reason “it worked yesterday” stops working today.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="the-packages-youll-meet-this-week" class="slide level2">
+<h2>The Packages You’ll Meet This Week</h2>
+<table class="caption-top">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Package</th>
+<th>What it’s for</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>tidyverse</code></td>
+<td>Umbrella: <code>dplyr</code>, <code>ggplot2</code>, <code>readr</code>, <code>tidyr</code>, <code>purrr</code> and more</td>
+</tr>
+<tr class="even">
+<td><code>janitor</code></td>
+<td>Cleaning messy column names, quick counts</td>
+</tr>
+<tr class="odd">
+<td><code>haven</code></td>
+<td>Reading Stata (<code>.dta</code>) and SPSS (<code>.sav</code>) files</td>
+</tr>
+<tr class="even">
+<td><code>readxl</code></td>
+<td>Reading Excel (<code>.xlsx</code>) files</td>
+</tr>
+<tr class="odd">
+<td><code>jsonlite</code></td>
+<td>Reading JSON data</td>
+</tr>
+<tr class="even">
+<td><code>httr2</code></td>
+<td>Talking to web APIs</td>
+</tr>
+<tr class="odd">
+<td><code>here</code></td>
+<td>Reliable file paths inside a Project</td>
+</tr>
+</tbody>
+</table>
+<p><code>tidyverse</code> is a <strong>meta-package</strong> — one <code>library(tidyverse)</code> loads about eight packages at once.</p>
+</section></section>
+<section>
+<section id="bringing-data-in" class="title-slide slide level1 center" data-background-color="#0f2440">
+<h1>Bringing Data In</h1>
+
+</section>
+<section id="the-landscape-at-a-glance" class="slide level2">
+<h2>The Landscape, at a Glance</h2>
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th>Format</th>
+<th>Package :: Function</th>
+<th>You’ll see it in</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>.csv</code></td>
+<td><code>readr::read_csv()</code></td>
+<td>PBS, WFP, WDI exports</td>
+</tr>
+<tr class="even">
+<td><code>.xlsx</code></td>
+<td><code>readxl::read_excel()</code></td>
+<td>PBS CPI, HDR tables</td>
+</tr>
+<tr class="odd">
+<td><code>.dta</code> (Stata)</td>
+<td><code>haven::read_dta()</code></td>
+<td>PDHS microdata</td>
+</tr>
+<tr class="even">
+<td><code>.sav</code> (SPSS)</td>
+<td><code>haven::read_sav()</code></td>
+<td>Some survey datasets</td>
+</tr>
+<tr class="odd">
+<td><code>.json</code></td>
+<td><code>jsonlite::fromJSON()</code></td>
+<td>HDX / API responses</td>
+</tr>
+<tr class="even">
+<td>Web API</td>
+<td><code>httr2::request()</code> …</td>
+<td>WDI, HDX CKAN API</td>
+</tr>
+</tbody>
+</table>
+<p>Same idea every time: <strong>pick the function that matches the file</strong>, point it at the path, get back a data frame.</p>
+</section>
+<section id="csv-excel-the-everyday-cases" class="slide level2">
+<h2>csv &amp; Excel — the Everyday Cases</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a></a><span class="fu">library</span>(readr)</span>
+<span id="cb4-2"><a></a>cpi <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="fu">here</span>(<span class="st">"data"</span>, <span class="st">"pbs_cpi.csv"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb4-3"><a></a>  janitor<span class="sc">::</span><span class="fu">clean_names</span>()   <span class="co"># always the very next step</span></span>
+<span id="cb4-4"><a></a></span>
+<span id="cb4-5"><a></a><span class="fu">library</span>(readxl)</span>
+<span id="cb4-6"><a></a>hdr <span class="ot">&lt;-</span> <span class="fu">read_excel</span>(<span class="fu">here</span>(<span class="st">"data"</span>, <span class="st">"hdr_indicators.xlsx"</span>),</span>
+<span id="cb4-7"><a></a>                   <span class="at">sheet =</span> <span class="st">"Table1"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>janitor::clean_names()</code> immediately after import is a habit worth building now — it turns <code>"GDP (current US$)"</code> into <code>gdp_current_us</code>.</p>
+</section>
+<section id="stata-spss-haven-handles-both" class="slide level2">
+<h2>Stata &amp; SPSS — <code>haven</code> Handles Both</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a></a><span class="fu">library</span>(haven)</span>
+<span id="cb5-2"><a></a></span>
+<span id="cb5-3"><a></a><span class="co"># Stata</span></span>
+<span id="cb5-4"><a></a>pdhs_kr <span class="ot">&lt;-</span> <span class="fu">read_dta</span>(<span class="fu">here</span>(<span class="st">"data"</span>, <span class="st">"PKKR71FL.DTA"</span>))</span>
+<span id="cb5-5"><a></a></span>
+<span id="cb5-6"><a></a><span class="co"># SPSS</span></span>
+<span id="cb5-7"><a></a>survey <span class="ot">&lt;-</span> <span class="fu">read_sav</span>(<span class="fu">here</span>(<span class="st">"data"</span>, <span class="st">"survey.sav"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="callout callout-note callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Note</strong></p>
+</div>
+<div class="callout-content">
+<p>If you’re coming from Stata or SPSS, this is often the most reassuring slide of the day — your existing datasets open in R without conversion.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="json-web-apis-data-that-isnt-a-file-yet" class="slide level2">
+<h2>JSON &amp; Web APIs — Data That Isn’t a File Yet</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a></a><span class="fu">library</span>(jsonlite)</span>
+<span id="cb6-2"><a></a><span class="fu">library</span>(httr2)</span>
+<span id="cb6-3"><a></a></span>
+<span id="cb6-4"><a></a><span class="co"># A file already saved as JSON</span></span>
+<span id="cb6-5"><a></a>raw <span class="ot">&lt;-</span> <span class="fu">fromJSON</span>(<span class="fu">here</span>(<span class="st">"data"</span>, <span class="st">"wfp_prices.json"</span>))</span>
+<span id="cb6-6"><a></a></span>
+<span id="cb6-7"><a></a><span class="co"># Pulling data live from a web API (e.g. World Bank WDI)</span></span>
+<span id="cb6-8"><a></a>resp <span class="ot">&lt;-</span> <span class="fu">request</span>(<span class="st">"https://api.worldbank.org/v2/country/pk/indicator/NY.GDP.MKTP.CD"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb6-9"><a></a>  <span class="fu">req_url_query</span>(<span class="at">format =</span> <span class="st">"json"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb6-10"><a></a>  <span class="fu">req_perform</span>()</span>
+<span id="cb6-11"><a></a></span>
+<span id="cb6-12"><a></a>wdi_data <span class="ot">&lt;-</span> <span class="fu">resp_body_json</span>(resp)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="callout callout-important callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Not today’s task</strong></p>
+</div>
+<div class="callout-content">
+<p>Web APIs bring in <em>live</em> data instead of a saved file — powerful, but with more moving parts (URLs, keys, rate limits). We’ll practice this with real Pakistan-relevant APIs (WDI, HDX) in a later session.</p>
+</div>
+</div>
+</div>
+</section></section>
+<section>
+<section id="from-raw-to-ready" class="title-slide slide level1 center" data-background-color="#0f2440">
+<h1>From Raw to Ready</h1>
+
+</section>
+<section id="cleaning-the-first-move-every-time" class="slide level2">
+<h2>Cleaning: The First Move, Every Time</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a></a><span class="fu">library</span>(janitor)</span>
+<span id="cb7-2"><a></a></span>
+<span id="cb7-3"><a></a>data <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="fu">here</span>(<span class="st">"data"</span>, <span class="st">"raw_file.csv"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb7-4"><a></a>  <span class="fu">clean_names</span>()          <span class="co"># snake_case, no spaces/symbols</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Before anything else, always check:</p>
+<ul>
+<li><code>names(data)</code> — are the column names sane?</li>
+<li><code>glimpse(data)</code> — what type is each column?</li>
+<li><code>anyNA(data)</code> — are there missing values you need to know about?</li>
+</ul>
+<div class="callout callout-note callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Note</strong></p>
+</div>
+<div class="callout-content">
+<p>This “audit before proceeding” habit — printing what you found before trusting it — will come back throughout the week.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="the-five-verbs-of-dplyr" class="slide level2">
+<h2>The Five Verbs of <code>dplyr</code></h2>
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th>Verb</th>
+<th>Does</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>select()</code></td>
+<td>Choose columns</td>
+</tr>
+<tr class="even">
+<td><code>filter()</code></td>
+<td>Choose rows</td>
+</tr>
+<tr class="odd">
+<td><code>mutate()</code></td>
+<td>Create/change a column</td>
+</tr>
+<tr class="even">
+<td><code>arrange()</code></td>
+<td>Sort rows</td>
+</tr>
+<tr class="odd">
+<td><code>summarise()</code></td>
+<td>Collapse to summary stats</td>
+</tr>
+</tbody>
+</table>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a></a>data <span class="sc">|&gt;</span></span>
+<span id="cb8-2"><a></a>  <span class="fu">filter</span>(year <span class="sc">==</span> <span class="dv">2024</span>) <span class="sc">|&gt;</span></span>
+<span id="cb8-3"><a></a>  <span class="fu">select</span>(district, cpi) <span class="sc">|&gt;</span></span>
+<span id="cb8-4"><a></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(cpi))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Nearly everything you’ll do to a dataset this week is some combination of these five.</p>
+</section>
+<section id="recoding-turning-codes-into-meaning" class="slide level2">
+<h2>Recoding — Turning Codes into Meaning</h2>
+<p>Raw data often arrives as codes (<code>1</code>, <code>2</code>, <code>3</code>) instead of labels.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a></a>data <span class="ot">&lt;-</span> data <span class="sc">|&gt;</span></span>
+<span id="cb9-2"><a></a>  <span class="fu">mutate</span>(</span>
+<span id="cb9-3"><a></a>    <span class="at">region =</span> <span class="fu">case_match</span>(province_code,</span>
+<span id="cb9-4"><a></a>      <span class="dv">1</span> <span class="sc">~</span> <span class="st">"Punjab"</span>,</span>
+<span id="cb9-5"><a></a>      <span class="dv">2</span> <span class="sc">~</span> <span class="st">"Sindh"</span>,</span>
+<span id="cb9-6"><a></a>      <span class="dv">3</span> <span class="sc">~</span> <span class="st">"KP"</span>,</span>
+<span id="cb9-7"><a></a>      <span class="dv">4</span> <span class="sc">~</span> <span class="st">"Balochistan"</span>,</span>
+<span id="cb9-8"><a></a>      <span class="at">.default =</span> <span class="cn">NA_character_</span></span>
+<span id="cb9-9"><a></a>    )</span>
+<span id="cb9-10"><a></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>case_when()</code> is the more general cousin — for conditions rather than exact matches (e.g.&nbsp;turning a continuous age variable into age groups).</p>
+</section>
+<section id="joining-combining-two-tables" class="slide level2">
+<h2>Joining — Combining Two Tables</h2>
+<p>When information about the same units (districts, households, years) lives in <strong>two separate tables</strong>, a join brings them together.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a></a>combined <span class="ot">&lt;-</span> cpi_data <span class="sc">|&gt;</span></span>
+<span id="cb10-2"><a></a>  <span class="fu">left_join</span>(population_data, <span class="at">by =</span> <span class="fu">join_by</span>(district, year))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<table class="caption-top">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Join type</th>
+<th>Keeps</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>left_join()</code></td>
+<td>Everything in the left table, matched where possible</td>
+</tr>
+<tr class="even">
+<td><code>inner_join()</code></td>
+<td>Only rows that match in <em>both</em> tables</td>
+</tr>
+<tr class="odd">
+<td><code>anti_join()</code></td>
+<td>Rows in the left table with <strong>no</strong> match — great for auditing</td>
+</tr>
+</tbody>
+</table>
+<div class="callout callout-important callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>A lesson from real PBS/WFP data</strong></p>
+</div>
+<div class="callout-content">
+<p>Never assume a shared code column means the same thing in both files — always verify with <code>anti_join()</code> before trusting a join. Mismatched region codes or renamed categories cause silent data loss.</p>
+</div>
+</div>
+</div>
+</section></section>
+<section>
+<section id="wrap-up" class="title-slide slide level1 center" data-background-color="#0f2440">
+<h1>Wrap-Up</h1>
+
+</section>
+<section id="what-you-now-know" class="slide level2">
+<h2>What You Now Know</h2>
+<ul>
+<li class="fragment">R, RStudio/Positron, GitHub each play a different role — none of them <em>is</em> the other</li>
+<li class="fragment">Projects + <code>here()</code> keep file paths from breaking</li>
+<li class="fragment">Packages extend R; <code>install.packages()</code> once, <code>library()</code> every session</li>
+<li class="fragment">Every file format has a matching import function — the pattern repeats</li>
+<li class="fragment">Cleaning, recoding, and joining are the everyday shape of “getting data ready”</li>
+</ul>
+</section>
+<section id="coming-up-next-in-session-2" class="slide level2">
+<h2>Coming Up Next in Session 2</h2>
+<p>We open RStudio, create a real Project, and <strong>import an actual PBS or WFP dataset together</strong> — csv first, then Excel.</p>
+<div class="callout callout-note callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Before we move on</strong></p>
+</div>
+<div class="callout-content">
+<p>Any names, terms, or steps from this session you’d like re-explained before we start typing?</p>
+</div>
+</div>
+</div>
+</section>
+<section id="section" class="slide level2" data-background-color="#0f2440">
+<h2></h2>
+<div style="text-align:center; margin-top: 2em;">
+<p><strong>Questions?</strong></p>
+</div>
+<!--
+FACILITATOR NOTES (not counted in slide numbers)
+- Session 1 is deliberately low-code: the goal is orientation vocabulary, not typing fluency.
+- If time is short, the GitHub and Posit AI slides can be compressed to one slide each.
+- Keep the "Landscape at a Glance" table visible/printed as a handout — participants refer back to it in Session 2.
+-->
+
+
+</section></section>
+    </div>
+  <div class="quarto-auto-generated-content" style="display: none;">
+<div class="footer footer-default">
+<p>d4d · Day 1, Session 1 — Orientation</p>
+</div>
+</div></div>
+
+  <script>window.backupDefine = window.define; window.define = undefined;</script>
+  <script src="../../site_libs/revealjs/dist/reveal.js"></script>
+  <!-- reveal.js plugins -->
+  <script src="../../site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script>
+  <script src="../../site_libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
+  <script src="../../site_libs/revealjs/plugin/reveal-menu/menu.js"></script>
+  <script src="../../site_libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
+  <script src="../../site_libs/revealjs/plugin/reveal-chalkboard/plugin.js"></script>
+  <script src="../../site_libs/revealjs/plugin/quarto-support/support.js"></script>
+  
+
+  <script src="../../site_libs/revealjs/plugin/notes/notes.js"></script>
+  <script src="../../site_libs/revealjs/plugin/search/search.js"></script>
+  <script src="../../site_libs/revealjs/plugin/zoom/zoom.js"></script>
+  <script src="../../site_libs/revealjs/plugin/math/math.js"></script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+'controlsAuto': false,
+'previewLinksAuto': true,
+'pdfSeparateFragments': false,
+'autoAnimateEasing': "ease",
+'autoAnimateDuration': 1,
+'autoAnimateUnmatched': true,
+'jumpToSlide': true,
+'menu': {"side":"left","useTextContentForMissingTitles":true,"markers":false,"loadIcons":false,"custom":[{"title":"Tools","icon":"<i class=\"fas fa-gear\"></i>","content":"<ul class=\"slide-menu-items\">\n<li class=\"slide-tool-item active\" data-item=\"0\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.fullscreen(event)\"><kbd>f</kbd> Fullscreen</a></li>\n<li class=\"slide-tool-item\" data-item=\"1\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.speakerMode(event)\"><kbd>s</kbd> Speaker View</a></li>\n<li class=\"slide-tool-item\" data-item=\"2\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>o</kbd> Slide Overview</a></li>\n<li class=\"slide-tool-item\" data-item=\"3\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.togglePdfExport(event)\"><kbd>e</kbd> PDF Export Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"4\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleScrollView(event)\"><kbd>r</kbd> Scroll View Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"5\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleChalkboard(event)\"><kbd>b</kbd> Toggle Chalkboard</a></li>\n<li class=\"slide-tool-item\" data-item=\"6\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleNotesCanvas(event)\"><kbd>c</kbd> Toggle Notes Canvas</a></li>\n<li class=\"slide-tool-item\" data-item=\"7\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.downloadDrawings(event)\"><kbd>d</kbd> Download Drawings</a></li>\n<li class=\"slide-tool-item\" data-item=\"8\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.keyboardHelp(event)\"><kbd>?</kbd> Keyboard Help</a></li>\n</ul>"}],"openButton":true},
+'chalkboard': {"buttons":true},
+'smaller': false,
+ 
+        // Display controls in the bottom right corner
+        controls: true,
+
+        // Help the user learn the controls by providing hints, for example by
+        // bouncing the down arrow when they first encounter a vertical slide
+        controlsTutorial: false,
+
+        // Determines where controls appear, "edges" or "bottom-right"
+        controlsLayout: 'edges',
+
+        // Visibility rule for backwards navigation arrows; "faded", "hidden"
+        // or "visible"
+        controlsBackArrows: 'faded',
+
+        // Display a presentation progress bar
+        progress: true,
+
+        // Display the page number of the current slide
+        slideNumber: 'c/t',
+
+        // 'all', 'print', or 'speaker'
+        showSlideNumber: 'all',
+
+        // Add the current slide number to the URL hash so that reloading the
+        // page/copying the URL will return you to the same slide
+        hash: true,
+
+        // Start with 1 for the hash rather than 0
+        hashOneBasedIndex: false,
+
+        // Flags if we should monitor the hash and change slides accordingly
+        respondToHashChanges: true,
+
+        // Push each slide change to the browser history
+        history: true,
+
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+
+        // Enable the slide overview mode
+        overview: true,
+
+        // Disables the default reveal.js slide layout (scaling and centering)
+        // so that you can use custom CSS layout
+        disableLayout: false,
+
+        // Vertical centering of slides
+        center: false,
+
+        // Enables touch navigation on devices with touch input
+        touch: true,
+
+        // Loop the presentation
+        loop: false,
+
+        // Change the presentation direction to be RTL
+        rtl: false,
+
+        // see https://revealjs.com/vertical-slides/#navigation-mode
+        navigationMode: 'linear',
+
+        // Randomizes the order of slides each time the presentation loads
+        shuffle: false,
+
+        // Turns fragments on and off globally
+        fragments: true,
+
+        // Flags whether to include the current fragment in the URL,
+        // so that reloading brings you to the same fragment position
+        fragmentInURL: false,
+
+        // Flags if the presentation is running in an embedded mode,
+        // i.e. contained within a limited portion of the screen
+        embedded: false,
+
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+
+        // Flags if it should be possible to pause the presentation (blackout)
+        pause: true,
+
+        // Flags if speaker notes should be visible to all viewers
+        showNotes: false,
+
+        // Global override for autoplaying embedded media (null/true/false)
+        autoPlayMedia: null,
+
+        // Global override for preloading lazy-loaded iframes (null/true/false)
+        preloadIframes: null,
+
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+
+        // Use this method for navigation when auto-sliding
+        autoSlideMethod: null,
+
+        // Specify the average time in seconds that you think you will spend
+        // presenting each slide. This is used to show a pacing timer in the
+        // speaker view
+        defaultTiming: null,
+
+        // Enable slide navigation via mouse wheel
+        mouseWheel: false,
+
+        // The display mode that will be used to show slides
+        display: 'block',
+
+        // Hide cursor if inactive
+        hideInactiveCursor: true,
+
+        // Time before the cursor is hidden (in ms)
+        hideCursorTime: 5000,
+
+        // Opens links in an iframe preview overlay
+        previewLinks: false,
+
+        // Transition style (none/fade/slide/convex/concave/zoom)
+        transition: 'fade',
+
+        // Transition speed (default/fast/slow)
+        transitionSpeed: 'default',
+
+        // Transition style for full page slide backgrounds
+        // (none/fade/slide/convex/concave/zoom)
+        backgroundTransition: 'none',
+
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+
+        // Number of slides away from the current that are visible on mobile
+        // devices. It is advisable to set this to a lower number than
+        // viewDistance in order to save resources.
+        mobileViewDistance: 2,
+
+        // The "normal" size of the presentation, aspect ratio will be preserved
+        // when the presentation is scaled to fit different resolutions. Can be
+        // specified using percentage units.
+        width: 1050,
+
+        height: 700,
+
+        // Factor of the display size that should remain empty around the content
+        margin: 0.1,
+
+        math: {
+          mathjax: 'https://cdn.jsdelivr.net/npm/mathjax@2.7.9/MathJax.js',
+          config: 'TeX-AMS_HTML-full',
+          tex2jax: {
+            inlineMath: [['\\(','\\)']],
+            displayMath: [['\\[','\\]']],
+            balanceBraces: true,
+            processEscapes: false,
+            processRefs: true,
+            processEnvironments: true,
+            preview: 'TeX',
+            skipTags: ['script','noscript','style','textarea','pre','code'],
+            ignoreClass: 'tex2jax_ignore',
+            processClass: 'tex2jax_process'
+          },
+        },
+
+        // reveal.js plugins
+        plugins: [QuartoLineHighlight, PdfExport, RevealMenu, RevealChalkboard, QuartoSupport,
+
+          RevealMath,
+          RevealNotes,
+          RevealSearch,
+          RevealZoom
+        ]
+      });
+    </script>
+    <script id="quarto-html-after-body" type="application/javascript">
+      window.document.addEventListener("DOMContentLoaded", function (event) {
+        const tabsets =  window.document.querySelectorAll(".panel-tabset-tabby")
+        tabsets.forEach(function(tabset) {
+          const tabby = new Tabby('#' + tabset.id);
+        });
+        const isCodeAnnotation = (el) => {
+          for (const clz of el.classList) {
+            if (clz.startsWith('code-annotation-')) {                     
+              return true;
+            }
+          }
+          return false;
+        }
+        const onCopySuccess = function(e) {
+          // button target
+          const button = e.trigger;
+          // don't keep focus
+          button.blur();
+          // flash "checked"
+          button.classList.add('code-copy-button-checked');
+          var currentTitle = button.getAttribute("title");
+          button.setAttribute("title", "Copied!");
+          let tooltip;
+          if (window.bootstrap) {
+            button.setAttribute("data-bs-toggle", "tooltip");
+            button.setAttribute("data-bs-placement", "left");
+            button.setAttribute("data-bs-title", "Copied!");
+            tooltip = new bootstrap.Tooltip(button, 
+              { trigger: "manual", 
+                customClass: "code-copy-button-tooltip",
+                offset: [0, -8]});
+            tooltip.show();    
+          }
+          setTimeout(function() {
+            if (tooltip) {
+              tooltip.hide();
+              button.removeAttribute("data-bs-title");
+              button.removeAttribute("data-bs-toggle");
+              button.removeAttribute("data-bs-placement");
+            }
+            button.setAttribute("title", currentTitle);
+            button.classList.remove('code-copy-button-checked');
+          }, 1000);
+          // clear code selection
+          e.clearSelection();
+        }
+        const getTextToCopy = function(trigger) {
+          const outerScaffold = trigger.parentElement.cloneNode(true);
+          const codeEl = outerScaffold.querySelector('code');
+          for (const childEl of codeEl.children) {
+            if (isCodeAnnotation(childEl)) {
+              childEl.remove();
+            }
+          }
+          return codeEl.innerText;
+        }
+        const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+          text: getTextToCopy
+        });
+        clipboard.on('success', onCopySuccess);
+        if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+          const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+            text: getTextToCopy,
+            container: window.document.getElementById('quarto-embedded-source-code-modal')
+          });
+          clipboardModal.on('success', onCopySuccess);
+        }
+          var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+          var mailtoRegex = new RegExp(/^mailto:/);
+            var filterRegex = new RegExp("https:\/\/zahedasghar\.github\.io\/d4d\/");
+          var isInternal = (href) => {
+              return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+          }
+          // Inspect non-navigation links and adorn them if external
+         var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+          for (var i=0; i<links.length; i++) {
+            const link = links[i];
+            if (!isInternal(link.href)) {
+              // undo the damage that might have been done by quarto-nav.js in the case of
+              // links that we want to consider external
+              if (link.dataset.originalHref !== undefined) {
+                link.href = link.dataset.originalHref;
+              }
+            }
+          }
+        function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+          const config = {
+            allowHTML: true,
+            maxWidth: 500,
+            delay: 100,
+            arrow: false,
+            appendTo: function(el) {
+                return el.closest('section.slide') || el.parentElement;
+            },
+            interactive: true,
+            interactiveBorder: 10,
+            theme: 'light-border',
+            placement: 'bottom-start',
+          };
+          if (contentFn) {
+            config.content = contentFn;
+          }
+          if (onTriggerFn) {
+            config.onTrigger = onTriggerFn;
+          }
+          if (onUntriggerFn) {
+            config.onUntrigger = onUntriggerFn;
+          }
+            config['offset'] = [0,0];
+            config['maxWidth'] = 700;
+          window.tippy(el, config); 
+        }
+        const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+        for (var i=0; i<noterefs.length; i++) {
+          const ref = noterefs[i];
+          tippyHover(ref, function() {
+            // use id or data attribute instead here
+            let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+            try { href = new URL(href).hash; } catch {}
+            const id = href.replace(/^#\/?/, "");
+            const note = window.document.getElementById(id);
+            if (note) {
+              return note.innerHTML;
+            } else {
+              return "";
+            }
+          });
+        }
+        const findCites = (el) => {
+          const parentEl = el.parentElement;
+          if (parentEl) {
+            const cites = parentEl.dataset.cites;
+            if (cites) {
+              return {
+                el,
+                cites: cites.split(' ')
+              };
+            } else {
+              return findCites(el.parentElement)
+            }
+          } else {
+            return undefined;
+          }
+        };
+        var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+        for (var i=0; i<bibliorefs.length; i++) {
+          const ref = bibliorefs[i];
+          const citeInfo = findCites(ref);
+          if (citeInfo) {
+            tippyHover(citeInfo.el, function() {
+              var popup = window.document.createElement('div');
+              citeInfo.cites.forEach(function(cite) {
+                var citeDiv = window.document.createElement('div');
+                citeDiv.classList.add('hanging-indent');
+                citeDiv.classList.add('csl-entry');
+                var biblioDiv = window.document.getElementById('ref-' + cite);
+                if (biblioDiv) {
+                  citeDiv.innerHTML = biblioDiv.innerHTML;
+                }
+                popup.appendChild(citeDiv);
+              });
+              return popup.innerHTML;
+            });
+          }
+        }
+      });
+      </script>
+    
+
+</body></html>

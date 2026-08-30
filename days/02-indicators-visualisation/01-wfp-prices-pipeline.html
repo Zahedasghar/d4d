@@ -1,0 +1,1550 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-html/tabby.min.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/light-border.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-acf12a64177840b8d86f2d4f01b2e9fb.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
+  <meta name="generator" content="quarto-1.9.37">
+
+  <meta name="author" content="Prof.&nbsp;Dr.&nbsp;Zahid Asghar">
+  <meta name="dcterms.date" content="2026-08-30">
+  <title>Data for Development – Reading, Cleaning and Mapping WFP Food Prices</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="../../site_libs/revealjs/dist/reset.css">
+  <link rel="stylesheet" href="../../site_libs/revealjs/dist/reveal.css">
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+      vertical-align: middle;
+    }
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+      }
+    pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+    div.sourceCode
+      { color: #24292e;  }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span { color: #24292e; } /* Normal */
+    code span.al { color: #ff5555; font-weight: bold; } /* Alert */
+    code span.an { color: #6a737d; } /* Annotation */
+    code span.at { color: #d73a49; } /* Attribute */
+    code span.bn { color: #005cc5; } /* BaseN */
+    code span.bu { color: #d73a49; } /* BuiltIn */
+    code span.cf { color: #d73a49; } /* ControlFlow */
+    code span.ch { color: #032f62; } /* Char */
+    code span.cn { color: #005cc5; } /* Constant */
+    code span.co { color: #6a737d; } /* Comment */
+    code span.cv { color: #6a737d; } /* CommentVar */
+    code span.do { color: #6a737d; } /* Documentation */
+    code span.dt { color: #d73a49; } /* DataType */
+    code span.dv { color: #005cc5; } /* DecVal */
+    code span.er { color: #ff5555; text-decoration: underline; } /* Error */
+    code span.ex { color: #d73a49; font-weight: bold; } /* Extension */
+    code span.fl { color: #005cc5; } /* Float */
+    code span.fu { color: #6f42c1; } /* Function */
+    code span.im { color: #032f62; } /* Import */
+    code span.in { color: #6a737d; } /* Information */
+    code span.kw { color: #d73a49; } /* Keyword */
+    code span.op { color: #24292e; } /* Operator */
+    code span.ot { color: #6f42c1; } /* Other */
+    code span.pp { color: #d73a49; } /* Preprocessor */
+    code span.re { color: #6a737d; } /* RegionMarker */
+    code span.sc { color: #005cc5; } /* SpecialChar */
+    code span.ss { color: #032f62; } /* SpecialString */
+    code span.st { color: #032f62; } /* String */
+    code span.va { color: #e36209; } /* Variable */
+    code span.vs { color: #032f62; } /* VerbatimString */
+    code span.wa { color: #ff5555; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="../../site_libs/revealjs/dist/theme/quarto-891ad2a8a491c5935bbd357cc600a7ee.css">
+  <link href="../../site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
+  <link href="../../site_libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
+  <link href="../../site_libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
+  <link href="../../site_libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
+  <style type="text/css">
+    .reveal div.sourceCode {
+      margin: 0;
+      overflow: auto;
+    }
+    .reveal div.hanging-indent {
+      margin-left: 1em;
+      text-indent: -1em;
+    }
+    .reveal .slide:not(.center) {
+      height: 100%;
+      overflow-y: auto;
+    }
+    .reveal .slide.scrollable {
+      overflow-y: auto;
+    }
+    .reveal .footnotes {
+      height: 100%;
+      overflow-y: auto;
+    }
+    .reveal .slide .absolute {
+      position: absolute;
+      display: block;
+    }
+    .reveal .footnotes ol {
+      counter-reset: ol;
+      list-style-type: none; 
+      margin-left: 0;
+    }
+    .reveal .footnotes ol li:before {
+      counter-increment: ol;
+      content: counter(ol) ". "; 
+    }
+    .reveal .footnotes ol li > p:first-child {
+      display: inline-block;
+    }
+    .reveal .slide ul,
+    .reveal .slide ol {
+      margin-bottom: 0.5em;
+    }
+    .reveal .slide ul li,
+    .reveal .slide ol li {
+      margin-top: 0.4em;
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide ul[role="tablist"] li {
+      margin-bottom: 0;
+    }
+    .reveal .slide ul li > *:first-child,
+    .reveal .slide ol li > *:first-child {
+      margin-block-start: 0;
+    }
+    .reveal .slide ul li > *:last-child,
+    .reveal .slide ol li > *:last-child {
+      margin-block-end: 0;
+    }
+    .reveal .slide .columns:nth-child(3) {
+      margin-block-start: 0.8em;
+    }
+    .reveal blockquote {
+      box-shadow: none;
+    }
+    .reveal .tippy-content>* {
+      margin-top: 0.2em;
+      margin-bottom: 0.7em;
+    }
+    .reveal .tippy-content>*:last-child {
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide > img.stretch.quarto-figure-center,
+    .reveal .slide > img.r-stretch.quarto-figure-center {
+      display: block;
+      margin-left: auto;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-left,
+    .reveal .slide > img.r-stretch.quarto-figure-left  {
+      display: block;
+      margin-left: 0;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-right,
+    .reveal .slide > img.r-stretch.quarto-figure-right  {
+      display: block;
+      margin-left: auto;
+      margin-right: 0; 
+    }
+  </style>
+</head>
+<body class="quarto-light">
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide" class="quarto-title-block center">
+  <h1 class="title">Reading, Cleaning and Mapping WFP Food Prices</h1>
+  <p class="subtitle">A step-by-step walkthrough of every command in the pipeline</p>
+
+<div class="quarto-title-authors">
+<div class="quarto-title-author">
+<div class="quarto-title-author-name">
+Prof.&nbsp;Dr.&nbsp;Zahid Asghar 
+</div>
+        <p class="quarto-title-affiliation">
+            School of Economics, QAU · d4d
+          </p>
+    </div>
+</div>
+
+  <p class="date">2026-08-30</p>
+</section>
+<section id="why-this-session" class="slide level2">
+<h2>Why this session</h2>
+<ul>
+<li>Two CSVs from HDX → <strong>one clean pipeline</strong> → national tables, inflation, affordability, market integration, and a map that includes the full territory of Pakistan.</li>
+<li>Every command you will run today is in this deck, in the order it runs.</li>
+<li>Nothing is hidden in a function you haven’t seen — the two custom helpers (<code>unit_to_kg()</code>, <code>unit_to_litre()</code>) are shown and tested in full.</li>
+<li><strong>No R interpreter was used to write this deck.</strong> Run each chunk yourself, in order, and check the audit line before moving to the next slide.</li>
+</ul>
+</section>
+<section id="how-the-pipeline-is-organised" class="slide level2">
+<h2>How the pipeline is organised</h2>
+<ul>
+<li class="fragment"><strong>Part A</strong> — read the two files, separately and simply</li>
+<li class="fragment"><strong>Part B1</strong> — four analytical decisions that determine the headline numbers</li>
+<li class="fragment"><strong>Part B2–B3</strong> — basket construction, province crosswalk, analysis frames</li>
+<li class="fragment"><strong>Part B4–B6</strong> — inflation index, market integration, affordability</li>
+<li class="fragment"><strong>Part B7–B8</strong> — the map, including Jammu &amp; Kashmir, and the full plot set</li>
+<li class="fragment"><strong>Part B9</strong> — export</li>
+</ul>
+</section>
+<section id="before-you-start" class="slide level2">
+<h2>Before you start</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-2"><a></a><span class="fu">library</span>(sf)</span>
+<span id="cb1-3"><a></a><span class="fu">library</span>(rnaturalearth)</span>
+<span id="cb1-4"><a></a><span class="fu">library</span>(rnaturalearthhires)</span>
+<span id="cb1-5"><a></a><span class="fu">library</span>(scales)</span>
+<span id="cb1-6"><a></a><span class="fu">library</span>(here)</span>
+<span id="cb1-7"><a></a><span class="fu">library</span>(ggrepel)</span>
+<span id="cb1-8"><a></a></span>
+<span id="cb1-9"><a></a><span class="fu">theme_set</span>(<span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">12</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Six packages beyond base tidyverse: <code>sf</code> for spatial data, <code>rnaturalearth</code> + <code>rnaturalearthhires</code> for boundary polygons, <code>scales</code> for axis labels, <code>here</code> for project-relative paths, <code>ggrepel</code> for map labels that don’t overlap.</p>
+</section>
+<section id="fail-loudly-early" class="slide level2">
+<h2>Fail loudly, early</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a></a><span class="cf">if</span> (<span class="fu">packageVersion</span>(<span class="st">"dplyr"</span>) <span class="sc">&lt;</span> <span class="st">"1.2.0"</span>) {</span>
+<span id="cb2-2"><a></a>  <span class="fu">stop</span>(<span class="st">"Needs dplyr &gt;= 1.2.0; you have "</span>, <span class="fu">packageVersion</span>(<span class="st">"dplyr"</span>))</span>
+<span id="cb2-3"><a></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<ul>
+<li><code>filter_out()</code>, <code>when_any()</code>, <code>when_all()</code>, <code>recode_values()</code>, <code>replace_values()</code>, <code>replace_when()</code> are all <strong>dplyr 1.2.0</strong> verbs.</li>
+<li>Check the version <strong>before</strong> anything else fails with a confusing “could not find function” fifty lines later.</li>
+</ul>
+<div class="callout callout-note callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Note</strong></p>
+</div>
+<div class="callout-content">
+<p>Two downloaded CSVs are assumed to already sit in <code>data/raw/</code>. Get them by hand from the HDX dataset page before continuing.</p>
+</div>
+</div>
+</div>
+</section>
+<section>
+<section id="part-a-reading-the-two-files" class="title-slide slide level1 section-divider center" data-background-color="#0f2440">
+<h1>Part A — Reading the Two Files</h1>
+
+</section>
+<section id="what-part-a-produces" class="slide level2">
+<h2>What Part A produces</h2>
+<p>Two clean, <strong>separate</strong> tibbles:</p>
+<ul>
+<li><code>prices</code> — one row per market–commodity–month</li>
+<li><code>markets</code> — one row per market (id, name, admin units, coordinates)</li>
+</ul>
+<p>No custom functions, no API calls. If you only ever need prices, you can stop after <strong>A1</strong> and skip <strong>A2</strong> entirely.</p>
+</section>
+<section id="a1-see-what-you-actually-downloaded" class="slide level2">
+<h2>A1 · See what you actually downloaded</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a></a>raw_dir <span class="ot">&lt;-</span> <span class="fu">here</span>(<span class="st">"data"</span>, <span class="st">"raw"</span>)</span>
+<span id="cb3-2"><a></a></span>
+<span id="cb3-3"><a></a><span class="fu">list.files</span>(raw_dir, <span class="at">pattern =</span> <span class="st">"</span><span class="sc">\\</span><span class="st">.csv$"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Check the real filenames before typing them from memory in the next chunk. This one line has saved more workshop time than any other in this deck.</p>
+</section>
+<section id="a1-read-the-prices-file-as-text" class="slide level2">
+<h2>A1 · Read the prices file as text</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a></a>prices_raw <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(</span>
+<span id="cb4-2"><a></a>  <span class="fu">file.path</span>(raw_dir, <span class="st">"wfp_food_prices_pak.csv"</span>),</span>
+<span id="cb4-3"><a></a>  <span class="at">col_types =</span> <span class="fu">cols</span>(<span class="at">.default =</span> <span class="fu">col_character</span>())</span>
+<span id="cb4-4"><a></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Everything comes in as <strong>character</strong>, deliberately. Row 1 of every HDX file is a HXL tag row (<code>#date</code>, <code>#adm1+name</code>, …), and letting <code>read_csv()</code> guess column types on that row produces unpredictable results.</p>
+</section>
+<section id="a1-look-at-the-row-youre-about-to-delete" class="slide level2">
+<h2>A1 · Look at the row you’re about to delete</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a></a>prices_raw <span class="sc">|&gt;</span> <span class="fu">slice</span>(<span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Always <strong>look</strong> before you drop. This is the HXL tag row — a schema annotation, not an observation. If this doesn’t look like <code>#date</code>, <code>#adm1+name</code>, … stop and check the file.</p>
+</section>
+<section id="a1-remove-it" class="slide level2">
+<h2>A1 · Remove it</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a></a>prices_raw <span class="ot">&lt;-</span> prices_raw <span class="sc">|&gt;</span> <span class="fu">slice</span>(<span class="sc">-</span><span class="dv">1</span>)</span>
+<span id="cb6-2"><a></a></span>
+<span id="cb6-3"><a></a><span class="fu">glimpse</span>(prices_raw)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p><code>slice(-1)</code> removes row 1 positionally — the one rule that works whether or not the file has a <code>date</code> column (the markets file, coming up, doesn’t).</p>
+</section>
+<section id="a1-convert-types-and-derive-date-parts" class="slide level2">
+<h2>A1 · Convert types and derive date parts</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a></a>prices <span class="ot">&lt;-</span> prices_raw <span class="sc">|&gt;</span></span>
+<span id="cb7-2"><a></a>  <span class="fu">mutate</span>(</span>
+<span id="cb7-3"><a></a>    <span class="at">date      =</span> <span class="fu">ymd</span>(date),</span>
+<span id="cb7-4"><a></a>    <span class="at">price     =</span> <span class="fu">as.numeric</span>(price),</span>
+<span id="cb7-5"><a></a>    <span class="at">usdprice  =</span> <span class="fu">as.numeric</span>(usdprice),</span>
+<span id="cb7-6"><a></a>    <span class="at">latitude  =</span> <span class="fu">as.numeric</span>(latitude),</span>
+<span id="cb7-7"><a></a>    <span class="at">longitude =</span> <span class="fu">as.numeric</span>(longitude),</span>
+<span id="cb7-8"><a></a>    <span class="fu">across</span>(<span class="fu">where</span>(is.character), str_squish),</span>
+<span id="cb7-9"><a></a>    <span class="at">year      =</span> <span class="fu">year</span>(date),</span>
+<span id="cb7-10"><a></a>    <span class="at">month_num =</span> <span class="fu">month</span>(date),</span>
+<span id="cb7-11"><a></a>    <span class="at">month_lab =</span> <span class="fu">month</span>(date, <span class="at">label =</span> <span class="cn">TRUE</span>, <span class="at">abbr =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb7-12"><a></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p><code>str_squish()</code> across every remaining character column strips stray whitespace — a common HDX artefact that breaks exact-string matching later without ever showing up in <code>glimpse()</code>.</p>
+</section>
+<section id="a1-audit-the-conversion" class="slide level2">
+<h2>A1 · Audit the conversion</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a></a>prices <span class="sc">|&gt;</span> <span class="fu">summarise</span>(<span class="at">bad_date =</span> <span class="fu">sum</span>(<span class="fu">is.na</span>(date)), <span class="at">bad_price =</span> <span class="fu">sum</span>(<span class="fu">is.na</span>(price)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Must be <strong>0</strong>, or close to it. Any coercion failure — a malformed date, a non-numeric price — turns silently into <code>NA</code> at the <code>mutate()</code> step. This is the only place you’ll catch it.</p>
+</section>
+<section id="a1-get-to-know-the-columns" class="slide level2">
+<h2>A1 · Get to know the columns</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a></a>prices <span class="sc">|&gt;</span> <span class="fu">count</span>(pricetype, priceflag, <span class="at">sort =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb9-2"><a></a>prices <span class="sc">|&gt;</span> <span class="fu">count</span>(unit, <span class="at">sort =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb9-3"><a></a>prices <span class="sc">|&gt;</span> <span class="fu">count</span>(admin1, <span class="at">sort =</span> <span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Three <code>count()</code> calls, three things you now know:</p>
+<ul>
+<li>Retail vs Wholesale, actual vs aggregate — <strong>and their relative sizes</strong></li>
+<li>Every unit string you’ll need to normalise later</li>
+<li>Every province spelling you’ll need in the crosswalk</li>
+</ul>
+</section>
+<section id="a2-read-the-markets-file-same-recipe" class="slide level2">
+<h2>A2 · Read the markets file — same recipe</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a></a>markets_raw <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(</span>
+<span id="cb10-2"><a></a>  <span class="fu">file.path</span>(raw_dir, <span class="st">"wfp_markets_pak.csv"</span>),</span>
+<span id="cb10-3"><a></a>  <span class="at">col_types =</span> <span class="fu">cols</span>(<span class="at">.default =</span> <span class="fu">col_character</span>())</span>
+<span id="cb10-4"><a></a>)</span>
+<span id="cb10-5"><a></a></span>
+<span id="cb10-6"><a></a>markets_raw <span class="sc">|&gt;</span> <span class="fu">slice</span>(<span class="dv">1</span>)          <span class="co"># look before deleting</span></span>
+<span id="cb10-7"><a></a>markets_raw <span class="ot">&lt;-</span> markets_raw <span class="sc">|&gt;</span> <span class="fu">slice</span>(<span class="sc">-</span><span class="dv">1</span>)</span>
+<span id="cb10-8"><a></a></span>
+<span id="cb10-9"><a></a><span class="fu">glimpse</span>(markets_raw)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Identical pattern to A1: text first, view the HXL row, then drop it. Consistency here is the point — one mental model for both files.</p>
+</section>
+<section id="a2-convert-types" class="slide level2">
+<h2>A2 · Convert types</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a></a>markets <span class="ot">&lt;-</span> markets_raw <span class="sc">|&gt;</span></span>
+<span id="cb11-2"><a></a>  <span class="fu">mutate</span>(</span>
+<span id="cb11-3"><a></a>    <span class="at">latitude  =</span> <span class="fu">as.numeric</span>(latitude),</span>
+<span id="cb11-4"><a></a>    <span class="at">longitude =</span> <span class="fu">as.numeric</span>(longitude)</span>
+<span id="cb11-5"><a></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Fewer columns need conversion than in the prices file — this is a static reference table, not a time series.</p>
+</section>
+<section id="a2-confirm-the-grain" class="slide level2">
+<h2>A2 · Confirm the grain</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a></a>markets <span class="sc">|&gt;</span> <span class="fu">count</span>(market_id) <span class="sc">|&gt;</span> <span class="fu">filter</span>(n <span class="sc">&gt;</span> <span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p><strong>Must return zero rows.</strong> <code>markets</code> is meant to be one row per market. Any join against this table — and you will join against it — silently multiplies your data if this check fails. Fix duplicates before proceeding.</p>
+</section>
+<section id="a2-what-the-markets-file-actually-adds" class="slide level2">
+<h2>A2 · What the markets file actually adds</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a></a>markets_no_data <span class="ot">&lt;-</span> markets <span class="sc">|&gt;</span></span>
+<span id="cb13-2"><a></a>  <span class="fu">anti_join</span>(prices_raw, <span class="at">by =</span> <span class="fu">join_by</span>(market_id))</span>
+<span id="cb13-3"><a></a></span>
+<span id="cb13-4"><a></a>markets_no_data <span class="sc">|&gt;</span> <span class="fu">select</span>(market_id, market, admin1, admin2)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>The prices file already carries coordinates and province names on every row. What only the markets file can tell you: <strong>which markets in the sampling frame never reported a single price.</strong></p>
+</section>
+<section id="a2-quantify-the-coverage-gap" class="slide level2">
+<h2>A2 · Quantify the coverage gap</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a></a><span class="fu">n_distinct</span>(prices_raw<span class="sc">$</span>market_id)   <span class="co"># markets that reported at least once</span></span>
+<span id="cb14-2"><a></a><span class="fu">nrow</span>(markets_raw)                  <span class="co"># markets in the full sampling frame</span></span>
+<span id="cb14-3"><a></a><span class="fu">nrow</span>(markets_no_data)              <span class="co"># the gap between the two</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="callout callout-important callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Important</strong></p>
+</div>
+<div class="callout-content">
+<p>This gap is a genuine finding — state it in any write-up: <em>“WFP maintains N reporting markets for Pakistan; only M of them had a price observation in the study period.”</em></p>
+</div>
+</div>
+</div>
+</section></section>
+<section>
+<section id="part-b-the-analysis-pipeline" class="title-slide slide level1 section-divider center" data-background-color="#0f2440">
+<h1>Part B — The Analysis Pipeline</h1>
+
+</section>
+<section id="four-decisions-before-any-average" class="slide level2 scrollable">
+<h2>Four decisions before any average</h2>
+<ol type="1">
+<li class="fragment"><strong>actual vs aggregate</strong> — keep only observed prices</li>
+<li class="fragment"><strong>retail vs wholesale</strong> — never pool the two</li>
+<li class="fragment"><strong>units</strong> — <code>KG</code>, <code>20 KG</code>, <code>500 G</code>, <code>L</code> are not comparable raw</li>
+<li class="fragment"><strong>panel balance</strong> — who reports, and when, changes the “national” mean</li>
+</ol>
+<p>Every one of these is invisible in <code>glimpse()</code>. Get any one wrong and the headline number is still a number — just the wrong one.</p>
+</section>
+<section id="b1.1-actual-not-aggregate" class="slide level2">
+<h2>B1.1 · Actual, not aggregate</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a></a>prices_actual <span class="ot">&lt;-</span> prices <span class="sc">|&gt;</span> <span class="fu">filter_out</span>(priceflag <span class="sc">!=</span> <span class="st">"actual"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p><code>aggregate</code> rows are WFP-computed roll-ups, not observed prices — keeping them double-counts. <code>filter_out()</code> drops rows matching the condition <strong>and</strong> keeps rows where <code>priceflag</code> is missing, unlike a plain <code>filter(!(...))</code> which would silently lose them.</p>
+</section>
+<section id="b1.2-retail-only" class="slide level2">
+<h2>B1.2 · Retail only</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a></a>retail <span class="ot">&lt;-</span> prices_actual <span class="sc">|&gt;</span> <span class="fu">filter</span>(pricetype <span class="sc">==</span> <span class="st">"Retail"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>The most commonly missed decision. Pool Retail and Wholesale and your “national price” moves whenever the <strong>mix</strong> of reporting types changes — even if no actual price moved anywhere.</p>
+</section>
+<section id="b1.3-helper-1-mass-units-to-kilograms" class="slide level2">
+<h2>B1.3 · Helper 1 — mass units to kilograms</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a></a>unit_to_kg <span class="ot">&lt;-</span> <span class="cf">function</span>(unit) {</span>
+<span id="cb17-2"><a></a>  qty  <span class="ot">&lt;-</span> <span class="fu">coalesce</span>(<span class="fu">parse_number</span>(unit), <span class="dv">1</span>)</span>
+<span id="cb17-3"><a></a>  mult <span class="ot">&lt;-</span> <span class="fu">case_when</span>(</span>
+<span id="cb17-4"><a></a>    <span class="fu">str_detect</span>(unit, <span class="fu">regex</span>(<span class="st">"</span><span class="sc">\\</span><span class="st">bMT</span><span class="sc">\\</span><span class="st">b"</span>, <span class="at">ignore_case =</span> <span class="cn">TRUE</span>)) <span class="sc">~</span> <span class="dv">1000</span>,</span>
+<span id="cb17-5"><a></a>    <span class="fu">str_detect</span>(unit, <span class="fu">regex</span>(<span class="st">"</span><span class="sc">\\</span><span class="st">bKG</span><span class="sc">\\</span><span class="st">b"</span>, <span class="at">ignore_case =</span> <span class="cn">TRUE</span>)) <span class="sc">~</span> <span class="dv">1</span>,</span>
+<span id="cb17-6"><a></a>    <span class="fu">str_detect</span>(unit, <span class="fu">regex</span>(<span class="st">"</span><span class="sc">\\</span><span class="st">bG</span><span class="sc">\\</span><span class="st">b"</span>,  <span class="at">ignore_case =</span> <span class="cn">TRUE</span>)) <span class="sc">~</span> <span class="dv">1</span> <span class="sc">/</span> <span class="dv">1000</span>,</span>
+<span id="cb17-7"><a></a>    <span class="at">.default =</span> <span class="cn">NA_real_</span></span>
+<span id="cb17-8"><a></a>  )</span>
+<span id="cb17-9"><a></a>  qty <span class="sc">*</span> mult</span>
+<span id="cb17-10"><a></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p><code>parse_number("20 KG")</code> gives <code>20</code>; <code>parse_number("KG")</code> gives <code>NA</code>, so <code>coalesce(..., 1)</code> supplies the implied quantity of one.</p>
+</section>
+<section id="b1.3-helper-2-volume-units-to-litres" class="slide level2">
+<h2>B1.3 · Helper 2 — volume units to litres</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a></a>unit_to_litre <span class="ot">&lt;-</span> <span class="cf">function</span>(unit) {</span>
+<span id="cb18-2"><a></a>  qty  <span class="ot">&lt;-</span> <span class="fu">coalesce</span>(<span class="fu">parse_number</span>(unit), <span class="dv">1</span>)</span>
+<span id="cb18-3"><a></a>  mult <span class="ot">&lt;-</span> <span class="fu">case_when</span>(</span>
+<span id="cb18-4"><a></a>    <span class="fu">str_detect</span>(unit, <span class="fu">regex</span>(<span class="st">"</span><span class="sc">\\</span><span class="st">bML</span><span class="sc">\\</span><span class="st">b"</span>, <span class="at">ignore_case =</span> <span class="cn">TRUE</span>)) <span class="sc">~</span> <span class="dv">1</span> <span class="sc">/</span> <span class="dv">1000</span>,</span>
+<span id="cb18-5"><a></a>    <span class="fu">str_detect</span>(unit, <span class="fu">regex</span>(<span class="st">"</span><span class="sc">\\</span><span class="st">bL</span><span class="sc">\\</span><span class="st">b"</span>,  <span class="at">ignore_case =</span> <span class="cn">TRUE</span>)) <span class="sc">~</span> <span class="dv">1</span>,</span>
+<span id="cb18-6"><a></a>    <span class="at">.default =</span> <span class="cn">NA_real_</span></span>
+<span id="cb18-7"><a></a>  )</span>
+<span id="cb18-8"><a></a>  qty <span class="sc">*</span> mult</span>
+<span id="cb18-9"><a></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Order matters in <code>case_when()</code> — first match wins. <code>MT</code> before <code>KG</code>, <code>ML</code> before <code>L</code>. The <code>\\b</code> word boundaries stop <code>G</code> matching inside <code>KG</code>.</p>
+</section>
+<section id="b1.3-test-before-you-trust" class="slide level2">
+<h2>B1.3 · Test before you trust</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a></a>test_units <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"KG"</span>, <span class="st">"20 KG"</span>, <span class="st">"500 G"</span>, <span class="st">"MT"</span>, <span class="st">"L"</span>, <span class="st">"1.5 L"</span>, <span class="st">"Unit"</span>, <span class="st">"Day"</span>, <span class="st">"Dozen"</span>)</span>
+<span id="cb19-2"><a></a></span>
+<span id="cb19-3"><a></a><span class="fu">tibble</span>(</span>
+<span id="cb19-4"><a></a>  <span class="at">unit  =</span> test_units,</span>
+<span id="cb19-5"><a></a>  <span class="at">kg    =</span> <span class="fu">unit_to_kg</span>(test_units),</span>
+<span id="cb19-6"><a></a>  <span class="at">litre =</span> <span class="fu">unit_to_litre</span>(test_units)</span>
+<span id="cb19-7"><a></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p><code>unit_to_kg("20 KG")</code> should read <code>20</code>, not <code>1</code>. <code>unit_to_litre("KG")</code> should read <code>NA</code>, not <code>0</code>. Run this <strong>before</strong> applying the function to 13,000 rows.</p>
+</section>
+<section id="b1.3-apply-and-audit-whats-left" class="slide level2 smaller">
+<h2>B1.3 · Apply, and audit what’s left</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a></a>retail <span class="ot">&lt;-</span> retail <span class="sc">|&gt;</span></span>
+<span id="cb20-2"><a></a>  <span class="fu">mutate</span>(</span>
+<span id="cb20-3"><a></a>    <span class="at">kg_equiv     =</span> <span class="fu">unit_to_kg</span>(unit),</span>
+<span id="cb20-4"><a></a>    <span class="at">l_equiv      =</span> <span class="fu">unit_to_litre</span>(unit),</span>
+<span id="cb20-5"><a></a>    <span class="at">price_per_kg =</span> price <span class="sc">/</span> kg_equiv,</span>
+<span id="cb20-6"><a></a>    <span class="at">price_per_l  =</span> price <span class="sc">/</span> l_equiv,</span>
+<span id="cb20-7"><a></a>    <span class="at">price_std    =</span> <span class="fu">coalesce</span>(price_per_kg, price_per_l),</span>
+<span id="cb20-8"><a></a>    <span class="at">unit_std     =</span> <span class="fu">case_when</span>(</span>
+<span id="cb20-9"><a></a>      <span class="sc">!</span><span class="fu">is.na</span>(price_per_kg) <span class="sc">~</span> <span class="st">"per kg"</span>,</span>
+<span id="cb20-10"><a></a>      <span class="sc">!</span><span class="fu">is.na</span>(price_per_l)  <span class="sc">~</span> <span class="st">"per litre"</span>,</span>
+<span id="cb20-11"><a></a>      <span class="at">.default =</span> <span class="cn">NA_character_</span></span>
+<span id="cb20-12"><a></a>    )</span>
+<span id="cb20-13"><a></a>  )</span>
+<span id="cb20-14"><a></a></span>
+<span id="cb20-15"><a></a><span class="co"># nothing food-and-mass-based should appear here</span></span>
+<span id="cb20-16"><a></a>retail <span class="sc">|&gt;</span> <span class="fu">filter</span>(<span class="fu">is.na</span>(unit_std)) <span class="sc">|&gt;</span> <span class="fu">count</span>(category, commodity, unit, <span class="at">sort =</span> <span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Expect to see wages (<code>Day</code>), fuel, eggs (<code>Dozen</code>) in the unclassified list. If a cereal or a pulse shows up, extend the function — don’t drop the rows.</p>
+</section>
+<section id="b1.4-look-before-you-average" class="slide level2">
+<h2>B1.4 · Look before you average</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a></a>retail <span class="sc">|&gt;</span></span>
+<span id="cb21-2"><a></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(price_std)) <span class="sc">|&gt;</span></span>
+<span id="cb21-3"><a></a>  <span class="fu">summarise</span>(<span class="at">n_obs =</span> <span class="fu">n</span>(), <span class="at">n_months =</span> <span class="fu">n_distinct</span>(date),</span>
+<span id="cb21-4"><a></a>            <span class="at">first_obs =</span> <span class="fu">min</span>(date), <span class="at">last_obs =</span> <span class="fu">max</span>(date),</span>
+<span id="cb21-5"><a></a>            <span class="at">.by =</span> <span class="fu">c</span>(commodity, market))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Markets enter and leave the sample. This table is the first warning sign — we come back to fix the consequence in <strong>B4</strong>.</p>
+</section>
+<section id="b2-the-basket-when_any-when_all" class="slide level2">
+<h2>B2 · The basket — <code>when_any()</code> / <code>when_all()</code></h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a></a>basket <span class="ot">&lt;-</span> retail <span class="sc">|&gt;</span></span>
+<span id="cb22-2"><a></a>  <span class="fu">filter_out</span>(category <span class="sc">==</span> <span class="st">"non-food"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb22-3"><a></a>  <span class="fu">filter</span>(</span>
+<span id="cb22-4"><a></a>    <span class="fu">when_any</span>(</span>
+<span id="cb22-5"><a></a>      <span class="fu">when_all</span>(unit_std <span class="sc">==</span> <span class="st">"per kg"</span>,    category <span class="sc">!=</span> <span class="st">"milk and dairy"</span>),</span>
+<span id="cb22-6"><a></a>      <span class="fu">when_all</span>(unit_std <span class="sc">==</span> <span class="st">"per litre"</span>,</span>
+<span id="cb22-7"><a></a>               <span class="fu">str_detect</span>(commodity, <span class="fu">regex</span>(<span class="st">"oil|ghee"</span>, <span class="at">ignore_case =</span> <span class="cn">TRUE</span>)))</span>
+<span id="cb22-8"><a></a>    )</span>
+<span id="cb22-9"><a></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Read it aloud: <em>keep a row if (it’s per-kg and not dairy) OR (it’s per-litre and it’s an oil/ghee).</em> The code has the same shape as the sentence — that’s the entire design intent of these two verbs.</p>
+</section>
+<section id="b2-one-province-lookup-used-three-times" class="slide level2">
+<h2>B2 · One province lookup, used three times</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a></a>province_lookup <span class="ot">&lt;-</span> <span class="fu">tribble</span>(</span>
+<span id="cb23-2"><a></a>  <span class="sc">~</span>from,                                                              <span class="sc">~</span>to,</span>
+<span id="cb23-3"><a></a>  <span class="fu">c</span>(<span class="st">"Punjab"</span>),                                                        <span class="st">"Punjab"</span>,</span>
+<span id="cb23-4"><a></a>  <span class="fu">c</span>(<span class="st">"Sindh"</span>),                                                         <span class="st">"Sindh"</span>,</span>
+<span id="cb23-5"><a></a>  <span class="fu">c</span>(<span class="st">"Khyber Pakhtunkhwa"</span>, <span class="st">"N.W.F.P."</span>, <span class="st">"NWFP"</span>,</span>
+<span id="cb23-6"><a></a>    <span class="st">"Federally Administered Tribal Areas"</span>, <span class="st">"F.A.T.A."</span>),               <span class="st">"KP"</span>,</span>
+<span id="cb23-7"><a></a>  <span class="fu">c</span>(<span class="st">"Balochistan"</span>, <span class="st">"Baluchistan"</span>),                                    <span class="st">"Balochistan"</span>,</span>
+<span id="cb23-8"><a></a>  <span class="fu">c</span>(<span class="st">"Islamabad"</span>, <span class="st">"F.C.T."</span>, <span class="st">"Islamabad Capital Territory"</span>),            <span class="st">"Islamabad"</span>,</span>
+<span id="cb23-9"><a></a>  <span class="fu">c</span>(<span class="st">"Azad Kashmir"</span>, <span class="st">"Azad Jammu and Kashmir"</span>, <span class="st">"AJK"</span>),                 <span class="st">"Azad Jammu &amp; Kashmir"</span>,</span>
+<span id="cb23-10"><a></a>  <span class="fu">c</span>(<span class="st">"Gilgit-Baltistan"</span>, <span class="st">"Northern Areas"</span>),                            <span class="st">"Gilgit-Baltistan"</span></span>
+<span id="cb23-11"><a></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>A cell holding a <strong>vector</strong> means “any of these map to this.” One table, used for the price data, the markets file, <strong>and</strong> the map polygons later. This is what keeps three separate name-cleaning jobs in sync.</p>
+</section>
+<section id="b2-apply-it-and-audit" class="slide level2">
+<h2>B2 · Apply it, and audit</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a></a>basket <span class="ot">&lt;-</span> basket <span class="sc">|&gt;</span></span>
+<span id="cb24-2"><a></a>  <span class="fu">mutate</span>(<span class="at">province =</span> <span class="fu">recode_values</span>(admin1,</span>
+<span id="cb24-3"><a></a>                                  <span class="at">from =</span> province_lookup<span class="sc">$</span>from,</span>
+<span id="cb24-4"><a></a>                                  <span class="at">to   =</span> province_lookup<span class="sc">$</span>to))</span>
+<span id="cb24-5"><a></a></span>
+<span id="cb24-6"><a></a><span class="co"># must be empty; if not, extend province_lookup</span></span>
+<span id="cb24-7"><a></a>basket <span class="sc">|&gt;</span> <span class="fu">filter</span>(<span class="fu">is.na</span>(province), <span class="sc">!</span><span class="fu">is.na</span>(admin1)) <span class="sc">|&gt;</span> <span class="fu">count</span>(admin1, <span class="at">sort =</span> <span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p><code>recode_values()</code> is a <strong>total</strong> mapping — anything not listed becomes <code>NA</code>. That’s why the audit line exists: an incomplete lookup fails silently without it.</p>
+</section>
+<section id="b2-winsorise-with-replace_when" class="slide level2">
+<h2>B2 · Winsorise with <code>replace_when()</code></h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a></a>basket <span class="ot">&lt;-</span> basket <span class="sc">|&gt;</span></span>
+<span id="cb25-2"><a></a>  <span class="fu">mutate</span>(</span>
+<span id="cb25-3"><a></a>    <span class="at">price_w =</span> <span class="fu">replace_when</span>(</span>
+<span id="cb25-4"><a></a>      price_std,</span>
+<span id="cb25-5"><a></a>      price_std <span class="sc">&gt;</span> <span class="fu">quantile</span>(price_std, <span class="fl">0.999</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb25-6"><a></a>      <span class="sc">~</span> <span class="fu">quantile</span>(price_std, <span class="fl">0.999</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb25-7"><a></a>    ),</span>
+<span id="cb25-8"><a></a>    <span class="at">.by =</span> <span class="fu">c</span>(commodity, unit_std)</span>
+<span id="cb25-9"><a></a>  )</span>
+<span id="cb25-10"><a></a></span>
+<span id="cb25-11"><a></a>basket <span class="sc">|&gt;</span></span>
+<span id="cb25-12"><a></a>  <span class="fu">filter</span>(price_std <span class="sc">!=</span> price_w) <span class="sc">|&gt;</span></span>
+<span id="cb25-13"><a></a>  <span class="fu">select</span>(date, market, commodity, price_std, price_w) <span class="sc">|&gt;</span></span>
+<span id="cb25-14"><a></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(price_std))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p><code>replace_when()</code> is <strong>partial</strong> — everything not matched passes through unchanged. Always print what changed. Winsorising silently is not defensible; winsorising visibly is.</p>
+</section>
+<section id="b3-market_meta-authoritative-not-reconstructed" class="slide level2">
+<h2>B3 · <code>market_meta</code> — authoritative, not reconstructed</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a></a>market_meta <span class="ot">&lt;-</span> markets <span class="sc">|&gt;</span></span>
+<span id="cb26-2"><a></a>  <span class="fu">mutate</span>(<span class="at">province =</span> <span class="fu">recode_values</span>(admin1,</span>
+<span id="cb26-3"><a></a>                                  <span class="at">from =</span> province_lookup<span class="sc">$</span>from,</span>
+<span id="cb26-4"><a></a>                                  <span class="at">to   =</span> province_lookup<span class="sc">$</span>to)) <span class="sc">|&gt;</span></span>
+<span id="cb26-5"><a></a>  <span class="fu">select</span>(market_id, market, admin1, admin2, province, latitude, longitude) <span class="sc">|&gt;</span></span>
+<span id="cb26-6"><a></a>  <span class="fu">mutate</span>(<span class="at">reporting =</span> <span class="sc">!</span>market_id <span class="sc">%in%</span> markets_no_data<span class="sc">$</span>market_id)</span>
+<span id="cb26-7"><a></a></span>
+<span id="cb26-8"><a></a>market_meta <span class="sc">|&gt;</span> <span class="fu">filter</span>(<span class="fu">is.na</span>(province), <span class="sc">!</span><span class="fu">is.na</span>(admin1)) <span class="sc">|&gt;</span> <span class="fu">count</span>(admin1, <span class="at">sort =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb26-9"><a></a>market_meta <span class="sc">|&gt;</span> <span class="fu">count</span>(reporting)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Built from the <strong>markets file</strong>, not from <code>distinct()</code> on <code>basket</code>. A <code>market_meta</code> built from <code>basket</code> silently loses every market with zero observations. This version carries a <code>reporting</code> flag instead — nothing is lost, and the map later can show it.</p>
+</section>
+<section id="b3-national-monthly-series" class="slide level2">
+<h2>B3 · National monthly series</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a></a>national_monthly <span class="ot">&lt;-</span> basket <span class="sc">|&gt;</span></span>
+<span id="cb27-2"><a></a>  <span class="fu">summarise</span>(<span class="at">price_pkr =</span> <span class="fu">mean</span>(price_w,  <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb27-3"><a></a>            <span class="at">price_usd =</span> <span class="fu">mean</span>(usdprice, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb27-4"><a></a>            <span class="at">n_markets =</span> <span class="fu">n_distinct</span>(market),</span>
+<span id="cb27-5"><a></a>            <span class="at">.by =</span> <span class="fu">c</span>(date, commodity, unit_std)) <span class="sc">|&gt;</span></span>
+<span id="cb27-6"><a></a>  <span class="fu">complete</span>(commodity, date) <span class="sc">|&gt;</span>                  <span class="co"># honest gaps before any lag()</span></span>
+<span id="cb27-7"><a></a>  <span class="fu">arrange</span>(commodity, date) <span class="sc">|&gt;</span></span>
+<span id="cb27-8"><a></a>  <span class="fu">mutate</span>(<span class="at">mom =</span> price_pkr <span class="sc">/</span> <span class="fu">lag</span>(price_pkr)     <span class="sc">-</span> <span class="dv">1</span>,</span>
+<span id="cb27-9"><a></a>         <span class="at">yoy =</span> price_pkr <span class="sc">/</span> <span class="fu">lag</span>(price_pkr, <span class="dv">12</span>) <span class="sc">-</span> <span class="dv">1</span>,</span>
+<span id="cb27-10"><a></a>         <span class="at">.by =</span> commodity)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p><code>lag()</code> counts <strong>rows</strong>, not months. Without <code>complete()</code> first, a reporting gap fabricates a year-on-year figure — twelve rows back is not the same as twelve months back once a market drops out for a while.</p>
+</section>
+<section id="b3-provincial-series-and-the-reference-commodity" class="slide level2">
+<h2>B3 · Provincial series and the reference commodity</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a></a>province_year <span class="ot">&lt;-</span> basket <span class="sc">|&gt;</span></span>
+<span id="cb28-2"><a></a>  <span class="fu">summarise</span>(<span class="at">price_pkr =</span> <span class="fu">mean</span>(price_w, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb28-3"><a></a>            <span class="at">n_markets =</span> <span class="fu">n_distinct</span>(market),</span>
+<span id="cb28-4"><a></a>            <span class="at">.by =</span> <span class="fu">c</span>(province, commodity, year))</span>
+<span id="cb28-5"><a></a></span>
+<span id="cb28-6"><a></a><span class="co"># pick the reference commodity FROM THE DATA, never from memory</span></span>
+<span id="cb28-7"><a></a>basket <span class="sc">|&gt;</span> <span class="fu">count</span>(commodity, <span class="at">sort =</span> <span class="cn">TRUE</span>) <span class="sc">|&gt;</span> <span class="fu">print</span>(<span class="at">n =</span> <span class="cn">Inf</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Copy the exact commodity string from that <code>count()</code> output. Never hard-code <code>"Wheat flour"</code> from memory — vintages and spellings change.</p>
+</section>
+<section id="b3-the-wheat-frames" class="slide level2">
+<h2>B3 · The wheat frames</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a></a>wheat <span class="ot">&lt;-</span> basket <span class="sc">|&gt;</span></span>
+<span id="cb29-2"><a></a>  <span class="fu">filter</span>(<span class="fu">str_detect</span>(commodity, <span class="fu">regex</span>(<span class="st">"^wheat flour"</span>, <span class="at">ignore_case =</span> <span class="cn">TRUE</span>)))</span>
+<span id="cb29-3"><a></a></span>
+<span id="cb29-4"><a></a>wheat_market <span class="ot">&lt;-</span> wheat <span class="sc">|&gt;</span></span>
+<span id="cb29-5"><a></a>  <span class="fu">summarise</span>(<span class="at">price_pkr =</span> <span class="fu">mean</span>(price_w, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb29-6"><a></a>            <span class="at">.by =</span> <span class="fu">c</span>(date, market, province))</span>
+<span id="cb29-7"><a></a></span>
+<span id="cb29-8"><a></a>wheat_national <span class="ot">&lt;-</span> national_monthly <span class="sc">|&gt;</span></span>
+<span id="cb29-9"><a></a>  <span class="fu">filter</span>(<span class="fu">str_detect</span>(commodity, <span class="fu">regex</span>(<span class="st">"^wheat flour"</span>, <span class="at">ignore_case =</span> <span class="cn">TRUE</span>)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Three grains, named explicitly: <code>wheat</code> is one row per observation, <code>wheat_market</code> one row per market-month, <code>wheat_national</code> one row per month.</p>
+</section>
+<section id="b4-why-a-plain-average-is-composition-varying" class="slide level2">
+<h2>B4 · Why a plain average is composition-varying</h2>
+<p>If an expensive market starts reporting mid-series, the raw cross-market mean jumps — with no price change anywhere. Fix: a <strong>matched-sample chained index</strong>.</p>
+</section>
+<section id="b4-build-the-chained-index" class="slide level2">
+<h2>B4 · Build the chained index</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a></a>wheat_chained <span class="ot">&lt;-</span> wheat_market <span class="sc">|&gt;</span></span>
+<span id="cb30-2"><a></a>  <span class="fu">complete</span>(market, date) <span class="sc">|&gt;</span></span>
+<span id="cb30-3"><a></a>  <span class="fu">arrange</span>(market, date) <span class="sc">|&gt;</span></span>
+<span id="cb30-4"><a></a>  <span class="fu">mutate</span>(<span class="at">rel =</span> price_pkr <span class="sc">/</span> <span class="fu">lag</span>(price_pkr), <span class="at">.by =</span> market) <span class="sc">|&gt;</span></span>
+<span id="cb30-5"><a></a>  <span class="fu">summarise</span>(<span class="at">gm        =</span> <span class="fu">exp</span>(<span class="fu">mean</span>(<span class="fu">log</span>(rel), <span class="at">na.rm =</span> <span class="cn">TRUE</span>)),</span>
+<span id="cb30-6"><a></a>            <span class="at">n_matched =</span> <span class="fu">sum</span>(<span class="sc">!</span><span class="fu">is.na</span>(rel)),</span>
+<span id="cb30-7"><a></a>            <span class="at">.by =</span> date) <span class="sc">|&gt;</span></span>
+<span id="cb30-8"><a></a>  <span class="fu">arrange</span>(date) <span class="sc">|&gt;</span></span>
+<span id="cb30-9"><a></a>  <span class="fu">mutate</span>(<span class="at">gm    =</span> <span class="fu">replace_when</span>(gm, <span class="fu">is.na</span>(gm) <span class="sc">~</span> <span class="dv">1</span>),</span>
+<span id="cb30-10"><a></a>         <span class="at">index =</span> <span class="dv">100</span> <span class="sc">*</span> <span class="fu">cumprod</span>(gm))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>For each market compute its own month-on-month relative, take the <strong>geometric mean of relatives</strong> across only markets present in both months, then chain with <code>cumprod()</code>. This is composition-safe by construction.</p>
+</section>
+<section id="b4-per-market-index-a-different-question" class="slide level2">
+<h2>B4 · Per-market index (a different question)</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a></a>wheat_market_index <span class="ot">&lt;-</span> wheat_market <span class="sc">|&gt;</span></span>
+<span id="cb31-2"><a></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(price_pkr)) <span class="sc">|&gt;</span></span>
+<span id="cb31-3"><a></a>  <span class="fu">arrange</span>(market, date) <span class="sc">|&gt;</span>                      <span class="co"># load-bearing</span></span>
+<span id="cb31-4"><a></a>  <span class="fu">mutate</span>(<span class="at">index =</span> <span class="dv">100</span> <span class="sc">*</span> price_pkr <span class="sc">/</span> <span class="fu">first</span>(price_pkr), <span class="at">.by =</span> market)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p><code>.by</code> does not reorder rows. <code>first()</code> returns the first row <strong>as currently sorted</strong> — the <code>arrange()</code> before it is not decorative, it’s required.</p>
+</section>
+<section id="b5-dispersion-across-markets" class="slide level2">
+<h2>B5 · Dispersion across markets</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a></a>dispersion <span class="ot">&lt;-</span> wheat_market <span class="sc">|&gt;</span></span>
+<span id="cb32-2"><a></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(price_pkr)) <span class="sc">|&gt;</span></span>
+<span id="cb32-3"><a></a>  <span class="fu">summarise</span>(<span class="at">n_markets =</span> <span class="fu">n</span>(),</span>
+<span id="cb32-4"><a></a>            <span class="at">cheapest  =</span> <span class="fu">min</span>(price_pkr),</span>
+<span id="cb32-5"><a></a>            <span class="at">dearest   =</span> <span class="fu">max</span>(price_pkr),</span>
+<span id="cb32-6"><a></a>            <span class="at">spread    =</span> dearest <span class="sc">-</span> cheapest,</span>
+<span id="cb32-7"><a></a>            <span class="at">cv        =</span> <span class="fu">sd</span>(price_pkr) <span class="sc">/</span> <span class="fu">mean</span>(price_pkr),</span>
+<span id="cb32-8"><a></a>            <span class="at">.by =</span> date) <span class="sc">|&gt;</span></span>
+<span id="cb32-9"><a></a>  <span class="fu">filter</span>(n_markets <span class="sc">&gt;=</span> <span class="dv">5</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p><code>min()</code>/<code>max()</code> widen <strong>mechanically</strong> as the sample grows. Comparing a 3-market spread to a 20-market spread tells you about coverage, not integration — hence the <code>n_markets &gt;= 5</code> floor.</p>
+</section>
+<section id="b5-distances-between-markets" class="slide level2">
+<h2>B5 · Distances between markets</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a></a>markets_sf <span class="ot">&lt;-</span> market_meta <span class="sc">|&gt;</span></span>
+<span id="cb33-2"><a></a>  <span class="fu">filter_out</span>(<span class="fu">is.na</span>(latitude) <span class="sc">|</span> <span class="fu">is.na</span>(longitude)) <span class="sc">|&gt;</span></span>
+<span id="cb33-3"><a></a>  <span class="fu">st_as_sf</span>(<span class="at">coords =</span> <span class="fu">c</span>(<span class="st">"longitude"</span>, <span class="st">"latitude"</span>), <span class="at">crs =</span> <span class="dv">4326</span>)</span>
+<span id="cb33-4"><a></a></span>
+<span id="cb33-5"><a></a>dist_km <span class="ot">&lt;-</span> <span class="fu">st_distance</span>(markets_sf) <span class="sc">|&gt;</span></span>
+<span id="cb33-6"><a></a>  units<span class="sc">::</span><span class="fu">set_units</span>(<span class="st">"km"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb33-7"><a></a>  units<span class="sc">::</span><span class="fu">drop_units</span>()</span>
+<span id="cb33-8"><a></a><span class="fu">dimnames</span>(dist_km) <span class="ot">&lt;-</span> <span class="fu">list</span>(markets_sf<span class="sc">$</span>market, markets_sf<span class="sc">$</span>market)</span>
+<span id="cb33-9"><a></a></span>
+<span id="cb33-10"><a></a>pair_distance <span class="ot">&lt;-</span> dist_km <span class="sc">|&gt;</span></span>
+<span id="cb33-11"><a></a>  <span class="fu">as_tibble</span>(<span class="at">rownames =</span> <span class="st">"market_a"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb33-12"><a></a>  <span class="fu">pivot_longer</span>(<span class="sc">-</span>market_a, <span class="at">names_to =</span> <span class="st">"market_b"</span>, <span class="at">values_to =</span> <span class="st">"distance_km"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb33-13"><a></a>  <span class="fu">filter</span>(market_a <span class="sc">&lt;</span> market_b)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p><code>market_a &lt; market_b</code> (string comparison) keeps one row per pair instead of two mirrored rows — a small trick worth remembering for any symmetric pairwise table.</p>
+</section>
+<section id="b5-law-of-one-price" class="slide level2 smaller">
+<h2>B5 · Law of one price</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a></a>pair_gaps <span class="ot">&lt;-</span> wheat_market <span class="sc">|&gt;</span></span>
+<span id="cb34-2"><a></a>  <span class="fu">select</span>(date, market, price_pkr) <span class="sc">|&gt;</span></span>
+<span id="cb34-3"><a></a>  <span class="fu">inner_join</span>(wheat_market <span class="sc">|&gt;</span> <span class="fu">select</span>(date, market, price_pkr),</span>
+<span id="cb34-4"><a></a>             <span class="at">by           =</span> <span class="fu">join_by</span>(date),</span>
+<span id="cb34-5"><a></a>             <span class="at">relationship =</span> <span class="st">"many-to-many"</span>,     <span class="co"># intentional cross, declared</span></span>
+<span id="cb34-6"><a></a>             <span class="at">suffix       =</span> <span class="fu">c</span>(<span class="st">"_a"</span>, <span class="st">"_b"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb34-7"><a></a>  <span class="fu">filter</span>(market_a <span class="sc">&lt;</span> market_b) <span class="sc">|&gt;</span></span>
+<span id="cb34-8"><a></a>  <span class="fu">mutate</span>(<span class="at">gap =</span> <span class="fu">abs</span>(price_pkr_a <span class="sc">-</span> price_pkr_b)) <span class="sc">|&gt;</span></span>
+<span id="cb34-9"><a></a>  <span class="fu">summarise</span>(<span class="at">mean_gap =</span> <span class="fu">mean</span>(gap, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), <span class="at">n_months =</span> <span class="fu">n</span>(),</span>
+<span id="cb34-10"><a></a>            <span class="at">.by =</span> <span class="fu">c</span>(market_a, market_b)) <span class="sc">|&gt;</span></span>
+<span id="cb34-11"><a></a>  <span class="fu">filter</span>(n_months <span class="sc">&gt;=</span> <span class="dv">24</span>) <span class="sc">|&gt;</span></span>
+<span id="cb34-12"><a></a>  <span class="fu">inner_join</span>(pair_distance, <span class="at">by =</span> <span class="fu">join_by</span>(market_a, market_b))</span>
+<span id="cb34-13"><a></a></span>
+<span id="cb34-14"><a></a><span class="fu">summary</span>(<span class="fu">lm</span>(mean_gap <span class="sc">~</span> distance_km, <span class="at">data =</span> pair_gaps))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p><code>relationship = "many-to-many"</code> is declared, not suppressed — dplyr warns on unexpected many-to-many joins because they’re usually bugs. Here it’s the deliberate point: cross every market against every other market.</p>
+</section>
+<section id="b6-affordability" class="slide level2">
+<h2>B6 · Affordability</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a></a>wages <span class="ot">&lt;-</span> prices_actual <span class="sc">|&gt;</span></span>
+<span id="cb35-2"><a></a>  <span class="fu">filter</span>(<span class="fu">str_detect</span>(commodity, <span class="fu">regex</span>(<span class="st">"wage"</span>, <span class="at">ignore_case =</span> <span class="cn">TRUE</span>))) <span class="sc">|&gt;</span></span>
+<span id="cb35-3"><a></a>  <span class="fu">summarise</span>(<span class="at">wage_pkr =</span> <span class="fu">mean</span>(price, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), <span class="at">.by =</span> <span class="fu">c</span>(date, market))</span>
+<span id="cb35-4"><a></a></span>
+<span id="cb35-5"><a></a>affordability <span class="ot">&lt;-</span> wheat_market <span class="sc">|&gt;</span></span>
+<span id="cb35-6"><a></a>  <span class="fu">inner_join</span>(wages, <span class="at">by =</span> <span class="fu">join_by</span>(date, market)) <span class="sc">|&gt;</span></span>
+<span id="cb35-7"><a></a>  <span class="fu">mutate</span>(<span class="at">kg_per_day_wage =</span> wage_pkr <span class="sc">/</span> price_pkr)</span>
+<span id="cb35-8"><a></a></span>
+<span id="cb35-9"><a></a><span class="fu">c</span>(<span class="at">wheat_market =</span> <span class="fu">nrow</span>(wheat_market), <span class="at">affordability =</span> <span class="fu">nrow</span>(affordability))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>The wage series lives inside <code>non-food</code> — exactly why it wasn’t thrown away in B2. <code>inner_join()</code> restricts you to months where <strong>both</strong> a price and a wage were reported; the row-count comparison shows what that costs.</p>
+</section>
+<section id="b7-the-map-including-jammu-kashmir" class="slide level2">
+<h2>B7 · The map, including Jammu &amp; Kashmir</h2>
+<ul>
+<li class="fragment">Boundaries omitting AJK/Gilgit-Baltistan are unacceptable from a Pakistani institution</li>
+<li class="fragment">Shading a disputed territory as though it had data is unacceptable for anyone</li>
+<li class="fragment">The approach: draw the full territory, show the disputed region as an explicit <strong>no-data</strong> layer, attach a disclaimer</li>
+</ul>
+</section>
+<section id="b7-fetch-and-inspect-boundaries" class="slide level2">
+<h2>B7 · Fetch and inspect boundaries</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a></a>pak_states <span class="ot">&lt;-</span> <span class="fu">ne_states</span>(<span class="at">country =</span> <span class="st">"Pakistan"</span>, <span class="at">returnclass =</span> <span class="st">"sf"</span>) <span class="sc">|&gt;</span> <span class="fu">st_make_valid</span>()</span>
+<span id="cb36-2"><a></a>ind_states <span class="ot">&lt;-</span> <span class="fu">ne_states</span>(<span class="at">country =</span> <span class="st">"India"</span>,    <span class="at">returnclass =</span> <span class="st">"sf"</span>) <span class="sc">|&gt;</span> <span class="fu">st_make_valid</span>()</span>
+<span id="cb36-3"><a></a></span>
+<span id="cb36-4"><a></a><span class="co"># inspect before joining — Natural Earth spellings change between releases</span></span>
+<span id="cb36-5"><a></a>pak_states <span class="sc">|&gt;</span> <span class="fu">st_drop_geometry</span>() <span class="sc">|&gt;</span> <span class="fu">pull</span>(name) <span class="sc">|&gt;</span> <span class="fu">unique</span>() <span class="sc">|&gt;</span> <span class="fu">sort</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p><code>st_drop_geometry()</code> returns a base data frame, not a tibble — <code>pull()</code> sidesteps the <code>print(n=)</code> / <code>na.print</code> error that <code>distinct() |&gt; print(n = Inf)</code> would raise on it.</p>
+</section>
+<section id="b7-recode-province-names-audit" class="slide level2">
+<h2>B7 · Recode province names, audit</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a></a>pak_admin <span class="ot">&lt;-</span> pak_states <span class="sc">|&gt;</span></span>
+<span id="cb37-2"><a></a>  <span class="fu">mutate</span>(<span class="at">province =</span> <span class="fu">recode_values</span>(name,</span>
+<span id="cb37-3"><a></a>                                  <span class="at">from =</span> province_lookup<span class="sc">$</span>from,</span>
+<span id="cb37-4"><a></a>                                  <span class="at">to   =</span> province_lookup<span class="sc">$</span>to),</span>
+<span id="cb37-5"><a></a>         <span class="at">status   =</span> <span class="st">"Administered by Pakistan"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb37-6"><a></a>  <span class="fu">select</span>(province, status, geometry)</span>
+<span id="cb37-7"><a></a></span>
+<span id="cb37-8"><a></a><span class="co"># polygons our lookup does not recognise</span></span>
+<span id="cb37-9"><a></a>pak_admin <span class="sc">|&gt;</span> <span class="fu">st_drop_geometry</span>() <span class="sc">|&gt;</span> <span class="fu">filter</span>(<span class="fu">is.na</span>(province))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Same <code>province_lookup</code> as B2 — the payoff for centralising it. Must be empty; anything else is a spelling the lookup hasn’t seen yet.</p>
+</section>
+<section id="b7-dissolve-jammu-kashmir-into-one-polygon" class="slide level2">
+<h2>B7 · Dissolve Jammu &amp; Kashmir into one polygon</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb38"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a></a>jk_geometry <span class="ot">&lt;-</span> ind_states <span class="sc">|&gt;</span></span>
+<span id="cb38-2"><a></a>  <span class="fu">filter</span>(<span class="fu">str_detect</span>(name, <span class="fu">regex</span>(<span class="st">"jammu|kashmir|ladakh"</span>, <span class="at">ignore_case =</span> <span class="cn">TRUE</span>))) <span class="sc">|&gt;</span></span>
+<span id="cb38-3"><a></a>  <span class="fu">st_geometry</span>() <span class="sc">|&gt;</span></span>
+<span id="cb38-4"><a></a>  <span class="fu">st_union</span>()</span>
+<span id="cb38-5"><a></a></span>
+<span id="cb38-6"><a></a>jammu_kashmir <span class="ot">&lt;-</span> <span class="fu">st_sf</span>(</span>
+<span id="cb38-7"><a></a>  <span class="at">province =</span> <span class="st">"Jammu &amp; Kashmir"</span>,</span>
+<span id="cb38-8"><a></a>  <span class="at">status   =</span> <span class="st">"Disputed territory — no reporting market"</span>,</span>
+<span id="cb38-9"><a></a>  <span class="at">geometry =</span> jk_geometry</span>
+<span id="cb38-10"><a></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p><code>st_union()</code> dissolves the internal India-administered subdivisions so no internal line appears on a Pakistani-facing map. <code>st_sf()</code> builds the one-row spatial frame explicitly, sidestepping any class-dropping quirks in <code>bind_rows()</code> on <code>sf</code> objects.</p>
+</section>
+<section id="b7-assemble-and-audit-the-base-map" class="slide level2">
+<h2>B7 · Assemble and audit the base map</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb39"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a></a>base_map <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(pak_admin, jammu_kashmir) <span class="sc">|&gt;</span> <span class="fu">st_as_sf</span>()</span>
+<span id="cb39-2"><a></a></span>
+<span id="cb39-3"><a></a>province_recent <span class="ot">&lt;-</span> province_year <span class="sc">|&gt;</span></span>
+<span id="cb39-4"><a></a>  <span class="fu">filter</span>(<span class="fu">str_detect</span>(commodity, <span class="fu">regex</span>(<span class="st">"^wheat flour"</span>, <span class="at">ignore_case =</span> <span class="cn">TRUE</span>)),</span>
+<span id="cb39-5"><a></a>         year <span class="sc">==</span> <span class="fu">max</span>(year)) <span class="sc">|&gt;</span></span>
+<span id="cb39-6"><a></a>  <span class="fu">summarise</span>(<span class="at">price_pkr =</span> <span class="fu">mean</span>(price_pkr, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), <span class="at">.by =</span> province)</span>
+<span id="cb39-7"><a></a></span>
+<span id="cb39-8"><a></a><span class="co"># AUDIT 1 — must be EMPTY: data with no polygon falls off the map</span></span>
+<span id="cb39-9"><a></a>province_recent <span class="sc">|&gt;</span> <span class="fu">anti_join</span>(<span class="fu">st_drop_geometry</span>(base_map), <span class="at">by =</span> <span class="fu">join_by</span>(province))</span>
+<span id="cb39-10"><a></a></span>
+<span id="cb39-11"><a></a><span class="co"># AUDIT 2 — expected to have rows: these become the grey "no data" areas</span></span>
+<span id="cb39-12"><a></a>base_map <span class="sc">|&gt;</span> <span class="fu">st_drop_geometry</span>() <span class="sc">|&gt;</span> <span class="fu">anti_join</span>(province_recent, <span class="at">by =</span> <span class="fu">join_by</span>(province))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Two audits, two different expected answers. The first must be zero rows — your own province with no matching polygon is a real bug. The second is supposed to return rows: Jammu &amp; Kashmir, and any province with no market this year.</p>
+</section>
+<section id="b8-the-core-price-plots" class="slide level2">
+<h2>B8 · The core price plots</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb40"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a></a>top_commodities <span class="ot">&lt;-</span> basket <span class="sc">|&gt;</span> <span class="fu">count</span>(commodity, <span class="at">sort =</span> <span class="cn">TRUE</span>) <span class="sc">|&gt;</span></span>
+<span id="cb40-2"><a></a>  <span class="fu">slice_head</span>(<span class="at">n =</span> <span class="dv">4</span>) <span class="sc">|&gt;</span> <span class="fu">pull</span>(commodity)</span>
+<span id="cb40-3"><a></a></span>
+<span id="cb40-4"><a></a>p_staples <span class="ot">&lt;-</span> national_monthly <span class="sc">|&gt;</span></span>
+<span id="cb40-5"><a></a>  <span class="fu">filter</span>(commodity <span class="sc">%in%</span> top_commodities) <span class="sc">|&gt;</span></span>
+<span id="cb40-6"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(date, price_pkr, <span class="at">colour =</span> commodity)) <span class="sc">+</span></span>
+<span id="cb40-7"><a></a>  <span class="fu">geom_line</span>(<span class="at">linewidth =</span> <span class="fl">0.7</span>) <span class="sc">+</span></span>
+<span id="cb40-8"><a></a>  <span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> <span class="fu">label_number</span>(<span class="at">prefix =</span> <span class="st">"Rs "</span>)) <span class="sc">+</span></span>
+<span id="cb40-9"><a></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Nominal staple food prices, Pakistan"</span>,</span>
+<span id="cb40-10"><a></a>       <span class="at">subtitle =</span> <span class="st">"Retail, actual observations, mean across reporting markets"</span>,</span>
+<span id="cb40-11"><a></a>       <span class="at">x =</span> <span class="cn">NULL</span>, <span class="at">y =</span> <span class="st">"Rs per kg / litre"</span>, <span class="at">colour =</span> <span class="cn">NULL</span>,</span>
+<span id="cb40-12"><a></a>       <span class="at">caption =</span> <span class="st">"Source: WFP VAM Food Prices Database via HDX"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Top-4 commodities picked <strong>from the data</strong>, not hard-coded — the same discipline as picking <code>wheat</code> in B3.</p>
+</section>
+<section id="b8-facets-ordered-meaningfully" class="slide level2">
+<h2>B8 · Facets ordered meaningfully</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb41"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a></a>p_markets <span class="ot">&lt;-</span> wheat_market <span class="sc">|&gt;</span></span>
+<span id="cb41-2"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(date, price_pkr)) <span class="sc">+</span></span>
+<span id="cb41-3"><a></a>  <span class="fu">geom_line</span>(<span class="at">linewidth =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb41-4"><a></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> <span class="fu">fct_reorder</span>(market, price_pkr, <span class="at">.fun =</span> max, <span class="at">.na_rm =</span> <span class="cn">TRUE</span>)) <span class="sc">+</span></span>
+<span id="cb41-5"><a></a>  <span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> <span class="fu">label_number</span>(<span class="at">prefix =</span> <span class="st">"Rs "</span>)) <span class="sc">+</span></span>
+<span id="cb41-6"><a></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Wheat flour price by market"</span>, <span class="at">subtitle =</span> <span class="st">"Panels ordered by peak price"</span>,</span>
+<span id="cb41-7"><a></a>       <span class="at">x =</span> <span class="cn">NULL</span>, <span class="at">y =</span> <span class="cn">NULL</span>, <span class="at">caption =</span> <span class="st">"Source: WFP VAM via HDX"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p><code>fct_reorder()</code> by peak price turns a wall of alphabetised panels into an argument — the reader sees the expensive markets first.</p>
+</section>
+<section id="b8-index-markets-against-the-national-line" class="slide level2">
+<h2>B8 · Index: markets against the national line</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb42"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a></a>p_index <span class="ot">&lt;-</span> wheat_market_index <span class="sc">|&gt;</span></span>
+<span id="cb42-2"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(date, index, <span class="at">group =</span> market)) <span class="sc">+</span></span>
+<span id="cb42-3"><a></a>  <span class="fu">geom_line</span>(<span class="at">linewidth =</span> <span class="fl">0.4</span>, <span class="at">colour =</span> <span class="st">"grey65"</span>) <span class="sc">+</span></span>
+<span id="cb42-4"><a></a>  <span class="fu">geom_line</span>(<span class="at">data =</span> wheat_chained, <span class="fu">aes</span>(date, index, <span class="at">group =</span> <span class="dv">1</span>),</span>
+<span id="cb42-5"><a></a>            <span class="at">linewidth =</span> <span class="dv">1</span>, <span class="at">colour =</span> <span class="st">"firebrick"</span>) <span class="sc">+</span></span>
+<span id="cb42-6"><a></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="dv">100</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">colour =</span> <span class="st">"grey40"</span>) <span class="sc">+</span></span>
+<span id="cb42-7"><a></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Each market indexed to its own first observation"</span>,</span>
+<span id="cb42-8"><a></a>       <span class="at">subtitle =</span> <span class="st">"Grey = markets; red = chained national index"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Plotting the composition-safe index <strong>on top of</strong> the raw market lines lets the audience see immediately whether the national series is representative.</p>
+</section>
+<section id="b8-inflation-and-dispersion" class="slide level2">
+<h2>B8 · Inflation and dispersion</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb43"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a></a>p_yoy <span class="ot">&lt;-</span> national_monthly <span class="sc">|&gt;</span></span>
+<span id="cb43-2"><a></a>  <span class="fu">filter</span>(commodity <span class="sc">%in%</span> top_commodities, <span class="sc">!</span><span class="fu">is.na</span>(yoy)) <span class="sc">|&gt;</span></span>
+<span id="cb43-3"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(date, yoy, <span class="at">colour =</span> commodity)) <span class="sc">+</span></span>
+<span id="cb43-4"><a></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="dv">0</span>, <span class="at">colour =</span> <span class="st">"grey50"</span>) <span class="sc">+</span></span>
+<span id="cb43-5"><a></a>  <span class="fu">geom_line</span>(<span class="at">linewidth =</span> <span class="fl">0.7</span>) <span class="sc">+</span></span>
+<span id="cb43-6"><a></a>  <span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> <span class="fu">label_percent</span>()) <span class="sc">+</span></span>
+<span id="cb43-7"><a></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Year-on-year food price inflation"</span>, <span class="at">colour =</span> <span class="cn">NULL</span>)</span>
+<span id="cb43-8"><a></a></span>
+<span id="cb43-9"><a></a>p_spread <span class="ot">&lt;-</span> dispersion <span class="sc">|&gt;</span></span>
+<span id="cb43-10"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(date)) <span class="sc">+</span></span>
+<span id="cb43-11"><a></a>  <span class="fu">geom_ribbon</span>(<span class="fu">aes</span>(<span class="at">ymin =</span> cheapest, <span class="at">ymax =</span> dearest),</span>
+<span id="cb43-12"><a></a>              <span class="at">alpha =</span> <span class="fl">0.25</span>, <span class="at">fill =</span> <span class="st">"steelblue"</span>) <span class="sc">+</span></span>
+<span id="cb43-13"><a></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> (cheapest <span class="sc">+</span> dearest) <span class="sc">/</span> <span class="dv">2</span>), <span class="at">linewidth =</span> <span class="fl">0.6</span>) <span class="sc">+</span></span>
+<span id="cb43-14"><a></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Cheapest and dearest market for wheat flour"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>The ribbon carries level <strong>and</strong> dispersion at once — more information than a single spread line.</p>
+</section>
+<section id="b8-affordability-plot" class="slide level2">
+<h2>B8 · Affordability plot</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb44"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a></a>p_afford <span class="ot">&lt;-</span> affordability <span class="sc">|&gt;</span></span>
+<span id="cb44-2"><a></a>  <span class="fu">summarise</span>(<span class="at">kg_per_day_wage =</span> <span class="fu">mean</span>(kg_per_day_wage, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), <span class="at">.by =</span> date) <span class="sc">|&gt;</span></span>
+<span id="cb44-3"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(date, kg_per_day_wage)) <span class="sc">+</span></span>
+<span id="cb44-4"><a></a>  <span class="fu">geom_line</span>(<span class="at">linewidth =</span> <span class="fl">0.7</span>) <span class="sc">+</span></span>
+<span id="cb44-5"><a></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"loess"</span>, <span class="at">se =</span> <span class="cn">FALSE</span>, <span class="at">linewidth =</span> <span class="fl">0.5</span>, <span class="at">colour =</span> <span class="st">"firebrick"</span>) <span class="sc">+</span></span>
+<span id="cb44-6"><a></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"How much wheat flour does a day of unskilled labour buy?"</span>,</span>
+<span id="cb44-7"><a></a>       <span class="at">y =</span> <span class="st">"kg per day's wage"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Often more persuasive to a policy audience than any price series, because it answers the question they actually have.</p>
+</section>
+<section id="b8-map-setup-crs-join-disclaimer" class="slide level2">
+<h2>B8 · Map setup — CRS, join, disclaimer</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb45"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a></a>pak_crs <span class="ot">&lt;-</span> <span class="st">"+proj=lcc +lat_1=28 +lat_2=37 +lat_0=30 +lon_0=70 +datum=WGS84 +units=m"</span></span>
+<span id="cb45-2"><a></a></span>
+<span id="cb45-3"><a></a>map_data <span class="ot">&lt;-</span> base_map <span class="sc">|&gt;</span> <span class="fu">left_join</span>(province_recent, <span class="at">by =</span> <span class="fu">join_by</span>(province))</span>
+<span id="cb45-4"><a></a>disputed <span class="ot">&lt;-</span> map_data <span class="sc">|&gt;</span> <span class="fu">filter</span>(<span class="fu">str_detect</span>(status, <span class="st">"Disputed"</span>))</span>
+<span id="cb45-5"><a></a></span>
+<span id="cb45-6"><a></a>map_caption <span class="ot">&lt;-</span> <span class="fu">paste</span>(</span>
+<span id="cb45-7"><a></a>  <span class="st">"Source: WFP VAM Food Prices Database via HDX; boundaries from Natural Earth."</span>,</span>
+<span id="cb45-8"><a></a>  <span class="st">"The boundaries and names shown do not imply official endorsement or acceptance."</span>,</span>
+<span id="cb45-9"><a></a>  <span class="st">"The final status of Jammu &amp; Kashmir has not been agreed by the parties."</span>,</span>
+<span id="cb45-10"><a></a>  <span class="at">sep =</span> <span class="st">"</span><span class="sc">\n</span><span class="st">"</span></span>
+<span id="cb45-11"><a></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Lambert conformal conic — sensible for a country of Pakistan’s shape and latitude. The disclaimer follows the UN cartographic convention; check your institution’s approved wording before publishing.</p>
+</section>
+<section id="b8-the-choropleth" class="slide level2">
+<h2>B8 · The choropleth</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb46"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a></a>p_map <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(map_data) <span class="sc">+</span></span>
+<span id="cb46-2"><a></a>  <span class="fu">geom_sf</span>(<span class="fu">aes</span>(<span class="at">fill =</span> price_pkr), <span class="at">colour =</span> <span class="st">"white"</span>, <span class="at">linewidth =</span> <span class="fl">0.3</span>) <span class="sc">+</span></span>
+<span id="cb46-3"><a></a>  <span class="fu">geom_sf</span>(<span class="at">data =</span> disputed, <span class="fu">aes</span>(<span class="at">linetype =</span> status),</span>
+<span id="cb46-4"><a></a>          <span class="at">fill =</span> <span class="st">"grey92"</span>, <span class="at">colour =</span> <span class="st">"grey30"</span>, <span class="at">linewidth =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb46-5"><a></a>  <span class="fu">geom_sf_label</span>(<span class="at">data =</span> disputed, <span class="fu">aes</span>(<span class="at">label =</span> <span class="fu">str_wrap</span>(province, <span class="dv">12</span>)),</span>
+<span id="cb46-6"><a></a>                <span class="at">size =</span> <span class="dv">3</span>, <span class="at">label.size =</span> <span class="dv">0</span>, <span class="at">fill =</span> <span class="fu">alpha</span>(<span class="st">"white"</span>, <span class="fl">0.7</span>)) <span class="sc">+</span></span>
+<span id="cb46-7"><a></a>  <span class="fu">scale_fill_viridis_c</span>(<span class="at">option =</span> <span class="st">"rocket"</span>, <span class="at">direction =</span> <span class="sc">-</span><span class="dv">1</span>, <span class="at">na.value =</span> <span class="st">"grey88"</span>,</span>
+<span id="cb46-8"><a></a>                       <span class="at">name =</span> <span class="st">"Wheat flour</span><span class="sc">\n</span><span class="st">Rs per kg"</span>) <span class="sc">+</span></span>
+<span id="cb46-9"><a></a>  <span class="fu">coord_sf</span>(<span class="at">crs =</span> pak_crs) <span class="sc">+</span></span>
+<span id="cb46-10"><a></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Retail wheat flour price by province"</span>,</span>
+<span id="cb46-11"><a></a>       <span class="at">subtitle =</span> <span class="st">"Grey areas have no reporting market in the WFP sample"</span>,</span>
+<span id="cb46-12"><a></a>       <span class="at">caption =</span> map_caption) <span class="sc">+</span></span>
+<span id="cb46-13"><a></a>  <span class="fu">theme_void</span>(<span class="at">base_size =</span> <span class="dv">12</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>The disputed layer gets its own <code>geom_sf()</code> call, its own linetype legend key, and a label — it is visually distinct, not just differently coloured.</p>
+</section>
+<section id="b8-reporting-vs-non-reporting-markets" class="slide level2 smaller">
+<h2>B8 · Reporting vs non-reporting markets</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb47"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a></a>market_recent <span class="ot">&lt;-</span> wheat_market <span class="sc">|&gt;</span> <span class="fu">filter</span>(date <span class="sc">==</span> <span class="fu">max</span>(date)) <span class="sc">|&gt;</span> <span class="fu">select</span>(market, price_pkr)</span>
+<span id="cb47-2"><a></a></span>
+<span id="cb47-3"><a></a>markets_plot <span class="ot">&lt;-</span> markets_sf <span class="sc">|&gt;</span> <span class="fu">left_join</span>(market_recent, <span class="at">by =</span> <span class="fu">join_by</span>(market))</span>
+<span id="cb47-4"><a></a></span>
+<span id="cb47-5"><a></a>p_points <span class="ot">&lt;-</span> <span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb47-6"><a></a>  <span class="fu">geom_sf</span>(<span class="at">data =</span> base_map, <span class="at">fill =</span> <span class="st">"grey96"</span>, <span class="at">colour =</span> <span class="st">"white"</span>, <span class="at">linewidth =</span> <span class="fl">0.3</span>) <span class="sc">+</span></span>
+<span id="cb47-7"><a></a>  <span class="fu">geom_sf</span>(<span class="at">data =</span> disputed, <span class="at">fill =</span> <span class="st">"grey92"</span>, <span class="at">colour =</span> <span class="st">"grey30"</span>, <span class="at">linetype =</span> <span class="st">"22"</span>) <span class="sc">+</span></span>
+<span id="cb47-8"><a></a>  <span class="fu">geom_sf</span>(<span class="at">data =</span> <span class="fu">filter</span>(markets_plot, <span class="sc">!</span>reporting),</span>
+<span id="cb47-9"><a></a>          <span class="at">shape =</span> <span class="dv">21</span>, <span class="at">colour =</span> <span class="st">"grey60"</span>, <span class="at">fill =</span> <span class="st">"white"</span>, <span class="at">size =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb47-10"><a></a>  <span class="fu">geom_sf</span>(<span class="at">data =</span> <span class="fu">filter</span>(markets_plot, reporting, <span class="sc">!</span><span class="fu">is.na</span>(price_pkr)),</span>
+<span id="cb47-11"><a></a>          <span class="fu">aes</span>(<span class="at">size =</span> price_pkr, <span class="at">colour =</span> price_pkr)) <span class="sc">+</span></span>
+<span id="cb47-12"><a></a>  <span class="fu">geom_text_repel</span>(<span class="at">data =</span> <span class="fu">filter</span>(markets_plot, reporting, <span class="sc">!</span><span class="fu">is.na</span>(price_pkr)),</span>
+<span id="cb47-13"><a></a>                  <span class="fu">aes</span>(<span class="at">label =</span> market, <span class="at">geometry =</span> geometry),</span>
+<span id="cb47-14"><a></a>                  <span class="at">stat =</span> <span class="st">"sf_coordinates"</span>, <span class="at">max.overlaps =</span> <span class="cn">Inf</span>) <span class="sc">+</span></span>
+<span id="cb47-15"><a></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Reporting markets and latest wheat flour price"</span>,</span>
+<span id="cb47-16"><a></a>       <span class="at">subtitle =</span> <span class="st">"Hollow points = markets in the sampling frame with no observations"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>This is where the <code>reporting</code> flag from <strong>B3</strong> pays off: hollow grey points for markets that never reported, filled coloured points for the rest. The map becomes a coverage diagnostic, not just a price map.</p>
+</section>
+<section id="b8-small-multiples-over-time" class="slide level2 smaller">
+<h2>B8 · Small multiples over time</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb48"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a></a>snapshot_years <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">2010</span>, <span class="dv">2015</span>, <span class="dv">2020</span>, <span class="fu">max</span>(province_year<span class="sc">$</span>year))</span>
+<span id="cb48-2"><a></a></span>
+<span id="cb48-3"><a></a>map_panel <span class="ot">&lt;-</span> province_year <span class="sc">|&gt;</span></span>
+<span id="cb48-4"><a></a>  <span class="fu">filter</span>(<span class="fu">str_detect</span>(commodity, <span class="fu">regex</span>(<span class="st">"^wheat flour"</span>, <span class="at">ignore_case =</span> <span class="cn">TRUE</span>)),</span>
+<span id="cb48-5"><a></a>         year <span class="sc">%in%</span> snapshot_years) <span class="sc">|&gt;</span></span>
+<span id="cb48-6"><a></a>  <span class="fu">summarise</span>(<span class="at">price_pkr =</span> <span class="fu">mean</span>(price_pkr, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), <span class="at">.by =</span> <span class="fu">c</span>(province, year))</span>
+<span id="cb48-7"><a></a></span>
+<span id="cb48-8"><a></a>p_map_facets <span class="ot">&lt;-</span> base_map <span class="sc">|&gt;</span></span>
+<span id="cb48-9"><a></a>  <span class="fu">cross_join</span>(<span class="fu">tibble</span>(<span class="at">year =</span> snapshot_years)) <span class="sc">|&gt;</span>   <span class="co"># complete polygon-year grid</span></span>
+<span id="cb48-10"><a></a>  <span class="fu">left_join</span>(map_panel, <span class="at">by =</span> <span class="fu">join_by</span>(province, year)) <span class="sc">|&gt;</span></span>
+<span id="cb48-11"><a></a>  <span class="fu">st_as_sf</span>() <span class="sc">|&gt;</span></span>
+<span id="cb48-12"><a></a>  <span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb48-13"><a></a>  <span class="fu">geom_sf</span>(<span class="fu">aes</span>(<span class="at">fill =</span> price_pkr), <span class="at">colour =</span> <span class="st">"white"</span>, <span class="at">linewidth =</span> <span class="fl">0.2</span>) <span class="sc">+</span></span>
+<span id="cb48-14"><a></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> year) <span class="sc">+</span></span>
+<span id="cb48-15"><a></a>  <span class="fu">coord_sf</span>(<span class="at">crs =</span> pak_crs) <span class="sc">+</span></span>
+<span id="cb48-16"><a></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Wheat flour price by province over time"</span>, <span class="at">caption =</span> map_caption)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p><code>cross_join()</code> builds the complete polygon-year grid <strong>first</strong>. Join data onto polygons the other way round and a province with no observation in a given year simply vanishes from that panel — the reader can’t tell absence of data from absence of territory.</p>
+</section>
+<section id="b9-export-named-without-drift" class="slide level2">
+<h2>B9 · Export, named without drift</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb49"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a></a>out_fig  <span class="ot">&lt;-</span> <span class="fu">here</span>(<span class="st">"outputs"</span>, <span class="st">"figures"</span>)</span>
+<span id="cb49-2"><a></a>out_data <span class="ot">&lt;-</span> <span class="fu">here</span>(<span class="st">"outputs"</span>, <span class="st">"data"</span>)</span>
+<span id="cb49-3"><a></a><span class="fu">walk</span>(<span class="fu">c</span>(out_fig, out_data), \(d) <span class="fu">dir.create</span>(d, <span class="at">recursive =</span> <span class="cn">TRUE</span>, <span class="at">showWarnings =</span> <span class="cn">FALSE</span>))</span>
+<span id="cb49-4"><a></a></span>
+<span id="cb49-5"><a></a>plots <span class="ot">&lt;-</span> <span class="fu">lst</span>(p_staples, p_markets, p_index, p_yoy, p_spread, p_afford,</span>
+<span id="cb49-6"><a></a>             p_map, p_points, p_map_facets)</span>
+<span id="cb49-7"><a></a></span>
+<span id="cb49-8"><a></a><span class="fu">iwalk</span>(plots, \(p, nm) {</span>
+<span id="cb49-9"><a></a>  <span class="fu">ggsave</span>(<span class="fu">file.path</span>(out_fig, <span class="fu">paste0</span>(nm, <span class="st">".png"</span>)), p,</span>
+<span id="cb49-10"><a></a>         <span class="at">width =</span> <span class="dv">9</span>, <span class="at">height =</span> <span class="dv">6</span>, <span class="at">dpi =</span> <span class="dv">300</span>, <span class="at">bg =</span> <span class="st">"white"</span>)</span>
+<span id="cb49-11"><a></a>})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p><code>lst()</code> auto-names the list from the object names, so <code>iwalk()</code> gets filenames for free — no parallel vector to fall out of sync. <code>bg = "white"</code> matters: <code>theme_minimal()</code> has a transparent background that renders grey/black when a PNG lands inside Word.</p>
+</section>
+<section id="b9-write-the-data-out" class="slide level2">
+<h2>B9 · Write the data out</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb50"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a></a><span class="fu">write_csv</span>(national_monthly, <span class="fu">file.path</span>(out_data, <span class="st">"national_monthly.csv"</span>))</span>
+<span id="cb50-2"><a></a><span class="fu">write_csv</span>(province_year,    <span class="fu">file.path</span>(out_data, <span class="st">"province_year.csv"</span>))</span>
+<span id="cb50-3"><a></a><span class="fu">write_csv</span>(wheat_chained,    <span class="fu">file.path</span>(out_data, <span class="st">"wheat_flour_index.csv"</span>))</span>
+<span id="cb50-4"><a></a><span class="fu">write_csv</span>(market_meta,      <span class="fu">file.path</span>(out_data, <span class="st">"market_meta.csv"</span>))</span>
+<span id="cb50-5"><a></a></span>
+<span id="cb50-6"><a></a><span class="fu">sessionInfo</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p><code>market_meta</code> is written out too — the reporting/non-reporting distinction is a deliverable in its own right, not just an internal helper table.</p>
+</section></section>
+<section>
+<section id="recap" class="title-slide slide level1 section-divider center" data-background-color="#0f2440">
+<h1>Recap</h1>
+
+</section>
+<section id="the-one-slide-summary" class="slide level2 smaller">
+<h2>The one-slide summary</h2>
+<table class="caption-top">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Step</th>
+<th>Command</th>
+<th>What it protects against</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Read</td>
+<td><code>slice(-1)</code> after character read</td>
+<td>HXL row corrupting type guessing</td>
+</tr>
+<tr class="even">
+<td>Filter</td>
+<td><code>filter_out()</code></td>
+<td><code>NA</code> silently dropped by plain negation</td>
+</tr>
+<tr class="odd">
+<td>Combine conditions</td>
+<td><code>when_any()</code> / <code>when_all()</code></td>
+<td>Unreadable nested <code>&amp;</code>/<code>\|</code></td>
+</tr>
+<tr class="even">
+<td>Recode</td>
+<td><code>recode_values()</code> (total) vs <code>replace_values()</code> (partial)</td>
+<td>Losing unmapped categories to <code>NA</code></td>
+</tr>
+<tr class="odd">
+<td>Edit values</td>
+<td><code>replace_when()</code></td>
+<td>Winsorising invisibly</td>
+</tr>
+<tr class="even">
+<td>Time series</td>
+<td><code>complete()</code> before <code>lag()</code></td>
+<td>Fabricated month-over-month change</td>
+</tr>
+<tr class="odd">
+<td>Joins</td>
+<td><code>relationship =</code> declared</td>
+<td>Silent row multiplication</td>
+</tr>
+<tr class="even">
+<td>Index</td>
+<td>matched-sample chained</td>
+<td>Composition-varying “average”</td>
+</tr>
+<tr class="odd">
+<td>Map</td>
+<td>dissolve + no-data layer + disclaimer</td>
+<td>Omitting or misrepresenting territory</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="questions" class="slide level2">
+<h2>Questions</h2>
+<p>Run each chunk in order. If something errors, the audit line right before it usually tells you which assumption broke.</p>
+<p><strong>d4d · github.com/Zahedasghar/d4d</strong></p>
+
+
+</section></section>
+    </div>
+  <div class="quarto-auto-generated-content" style="display: none;">
+<div class="footer footer-default">
+<p>d4d · WFP Food Prices Pipeline</p>
+</div>
+</div></div>
+
+  <script>window.backupDefine = window.define; window.define = undefined;</script>
+  <script src="../../site_libs/revealjs/dist/reveal.js"></script>
+  <!-- reveal.js plugins -->
+  <script src="../../site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script>
+  <script src="../../site_libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
+  <script src="../../site_libs/revealjs/plugin/reveal-menu/menu.js"></script>
+  <script src="../../site_libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
+  <script src="../../site_libs/revealjs/plugin/quarto-support/support.js"></script>
+  
+
+  <script src="../../site_libs/revealjs/plugin/notes/notes.js"></script>
+  <script src="../../site_libs/revealjs/plugin/search/search.js"></script>
+  <script src="../../site_libs/revealjs/plugin/zoom/zoom.js"></script>
+  <script src="../../site_libs/revealjs/plugin/math/math.js"></script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+'controlsAuto': true,
+'previewLinksAuto': false,
+'pdfSeparateFragments': false,
+'autoAnimateEasing': "ease",
+'autoAnimateDuration': 1,
+'autoAnimateUnmatched': true,
+'jumpToSlide': true,
+'menu': {"side":"left","useTextContentForMissingTitles":true,"markers":false,"loadIcons":false,"custom":[{"title":"Tools","icon":"<i class=\"fas fa-gear\"></i>","content":"<ul class=\"slide-menu-items\">\n<li class=\"slide-tool-item active\" data-item=\"0\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.fullscreen(event)\"><kbd>f</kbd> Fullscreen</a></li>\n<li class=\"slide-tool-item\" data-item=\"1\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.speakerMode(event)\"><kbd>s</kbd> Speaker View</a></li>\n<li class=\"slide-tool-item\" data-item=\"2\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>o</kbd> Slide Overview</a></li>\n<li class=\"slide-tool-item\" data-item=\"3\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.togglePdfExport(event)\"><kbd>e</kbd> PDF Export Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"4\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleScrollView(event)\"><kbd>r</kbd> Scroll View Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"5\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.keyboardHelp(event)\"><kbd>?</kbd> Keyboard Help</a></li>\n</ul>"}],"openButton":true},
+'smaller': false,
+ 
+        // Display controls in the bottom right corner
+        controls: false,
+
+        // Help the user learn the controls by providing hints, for example by
+        // bouncing the down arrow when they first encounter a vertical slide
+        controlsTutorial: false,
+
+        // Determines where controls appear, "edges" or "bottom-right"
+        controlsLayout: 'edges',
+
+        // Visibility rule for backwards navigation arrows; "faded", "hidden"
+        // or "visible"
+        controlsBackArrows: 'faded',
+
+        // Display a presentation progress bar
+        progress: true,
+
+        // Display the page number of the current slide
+        slideNumber: 'c/t',
+
+        // 'all', 'print', or 'speaker'
+        showSlideNumber: 'all',
+
+        // Add the current slide number to the URL hash so that reloading the
+        // page/copying the URL will return you to the same slide
+        hash: true,
+
+        // Start with 1 for the hash rather than 0
+        hashOneBasedIndex: false,
+
+        // Flags if we should monitor the hash and change slides accordingly
+        respondToHashChanges: true,
+
+        // Push each slide change to the browser history
+        history: true,
+
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+
+        // Enable the slide overview mode
+        overview: true,
+
+        // Disables the default reveal.js slide layout (scaling and centering)
+        // so that you can use custom CSS layout
+        disableLayout: false,
+
+        // Vertical centering of slides
+        center: false,
+
+        // Enables touch navigation on devices with touch input
+        touch: true,
+
+        // Loop the presentation
+        loop: false,
+
+        // Change the presentation direction to be RTL
+        rtl: false,
+
+        // see https://revealjs.com/vertical-slides/#navigation-mode
+        navigationMode: 'linear',
+
+        // Randomizes the order of slides each time the presentation loads
+        shuffle: false,
+
+        // Turns fragments on and off globally
+        fragments: true,
+
+        // Flags whether to include the current fragment in the URL,
+        // so that reloading brings you to the same fragment position
+        fragmentInURL: false,
+
+        // Flags if the presentation is running in an embedded mode,
+        // i.e. contained within a limited portion of the screen
+        embedded: false,
+
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+
+        // Flags if it should be possible to pause the presentation (blackout)
+        pause: true,
+
+        // Flags if speaker notes should be visible to all viewers
+        showNotes: false,
+
+        // Global override for autoplaying embedded media (null/true/false)
+        autoPlayMedia: null,
+
+        // Global override for preloading lazy-loaded iframes (null/true/false)
+        preloadIframes: null,
+
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+
+        // Use this method for navigation when auto-sliding
+        autoSlideMethod: null,
+
+        // Specify the average time in seconds that you think you will spend
+        // presenting each slide. This is used to show a pacing timer in the
+        // speaker view
+        defaultTiming: null,
+
+        // Enable slide navigation via mouse wheel
+        mouseWheel: false,
+
+        // The display mode that will be used to show slides
+        display: 'block',
+
+        // Hide cursor if inactive
+        hideInactiveCursor: true,
+
+        // Time before the cursor is hidden (in ms)
+        hideCursorTime: 5000,
+
+        // Opens links in an iframe preview overlay
+        previewLinks: false,
+
+        // Transition style (none/fade/slide/convex/concave/zoom)
+        transition: 'fade',
+
+        // Transition speed (default/fast/slow)
+        transitionSpeed: 'default',
+
+        // Transition style for full page slide backgrounds
+        // (none/fade/slide/convex/concave/zoom)
+        backgroundTransition: 'none',
+
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+
+        // Number of slides away from the current that are visible on mobile
+        // devices. It is advisable to set this to a lower number than
+        // viewDistance in order to save resources.
+        mobileViewDistance: 2,
+
+        // The "normal" size of the presentation, aspect ratio will be preserved
+        // when the presentation is scaled to fit different resolutions. Can be
+        // specified using percentage units.
+        width: 1050,
+
+        height: 700,
+
+        // Factor of the display size that should remain empty around the content
+        margin: 0.1,
+
+        math: {
+          mathjax: 'https://cdn.jsdelivr.net/npm/mathjax@2.7.9/MathJax.js',
+          config: 'TeX-AMS_HTML-full',
+          tex2jax: {
+            inlineMath: [['\\(','\\)']],
+            displayMath: [['\\[','\\]']],
+            balanceBraces: true,
+            processEscapes: false,
+            processRefs: true,
+            processEnvironments: true,
+            preview: 'TeX',
+            skipTags: ['script','noscript','style','textarea','pre','code'],
+            ignoreClass: 'tex2jax_ignore',
+            processClass: 'tex2jax_process'
+          },
+        },
+
+        // reveal.js plugins
+        plugins: [QuartoLineHighlight, PdfExport, RevealMenu, QuartoSupport,
+
+          RevealMath,
+          RevealNotes,
+          RevealSearch,
+          RevealZoom
+        ]
+      });
+    </script>
+    
+
+    <script>
+
+      // htmlwidgets need to know to resize themselves when slides are shown/hidden.
+
+      // Fire the "slideenter" event (handled by htmlwidgets.js) when the current
+
+      // slide changes (different for each slide format).
+
+      (function () {
+
+        // dispatch for htmlwidgets
+
+        function fireSlideEnter() {
+
+          const event = window.document.createEvent("Event");
+
+          event.initEvent("slideenter", true, true);
+
+          window.document.dispatchEvent(event);
+
+        }
+
+    
+
+        function fireSlideChanged(previousSlide, currentSlide) {
+
+          fireSlideEnter();
+
+    
+
+          // dispatch for shiny
+
+          if (window.jQuery) {
+
+            if (previousSlide) {
+
+              window.jQuery(previousSlide).trigger("hidden");
+
+            }
+
+            if (currentSlide) {
+
+              window.jQuery(currentSlide).trigger("shown");
+
+            }
+
+          }
+
+        }
+
+    
+
+        // hookup for slidy
+
+        if (window.w3c_slidy) {
+
+          window.w3c_slidy.add_observer(function (slide_num) {
+
+            // slide_num starts at position 1
+
+            fireSlideChanged(null, w3c_slidy.slides[slide_num - 1]);
+
+          });
+
+        }
+
+    
+
+      })();
+
+    </script>
+
+    
+
+    <script id="quarto-html-after-body" type="application/javascript">
+      window.document.addEventListener("DOMContentLoaded", function (event) {
+        const tabsets =  window.document.querySelectorAll(".panel-tabset-tabby")
+        tabsets.forEach(function(tabset) {
+          const tabby = new Tabby('#' + tabset.id);
+        });
+        const isCodeAnnotation = (el) => {
+          for (const clz of el.classList) {
+            if (clz.startsWith('code-annotation-')) {                     
+              return true;
+            }
+          }
+          return false;
+        }
+        const onCopySuccess = function(e) {
+          // button target
+          const button = e.trigger;
+          // don't keep focus
+          button.blur();
+          // flash "checked"
+          button.classList.add('code-copy-button-checked');
+          var currentTitle = button.getAttribute("title");
+          button.setAttribute("title", "Copied!");
+          let tooltip;
+          if (window.bootstrap) {
+            button.setAttribute("data-bs-toggle", "tooltip");
+            button.setAttribute("data-bs-placement", "left");
+            button.setAttribute("data-bs-title", "Copied!");
+            tooltip = new bootstrap.Tooltip(button, 
+              { trigger: "manual", 
+                customClass: "code-copy-button-tooltip",
+                offset: [0, -8]});
+            tooltip.show();    
+          }
+          setTimeout(function() {
+            if (tooltip) {
+              tooltip.hide();
+              button.removeAttribute("data-bs-title");
+              button.removeAttribute("data-bs-toggle");
+              button.removeAttribute("data-bs-placement");
+            }
+            button.setAttribute("title", currentTitle);
+            button.classList.remove('code-copy-button-checked');
+          }, 1000);
+          // clear code selection
+          e.clearSelection();
+        }
+        const getTextToCopy = function(trigger) {
+          const outerScaffold = trigger.parentElement.cloneNode(true);
+          const codeEl = outerScaffold.querySelector('code');
+          for (const childEl of codeEl.children) {
+            if (isCodeAnnotation(childEl)) {
+              childEl.remove();
+            }
+          }
+          return codeEl.innerText;
+        }
+        const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+          text: getTextToCopy
+        });
+        clipboard.on('success', onCopySuccess);
+        if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+          const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+            text: getTextToCopy,
+            container: window.document.getElementById('quarto-embedded-source-code-modal')
+          });
+          clipboardModal.on('success', onCopySuccess);
+        }
+          var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+          var mailtoRegex = new RegExp(/^mailto:/);
+            var filterRegex = new RegExp("https:\/\/zahedasghar\.github\.io\/d4d\/");
+          var isInternal = (href) => {
+              return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+          }
+          // Inspect non-navigation links and adorn them if external
+         var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+          for (var i=0; i<links.length; i++) {
+            const link = links[i];
+            if (!isInternal(link.href)) {
+              // undo the damage that might have been done by quarto-nav.js in the case of
+              // links that we want to consider external
+              if (link.dataset.originalHref !== undefined) {
+                link.href = link.dataset.originalHref;
+              }
+            }
+          }
+        function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+          const config = {
+            allowHTML: true,
+            maxWidth: 500,
+            delay: 100,
+            arrow: false,
+            appendTo: function(el) {
+                return el.closest('section.slide') || el.parentElement;
+            },
+            interactive: true,
+            interactiveBorder: 10,
+            theme: 'light-border',
+            placement: 'bottom-start',
+          };
+          if (contentFn) {
+            config.content = contentFn;
+          }
+          if (onTriggerFn) {
+            config.onTrigger = onTriggerFn;
+          }
+          if (onUntriggerFn) {
+            config.onUntrigger = onUntriggerFn;
+          }
+            config['offset'] = [0,0];
+            config['maxWidth'] = 700;
+          window.tippy(el, config); 
+        }
+        const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+        for (var i=0; i<noterefs.length; i++) {
+          const ref = noterefs[i];
+          tippyHover(ref, function() {
+            // use id or data attribute instead here
+            let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+            try { href = new URL(href).hash; } catch {}
+            const id = href.replace(/^#\/?/, "");
+            const note = window.document.getElementById(id);
+            if (note) {
+              return note.innerHTML;
+            } else {
+              return "";
+            }
+          });
+        }
+        const findCites = (el) => {
+          const parentEl = el.parentElement;
+          if (parentEl) {
+            const cites = parentEl.dataset.cites;
+            if (cites) {
+              return {
+                el,
+                cites: cites.split(' ')
+              };
+            } else {
+              return findCites(el.parentElement)
+            }
+          } else {
+            return undefined;
+          }
+        };
+        var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+        for (var i=0; i<bibliorefs.length; i++) {
+          const ref = bibliorefs[i];
+          const citeInfo = findCites(ref);
+          if (citeInfo) {
+            tippyHover(citeInfo.el, function() {
+              var popup = window.document.createElement('div');
+              citeInfo.cites.forEach(function(cite) {
+                var citeDiv = window.document.createElement('div');
+                citeDiv.classList.add('hanging-indent');
+                citeDiv.classList.add('csl-entry');
+                var biblioDiv = window.document.getElementById('ref-' + cite);
+                if (biblioDiv) {
+                  citeDiv.innerHTML = biblioDiv.innerHTML;
+                }
+                popup.appendChild(citeDiv);
+              });
+              return popup.innerHTML;
+            });
+          }
+        }
+      });
+      </script>
+    
+
+</body></html>

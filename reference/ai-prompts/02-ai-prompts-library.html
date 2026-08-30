@@ -1,0 +1,2520 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.37">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="5-Day Workshop: Demographic Analysis Using R">
+<meta name="dcterms.date" content="2026-08-30">
+
+<title>AI Prompts Library for Demographic Analysis Workshop – Data for Development</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<link href="../../reference/ai-prompts/03-ai-prompts-library-full.html" rel="next">
+<link href="../../reference/ai-prompts/01-data-prompt-manual.html" rel="prev">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-ec8dbbdf99699f055fea5e95a428e1d3.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-ca1ade0eb0c1d189efc5705c54261109.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+</head>
+
+<body class="nav-sidebar docked nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Data for Development</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../index.html"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../agenda.html"> 
+<span class="menu-text">Agenda</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../setup.html"> 
+<span class="menu-text">Setup</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-days" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Days</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-days">    
+        <li>
+    <a class="dropdown-item" href="../../days/01-foundations/index.html">
+ <span class="dropdown-text">Day 1 — Foundations, Data Acquisition &amp; AI Toolkit</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../days/02-indicators-visualisation/index.html">
+ <span class="dropdown-text">Day 2 — Indicators, Prices &amp; Visualisation</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../days/03-modelling-spatial/index.html">
+ <span class="dropdown-text">Day 3 — Spatial Analysis &amp; Statistical Modelling</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../days/04-reporting-dashboards/index.html">
+ <span class="dropdown-text">Day 4 — Automation &amp; Reproducible Reporting</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../days/05-revision-presentations/index.html">
+ <span class="dropdown-text">Day 5 — Revision, Presentations &amp; Close</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link active" href="../../reference/r-essentials.html" aria-current="page"> 
+<span class="menu-text">Reference</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/Zahedasghar/d4d"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../reference/ai-prompts/index.html">AI prompt library</a></li><li class="breadcrumb-item"><a href="../../reference/ai-prompts/02-ai-prompts-library.html">AI Prompts Library for Demographic Analysis Workshop</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Day 1 — Foundations &amp; Acquisition</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../days/01-foundations/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Day 1 — Foundations, Data Acquisition &amp; the AI Toolkit</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../days/01-foundations/00-orientation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Day 1 · Session 1</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../days/01-foundations/01-r-fundamentals.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Introduction to R</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../days/01-foundations/02-rstudio-git-session.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Getting Started with R</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../days/01-foundations/03-data-import-export.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Communicating Better With Data: Import, Export &amp; APIs in R</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../days/01-foundations/04-dplyr-wrangling-floods.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Working Smarter with dplyr 1.2.0</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../days/01-foundations/05-demographic-analysis-nhanes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Demographic Analysis Using R</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+ <span class="menu-text">days/01-foundations/06-demographic-analysis-workbook.qmd</span>
+  </li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Day 2 — Indicators, Prices &amp; Visualisation</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../days/02-indicators-visualisation/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Day 2 — Indicators, Prices &amp; Visualisation</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../days/02-indicators-visualisation/01-wfp-prices-pipeline.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Reading, Cleaning and Mapping WFP Food Prices</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../days/02-indicators-visualisation/02-pak-food-prices-workflow.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Food Prices in Pakistan</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../days/02-indicators-visualisation/03-combining-prices-markets.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Combining the WFP Prices and Markets Files</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../days/02-indicators-visualisation/04-index-numbers.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Index Numbers in R</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Day 3 — Spatial &amp; Modelling</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../days/03-modelling-spatial/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Day 3 — Spatial Analysis &amp; Statistical Modelling</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../days/03-modelling-spatial/01-dhs-model-datasets.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Demographic Analysis in R using DHS Model Datasets</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
+ <span class="menu-text">Day 4 — Automation &amp; Reporting</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../days/04-reporting-dashboards/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Day 4 — Automation &amp; Reproducible Reporting</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../days/04-reporting-dashboards/01-quarto-basics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">01-quarto-basics.html</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../days/04-reporting-dashboards/02-quarto-document-writing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Quarto for Academic Writing</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../days/04-reporting-dashboards/03-parameterised-reports.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Life Expectancy Report</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../days/04-reporting-dashboards/04-odi-report.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Batting Performance of <code>r params$player</code></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+ <span class="menu-text">days/04-reporting-dashboards/05-project-outline.qmd</span>
+  </li>
+          <li class="sidebar-item">
+ <span class="menu-text">days/04-reporting-dashboards/06-demographic-survey-outline.qmd</span>
+  </li>
+          <li class="sidebar-item">
+ <span class="menu-text">days/04-reporting-dashboards/07-r-user-group.qmd</span>
+  </li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
+ <span class="menu-text">Day 5 — Revision &amp; Presentations</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../days/05-revision-presentations/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Day 5 — Revision, Presentations &amp; Close</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../days/05-revision-presentations/01-week-in-review.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">The Week in One Hour</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../days/05-revision-presentations/02-group-presentation-brief.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Group Presentation Brief</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true">
+ <span class="menu-text">Reference</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../reference/r-essentials.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">R essentials</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../reference/five-verbs-data-wrangling.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="flow">5 verbs for data wrangling</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+ <span class="menu-text">reference/dummy-variable-regression.qmd</span>
+  </li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true">
+ <span class="menu-text">AI prompt library</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../reference/ai-prompts/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">AI Prompt Library</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../reference/ai-prompts/01-data-prompt-manual.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">5-Day Workshop: Data Analysis Using AI Prompts</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../reference/ai-prompts/02-ai-prompts-library.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">AI Prompts Library for Demographic Analysis Workshop</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../reference/ai-prompts/03-ai-prompts-library-full.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">AI Prompts Library for Demographic Analysis Workshop</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../reference/ai-prompts/04-master-data-prompt-pack.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Master Data Prompt Pack</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../reference/ai-prompts/05-prompt-cheatsheet-poster.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">AI Prompt Cheat Sheet Poster</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#introduction-to-ai-powered-data-analysis" id="toc-introduction-to-ai-powered-data-analysis" class="nav-link active" data-scroll-target="#introduction-to-ai-powered-data-analysis"><span class="header-section-number">1</span> Introduction to AI-Powered Data Analysis</a>
+  <ul class="collapse">
+  <li><a href="#how-to-use-these-prompts" id="toc-how-to-use-these-prompts" class="nav-link" data-scroll-target="#how-to-use-these-prompts"><span class="header-section-number">1.1</span> How to Use These Prompts</a></li>
+  <li><a href="#prompt-structure-guidelines" id="toc-prompt-structure-guidelines" class="nav-link" data-scroll-target="#prompt-structure-guidelines"><span class="header-section-number">1.2</span> Prompt Structure Guidelines</a></li>
+  </ul></li>
+  <li><a href="#day-1-data-import-wrangling-prompts" id="toc-day-1-data-import-wrangling-prompts" class="nav-link" data-scroll-target="#day-1-data-import-wrangling-prompts"><span class="header-section-number">2</span> Day 1: Data Import &amp; Wrangling Prompts</a>
+  <ul class="collapse">
+  <li><a href="#setting-up-environment" id="toc-setting-up-environment" class="nav-link" data-scroll-target="#setting-up-environment"><span class="header-section-number">2.1</span> Setting Up Environment</a>
+  <ul class="collapse">
+  <li><a href="#prompt-1.1-project-setup" id="toc-prompt-1.1-project-setup" class="nav-link" data-scroll-target="#prompt-1.1-project-setup"><span class="header-section-number">2.1.1</span> Prompt 1.1: Project Setup</a></li>
+  <li><a href="#prompt-1.2-load-essential-packages" id="toc-prompt-1.2-load-essential-packages" class="nav-link" data-scroll-target="#prompt-1.2-load-essential-packages"><span class="header-section-number">2.1.2</span> Prompt 1.2: Load Essential Packages</a></li>
+  </ul></li>
+  <li><a href="#data-import-prompts" id="toc-data-import-prompts" class="nav-link" data-scroll-target="#data-import-prompts"><span class="header-section-number">2.2</span> Data Import Prompts</a>
+  <ul class="collapse">
+  <li><a href="#prompt-1.3-import-csv-data" id="toc-prompt-1.3-import-csv-data" class="nav-link" data-scroll-target="#prompt-1.3-import-csv-data"><span class="header-section-number">2.2.1</span> Prompt 1.3: Import CSV Data</a></li>
+  <li><a href="#prompt-1.4-import-excel-with-multiple-sheets" id="toc-prompt-1.4-import-excel-with-multiple-sheets" class="nav-link" data-scroll-target="#prompt-1.4-import-excel-with-multiple-sheets"><span class="header-section-number">2.2.2</span> Prompt 1.4: Import Excel with Multiple Sheets</a></li>
+  <li><a href="#prompt-1.5-import-pdhs-data-stata-format" id="toc-prompt-1.5-import-pdhs-data-stata-format" class="nav-link" data-scroll-target="#prompt-1.5-import-pdhs-data-stata-format"><span class="header-section-number">2.2.3</span> Prompt 1.5: Import PDHS Data (Stata Format)</a></li>
+  <li><a href="#prompt-1.6-import-spss-dataset" id="toc-prompt-1.6-import-spss-dataset" class="nav-link" data-scroll-target="#prompt-1.6-import-spss-dataset"><span class="header-section-number">2.2.4</span> Prompt 1.6: Import SPSS Dataset</a></li>
+  <li><a href="#prompt-1.7-api-data-import---world-bank" id="toc-prompt-1.7-api-data-import---world-bank" class="nav-link" data-scroll-target="#prompt-1.7-api-data-import---world-bank"><span class="header-section-number">2.2.5</span> Prompt 1.7: API Data Import - World Bank</a></li>
+  <li><a href="#prompt-1.8-api-data-import---un-population-division" id="toc-prompt-1.8-api-data-import---un-population-division" class="nav-link" data-scroll-target="#prompt-1.8-api-data-import---un-population-division"><span class="header-section-number">2.2.6</span> Prompt 1.8: API Data Import - UN Population Division</a></li>
+  <li><a href="#prompt-1.9-import-nhanes-data" id="toc-prompt-1.9-import-nhanes-data" class="nav-link" data-scroll-target="#prompt-1.9-import-nhanes-data"><span class="header-section-number">2.2.7</span> Prompt 1.9: Import NHANES Data</a></li>
+  <li><a href="#prompt-1.10-import-our-world-in-data-csv" id="toc-prompt-1.10-import-our-world-in-data-csv" class="nav-link" data-scroll-target="#prompt-1.10-import-our-world-in-data-csv"><span class="header-section-number">2.2.8</span> Prompt 1.10: Import Our World in Data CSV</a></li>
+  </ul></li>
+  <li><a href="#data-wrangling-prompts" id="toc-data-wrangling-prompts" class="nav-link" data-scroll-target="#data-wrangling-prompts"><span class="header-section-number">2.3</span> Data Wrangling Prompts</a>
+  <ul class="collapse">
+  <li><a href="#prompt-1.11-basic-data-cleaning" id="toc-prompt-1.11-basic-data-cleaning" class="nav-link" data-scroll-target="#prompt-1.11-basic-data-cleaning"><span class="header-section-number">2.3.1</span> Prompt 1.11: Basic Data Cleaning</a></li>
+  <li><a href="#prompt-1.12-recode-variables" id="toc-prompt-1.12-recode-variables" class="nav-link" data-scroll-target="#prompt-1.12-recode-variables"><span class="header-section-number">2.3.2</span> Prompt 1.12: Recode Variables</a></li>
+  <li><a href="#prompt-1.13-create-wealth-index" id="toc-prompt-1.13-create-wealth-index" class="nav-link" data-scroll-target="#prompt-1.13-create-wealth-index"><span class="header-section-number">2.3.3</span> Prompt 1.13: Create Wealth Index</a></li>
+  <li><a href="#prompt-1.14-age-group-creation" id="toc-prompt-1.14-age-group-creation" class="nav-link" data-scroll-target="#prompt-1.14-age-group-creation"><span class="header-section-number">2.3.4</span> Prompt 1.14: Age Group Creation</a></li>
+  <li><a href="#prompt-1.15-geographic-variable-creation" id="toc-prompt-1.15-geographic-variable-creation" class="nav-link" data-scroll-target="#prompt-1.15-geographic-variable-creation"><span class="header-section-number">2.3.5</span> Prompt 1.15: Geographic Variable Creation</a></li>
+  <li><a href="#prompt-1.16-filter-and-select-data" id="toc-prompt-1.16-filter-and-select-data" class="nav-link" data-scroll-target="#prompt-1.16-filter-and-select-data"><span class="header-section-number">2.3.6</span> Prompt 1.16: Filter and Select Data</a></li>
+  <li><a href="#prompt-1.17-summarize-by-groups" id="toc-prompt-1.17-summarize-by-groups" class="nav-link" data-scroll-target="#prompt-1.17-summarize-by-groups"><span class="header-section-number">2.3.7</span> Prompt 1.17: Summarize by Groups</a></li>
+  <li><a href="#prompt-1.18-merge-household-and-individual-data" id="toc-prompt-1.18-merge-household-and-individual-data" class="nav-link" data-scroll-target="#prompt-1.18-merge-household-and-individual-data"><span class="header-section-number">2.3.8</span> Prompt 1.18: Merge Household and Individual Data</a></li>
+  <li><a href="#prompt-1.19-reshape-wide-to-long" id="toc-prompt-1.19-reshape-wide-to-long" class="nav-link" data-scroll-target="#prompt-1.19-reshape-wide-to-long"><span class="header-section-number">2.3.9</span> Prompt 1.19: Reshape Wide to Long</a></li>
+  <li><a href="#prompt-1.20-create-composite-indicators" id="toc-prompt-1.20-create-composite-indicators" class="nav-link" data-scroll-target="#prompt-1.20-create-composite-indicators"><span class="header-section-number">2.3.10</span> Prompt 1.20: Create Composite Indicators</a></li>
+  </ul></li>
+  </ul></li>
+  <li><a href="#day-2-exploratory-data-analysis-visualization-prompts" id="toc-day-2-exploratory-data-analysis-visualization-prompts" class="nav-link" data-scroll-target="#day-2-exploratory-data-analysis-visualization-prompts"><span class="header-section-number">3</span> Day 2: Exploratory Data Analysis &amp; Visualization Prompts</a>
+  <ul class="collapse">
+  <li><a href="#descriptive-statistics-prompts" id="toc-descriptive-statistics-prompts" class="nav-link" data-scroll-target="#descriptive-statistics-prompts"><span class="header-section-number">3.1</span> Descriptive Statistics Prompts</a>
+  <ul class="collapse">
+  <li><a href="#prompt-2.1-basic-summary-statistics" id="toc-prompt-2.1-basic-summary-statistics" class="nav-link" data-scroll-target="#prompt-2.1-basic-summary-statistics"><span class="header-section-number">3.1.1</span> Prompt 2.1: Basic Summary Statistics</a></li>
+  <li><a href="#prompt-2.2-frequency-tables" id="toc-prompt-2.2-frequency-tables" class="nav-link" data-scroll-target="#prompt-2.2-frequency-tables"><span class="header-section-number">3.1.2</span> Prompt 2.2: Frequency Tables</a></li>
+  <li><a href="#prompt-2.3-survey-weighted-summary-tables" id="toc-prompt-2.3-survey-weighted-summary-tables" class="nav-link" data-scroll-target="#prompt-2.3-survey-weighted-summary-tables"><span class="header-section-number">3.1.3</span> Prompt 2.3: Survey-Weighted Summary Tables</a></li>
+  <li><a href="#prompt-2.4-cross-tabulation-matrix" id="toc-prompt-2.4-cross-tabulation-matrix" class="nav-link" data-scroll-target="#prompt-2.4-cross-tabulation-matrix"><span class="header-section-number">3.1.4</span> Prompt 2.4: Cross-Tabulation Matrix</a></li>
+  <li><a href="#prompt-2.5-comparison-table-across-provinces" id="toc-prompt-2.5-comparison-table-across-provinces" class="nav-link" data-scroll-target="#prompt-2.5-comparison-table-across-provinces"><span class="header-section-number">3.1.5</span> Prompt 2.5: Comparison Table Across Provinces</a></li>
+  <li><a href="#prompt-2.6-interactive-data-table" id="toc-prompt-2.6-interactive-data-table" class="nav-link" data-scroll-target="#prompt-2.6-interactive-data-table"><span class="header-section-number">3.1.6</span> Prompt 2.6: Interactive Data Table</a></li>
+  </ul></li>
+  <li><a href="#static-visualization-prompts" id="toc-static-visualization-prompts" class="nav-link" data-scroll-target="#static-visualization-prompts"><span class="header-section-number">3.2</span> Static Visualization Prompts</a>
+  <ul class="collapse">
+  <li><a href="#prompt-2.7-population-pyramid" id="toc-prompt-2.7-population-pyramid" class="nav-link" data-scroll-target="#prompt-2.7-population-pyramid"><span class="header-section-number">3.2.1</span> Prompt 2.7: Population Pyramid</a></li>
+  <li><a href="#prompt-2.8-population-pyramid-comparison" id="toc-prompt-2.8-population-pyramid-comparison" class="nav-link" data-scroll-target="#prompt-2.8-population-pyramid-comparison"><span class="header-section-number">3.2.2</span> Prompt 2.8: Population Pyramid Comparison</a></li>
+  <li><a href="#prompt-2.9-fertility-trends-over-time" id="toc-prompt-2.9-fertility-trends-over-time" class="nav-link" data-scroll-target="#prompt-2.9-fertility-trends-over-time"><span class="header-section-number">3.2.3</span> Prompt 2.9: Fertility Trends Over Time</a></li>
+  <li><a href="#prompt-2.10-multiple-trend-lines" id="toc-prompt-2.10-multiple-trend-lines" class="nav-link" data-scroll-target="#prompt-2.10-multiple-trend-lines"><span class="header-section-number">3.2.4</span> Prompt 2.10: Multiple Trend Lines</a></li>
+  <li><a href="#prompt-2.11-bar-chart---province-comparison" id="toc-prompt-2.11-bar-chart---province-comparison" class="nav-link" data-scroll-target="#prompt-2.11-bar-chart---province-comparison"><span class="header-section-number">3.2.5</span> Prompt 2.11: Bar Chart - Province Comparison</a></li>
+  <li><a href="#prompt-2.12-stacked-bar-chart" id="toc-prompt-2.12-stacked-bar-chart" class="nav-link" data-scroll-target="#prompt-2.12-stacked-bar-chart"><span class="header-section-number">3.2.6</span> Prompt 2.12: Stacked Bar Chart</a></li>
+  <li><a href="#prompt-2.13-scatter-plot-with-regression" id="toc-prompt-2.13-scatter-plot-with-regression" class="nav-link" data-scroll-target="#prompt-2.13-scatter-plot-with-regression"><span class="header-section-number">3.2.7</span> Prompt 2.13: Scatter Plot with Regression</a></li>
+  <li><a href="#prompt-2.14-faceted-plots" id="toc-prompt-2.14-faceted-plots" class="nav-link" data-scroll-target="#prompt-2.14-faceted-plots"><span class="header-section-number">3.2.8</span> Prompt 2.14: Faceted Plots</a></li>
+  <li><a href="#prompt-2.15-box-plots-by-group" id="toc-prompt-2.15-box-plots-by-group" class="nav-link" data-scroll-target="#prompt-2.15-box-plots-by-group"><span class="header-section-number">3.2.9</span> Prompt 2.15: Box Plots by Group</a></li>
+  <li><a href="#prompt-2.16-violin-plots" id="toc-prompt-2.16-violin-plots" class="nav-link" data-scroll-target="#prompt-2.16-violin-plots"><span class="header-section-number">3.2.10</span> Prompt 2.16: Violin Plots</a></li>
+  <li><a href="#prompt-2.17-heatmap-for-correlation-matrix" id="toc-prompt-2.17-heatmap-for-correlation-matrix" class="nav-link" data-scroll-target="#prompt-2.17-heatmap-for-correlation-matrix"><span class="header-section-number">3.2.11</span> Prompt 2.17: Heatmap for Correlation Matrix</a></li>
+  <li><a href="#prompt-2.18-composite-multi-panel-figure" id="toc-prompt-2.18-composite-multi-panel-figure" class="nav-link" data-scroll-target="#prompt-2.18-composite-multi-panel-figure"><span class="header-section-number">3.2.12</span> Prompt 2.18: Composite Multi-Panel Figure</a></li>
+  </ul></li>
+  <li><a href="#interactive-visualization-prompts" id="toc-interactive-visualization-prompts" class="nav-link" data-scroll-target="#interactive-visualization-prompts"><span class="header-section-number">3.3</span> Interactive Visualization Prompts</a>
+  <ul class="collapse">
+  <li><a href="#prompt-2.19-interactive-line-chart" id="toc-prompt-2.19-interactive-line-chart" class="nav-link" data-scroll-target="#prompt-2.19-interactive-line-chart"><span class="header-section-number">3.3.1</span> Prompt 2.19: Interactive Line Chart</a></li>
+  <li><a href="#prompt-2.20-animated-population-pyramid" id="toc-prompt-2.20-animated-population-pyramid" class="nav-link" data-scroll-target="#prompt-2.20-animated-population-pyramid"><span class="header-section-number">3.3.2</span> Prompt 2.20: Animated Population Pyramid</a></li>
+  <li><a href="#prompt-2.21-interactive-scatter-plot" id="toc-prompt-2.21-interactive-scatter-plot" class="nav-link" data-scroll-target="#prompt-2.21-interactive-scatter-plot"><span class="header-section-number">3.3.3</span> Prompt 2.21: Interactive Scatter Plot</a></li>
+  <li><a href="#prompt-2.22-interactive-dashboard-component" id="toc-prompt-2.22-interactive-dashboard-component" class="nav-link" data-scroll-target="#prompt-2.22-interactive-dashboard-component"><span class="header-section-number">3.3.4</span> Prompt 2.22: Interactive Dashboard Component</a></li>
+  </ul></li>
+  </ul></li>
+  <li><a href="#day-3-statistical-modeling-spatial-analysis-prompts" id="toc-day-3-statistical-modeling-spatial-analysis-prompts" class="nav-link" data-scroll-target="#day-3-statistical-modeling-spatial-analysis-prompts"><span class="header-section-number">4</span> Day 3: Statistical Modeling &amp; Spatial Analysis Prompts</a>
+  <ul class="collapse">
+  <li><a href="#survey-design-prompts" id="toc-survey-design-prompts" class="nav-link" data-scroll-target="#survey-design-prompts"><span class="header-section-number">4.1</span> Survey Design Prompts</a>
+  <ul class="collapse">
+  <li><a href="#prompt-3.1-define-survey-design" id="toc-prompt-3.1-define-survey-design" class="nav-link" data-scroll-target="#prompt-3.1-define-survey-design"><span class="header-section-number">4.1.1</span> Prompt 3.1: Define Survey Design</a></li>
+  <li><a href="#prompt-3.2-survey-weighted-means" id="toc-prompt-3.2-survey-weighted-means" class="nav-link" data-scroll-target="#prompt-3.2-survey-weighted-means"><span class="header-section-number">4.1.2</span> Prompt 3.2: Survey-Weighted Means</a></li>
+  </ul></li>
+  <li><a href="#regression-modeling-prompts" id="toc-regression-modeling-prompts" class="nav-link" data-scroll-target="#regression-modeling-prompts"><span class="header-section-number">4.2</span> Regression Modeling Prompts</a>
+  <ul class="collapse">
+  <li><a href="#prompt-3.3-simple-linear-regression" id="toc-prompt-3.3-simple-linear-regression" class="nav-link" data-scroll-target="#prompt-3.3-simple-linear-regression"><span class="header-section-number">4.2.1</span> Prompt 3.3: Simple Linear Regression</a></li>
+  <li><a href="#prompt-3.4-multiple-linear-regression" id="toc-prompt-3.4-multiple-linear-regression" class="nav-link" data-scroll-target="#prompt-3.4-multiple-linear-regression"><span class="header-section-number">4.2.2</span> Prompt 3.4: Multiple Linear Regression</a></li>
+  <li><a href="#prompt-3.5-logistic-regression-binary-outcome" id="toc-prompt-3.5-logistic-regression-binary-outcome" class="nav-link" data-scroll-target="#prompt-3.5-logistic-regression-binary-outcome"><span class="header-section-number">4.2.3</span> Prompt 3.5: Logistic Regression (Binary Outcome)</a></li>
+  <li><a href="#prompt-3.6-survey-weighted-logistic-regression" id="toc-prompt-3.6-survey-weighted-logistic-regression" class="nav-link" data-scroll-target="#prompt-3.6-survey-weighted-logistic-regression"><span class="header-section-number">4.2.4</span> Prompt 3.6: Survey-Weighted Logistic Regression</a></li>
+  <li><a href="#prompt-3.7-multinomial-logistic-regression" id="toc-prompt-3.7-multinomial-logistic-regression" class="nav-link" data-scroll-target="#prompt-3.7-multinomial-logistic-regression"><span class="header-section-number">4.2.5</span> Prompt 3.7: Multinomial Logistic Regression</a></li>
+  <li><a href="#prompt-3.8-poisson-regression" id="toc-prompt-3.8-poisson-regression" class="nav-link" data-scroll-target="#prompt-3.8-poisson-regression"><span class="header-section-number">4.2.6</span> Prompt 3.8: Poisson Regression</a></li>
+  <li><a href="#prompt-3.9-model-comparison" id="toc-prompt-3.9-model-comparison" class="nav-link" data-scroll-target="#prompt-3.9-model-comparison"><span class="header-section-number">4.2.7</span> Prompt 3.9: Model Comparison</a></li>
+  <li><a href="#prompt-3.10-regression-diagnostics" id="toc-prompt-3.10-regression-diagnostics" class="nav-link" data-scroll-target="#prompt-3.10-regression-diagnostics"><span class="header-section-number">4.2.8</span> Prompt 3.10: Regression Diagnostics</a></li>
+  <li><a href="#prompt-3.11-interaction-effects" id="toc-prompt-3.11-interaction-effects" class="nav-link" data-scroll-target="#prompt-3.11-interaction-effects"><span class="header-section-number">4.2.9</span> Prompt 3.11: Interaction Effects</a></li>
+  <li><a href="#prompt-3.12-predicted-probabilities" id="toc-prompt-3.12-predicted-probabilities" class="nav-link" data-scroll-target="#prompt-3.12-predicted-probabilities"><span class="header-section-number">4.2.10</span> Prompt 3.12: Predicted Probabilities</a></li>
+  </ul></li>
+  <li><a href="#spatial-data-prompts" id="toc-spatial-data-prompts" class="nav-link" data-scroll-target="#spatial-data-prompts"><span class="header-section-number">4.3</span> Spatial Data Prompts</a>
+  <ul class="collapse">
+  <li><a href="#prompt-3.13-load-pakistan-shapefiles" id="toc-prompt-3.13-load-pakistan-shapefiles" class="nav-link" data-scroll-target="#prompt-3.13-load-pakistan-shapefiles"><span class="header-section-number">4.3.1</span> Prompt 3.13: Load Pakistan Shapefiles</a></li>
+  <li><a href="#prompt-3.14-clean-and-match-geographic-data" id="toc-prompt-3.14-clean-and-match-geographic-data" class="nav-link" data-scroll-target="#prompt-3.14-clean-and-match-geographic-data"><span class="header-section-number">4.3.2</span> Prompt 3.14: Clean and Match Geographic Data</a></li>
+  <li><a href="#prompt-3.15-join-demographic-data-to-shapefile" id="toc-prompt-3.15-join-demographic-data-to-shapefile" class="nav-link" data-scroll-target="#prompt-3.15-join-demographic-data-to-shapefile"><span class="header-section-number">4.3.3</span> Prompt 3.15: Join Demographic Data to Shapefile</a></li>
+  <li><a href="#prompt-3.16-basic-choropleth-map" id="toc-prompt-3.16-basic-choropleth-map" class="nav-link" data-scroll-target="#prompt-3.16-basic-choropleth-map"><span class="header-section-number">4.3.4</span> Prompt 3.16: Basic Choropleth Map</a></li>
+  <li><a href="#prompt-3.17-classification-methods-comparison" id="toc-prompt-3.17-classification-methods-comparison" class="nav-link" data-scroll-target="#prompt-3.17-classification-methods-comparison"><span class="header-section-number">4.3.5</span> Prompt 3.17: Classification Methods Comparison</a></li>
+  <li><a href="#prompt-3.18-bivariate-choropleth-map" id="toc-prompt-3.18-bivariate-choropleth-map" class="nav-link" data-scroll-target="#prompt-3.18-bivariate-choropleth-map"><span class="header-section-number">4.3.6</span> Prompt 3.18: Bivariate Choropleth Map</a></li>
+  <li><a href="#prompt-3.19-map-with-province-facets" id="toc-prompt-3.19-map-with-province-facets" class="nav-link" data-scroll-target="#prompt-3.19-map-with-province-facets"><span class="header-section-number">4.3.7</span> Prompt 3.19: Map with Province Facets</a></li>
+  <li><a href="#prompt-3.20-map-with-inset-for-small-areas" id="toc-prompt-3.20-map-with-inset-for-small-areas" class="nav-link" data-scroll-target="#prompt-3.20-map-with-inset-for-small-areas"><span class="header-section-number">4.3.8</span> Prompt 3.20: Map with Inset for Small Areas</a></li>
+  </ul></li>
+  <li><a href="#interactive-mapping-prompts" id="toc-interactive-mapping-prompts" class="nav-link" data-scroll-target="#interactive-mapping-prompts"><span class="header-section-number">4.4</span> Interactive Mapping Prompts</a>
+  <ul class="collapse">
+  <li><a href="#prompt-3.21-basic-leaflet-map" id="toc-prompt-3.21-basic-leaflet-map" class="nav-link" data-scroll-target="#prompt-3.21-basic-leaflet-map"><span class="header-section-number">4.4.1</span> Prompt 3.21: Basic Leaflet Map</a></li>
+  <li><a href="#prompt-3.22-leaflet-with-popups" id="toc-prompt-3.22-leaflet-with-popups" class="nav-link" data-scroll-target="#prompt-3.22-leaflet-with-popups"><span class="header-section-number">4.4.2</span> Prompt 3.22: Leaflet with Popups</a></li>
+  <li><a href="#prompt-3.23-multi-layer-interactive-map" id="toc-prompt-3.23-multi-layer-interactive-map" class="nav-link" data-scroll-target="#prompt-3.23-multi-layer-interactive-map"><span class="header-section-number">4.4.3</span> Prompt 3.23: Multi-Layer Interactive Map</a></li>
+  <li><a href="#prompt-3.24-time-series-interactive-map" id="toc-prompt-3.24-time-series-interactive-map" class="nav-link" data-scroll-target="#prompt-3.24-time-series-interactive-map"><span class="header-section-number">4.4.4</span> Prompt 3.24: Time-Series Interactive Map</a></li>
+  <li><a href="#prompt-3.25-quick-mapview" id="toc-prompt-3.25-quick-mapview" class="nav-link" data-scroll-target="#prompt-3.25-quick-mapview"><span class="header-section-number">4.4.5</span> Prompt 3.25: Quick Mapview</a></li>
+  </ul></li>
+  <li><a href="#advanced-spatial-analysis-prompts" id="toc-advanced-spatial-analysis-prompts" class="nav-link" data-scroll-target="#advanced-spatial-analysis-prompts"><span class="header-section-number">4.5</span> Advanced Spatial Analysis Prompts</a>
+  <ul class="collapse">
+  <li><a href="#prompt-3.26-calculate-spatial-neighbors" id="toc-prompt-3.26-calculate-spatial-neighbors" class="nav-link" data-scroll-target="#prompt-3.26-calculate-spatial-neighbors"><span class="header-section-number">4.5.1</span> Prompt 3.26: Calculate Spatial Neighbors</a></li>
+  <li><a href="#prompt-3.27-spatial-autocorrelation" id="toc-prompt-3.27-spatial-autocorrelation" class="nav-link" data-scroll-target="#prompt-3.27-spatial-autocorrelation"><span class="header-section-number">4.5.2</span> Prompt 3.27: Spatial Autocorrelation</a></li>
+  <li><a href="#prompt-3.28-spatial-smoothing" id="toc-prompt-3.28-spatial-smoothing" class="nav-link" data-scroll-target="#prompt-3.28-spatial-smoothing"><span class="header-section-number">4.5.3</span> Prompt 3.28: Spatial Smoothing</a></li>
+  </ul></li>
+  </ul></li>
+  <li><a href="#day-4-reporting-dashboard-prompts" id="toc-day-4-reporting-dashboard-prompts" class="nav-link" data-scroll-target="#day-4-reporting-dashboard-prompts"><span class="header-section-number">5</span> Day 4: Reporting &amp; Dashboard Prompts</a>
+  <ul class="collapse">
+  <li><a href="#quarto-report-prompts" id="toc-quarto-report-prompts" class="nav-link" data-scroll-target="#quarto-report-prompts"><span class="header-section-number">5.1</span> Quarto Report Prompts</a>
+  <ul class="collapse">
+  <li><a href="#prompt-4.1-basic-quarto-document-structure" id="toc-prompt-4.1-basic-quarto-document-structure" class="nav-link" data-scroll-target="#prompt-4.1-basic-quarto-document-structure"><span class="header-section-number">5.1.1</span> Prompt 4.1: Basic Quarto Document Structure</a></li>
+  <li><a href="#prompt-4.2-executive-summary-with-key-indicators" id="toc-prompt-4.2-executive-summary-with-key-indicators" class="nav-link" data-scroll-target="#prompt-4.2-executive-summary-with-key-indicators"><span class="header-section-number">5.1.2</span> Prompt 4.2: Executive Summary with Key Indicators</a></li>
+  <li><a href="#prompt-4.3-embed-tables-in-report" id="toc-prompt-4.3-embed-tables-in-report" class="nav-link" data-scroll-target="#prompt-4.3-embed-tables-in-report"><span class="header-section-number">5.1.3</span> Prompt 4.3: Embed Tables in Report</a></li>
+  <li><a href="#prompt-4.4-embed-figures-in-report" id="toc-prompt-4.4-embed-figures-in-report" class="nav-link" data-scroll-target="#prompt-4.4-embed-figures-in-report"><span class="header-section-number">5.1.4</span> Prompt 4.4: Embed Figures in Report</a></li>
+  <li><a href="#prompt-4.5-cross-reference-multiple-elements" id="toc-prompt-4.5-cross-reference-multiple-elements" class="nav-link" data-scroll-target="#prompt-4.5-cross-reference-multiple-elements"><span class="header-section-number">5.1.5</span> Prompt 4.5: Cross-Reference Multiple Elements</a></li>
+  <li><a href="#prompt-4.6-code-folding-and-annotations" id="toc-prompt-4.6-code-folding-and-annotations" class="nav-link" data-scroll-target="#prompt-4.6-code-folding-and-annotations"><span class="header-section-number">5.1.6</span> Prompt 4.6: Code Folding and Annotations</a></li>
+  <li><a href="#prompt-4.7-multiple-output-formats" id="toc-prompt-4.7-multiple-output-formats" class="nav-link" data-scroll-target="#prompt-4.7-multiple-output-formats"><span class="header-section-number">5.1.7</span> Prompt 4.7: Multiple Output Formats</a></li>
+  <li><a href="#prompt-4.8-tabbed-content" id="toc-prompt-4.8-tabbed-content" class="nav-link" data-scroll-target="#prompt-4.8-tabbed-content"><span class="header-section-number">5.1.8</span> Prompt 4.8: Tabbed Content</a></li>
+  <li><a href="#prompt-4.9-callout-boxes" id="toc-prompt-4.9-callout-boxes" class="nav-link" data-scroll-target="#prompt-4.9-callout-boxes"><span class="header-section-number">5.1.9</span> Prompt 4.9: Callout Boxes</a></li>
+  </ul></li>
+  <li><a href="#parameterized-reports-prompts" id="toc-parameterized-reports-prompts" class="nav-link" data-scroll-target="#parameterized-reports-prompts"><span class="header-section-number">5.2</span> Parameterized Reports Prompts</a>
+  <ul class="collapse">
+  <li><a href="#prompt-4.10-set-up-parameters" id="toc-prompt-4.10-set-up-parameters" class="nav-link" data-scroll-target="#prompt-4.10-set-up-parameters"><span class="header-section-number">5.2.1</span> Prompt 4.10: Set Up Parameters</a></li>
+  <li><a href="#prompt-4.11-filter-data-by-parameter" id="toc-prompt-4.11-filter-data-by-parameter" class="nav-link" data-scroll-target="#prompt-4.11-filter-data-by-parameter"><span class="header-section-number">5.2.2</span> Prompt 4.11: Filter Data by Parameter</a></li>
+  <li><a href="#prompt-4.12-dynamic-titles-and-text" id="toc-prompt-4.12-dynamic-titles-and-text" class="nav-link" data-scroll-target="#prompt-4.12-dynamic-titles-and-text"><span class="header-section-number">5.2.3</span> Prompt 4.12: Dynamic Titles and Text</a></li>
+  <li><a href="#prompt-4.13-conditional-content" id="toc-prompt-4.13-conditional-content" class="nav-link" data-scroll-target="#prompt-4.13-conditional-content"><span class="header-section-number">5.2.4</span> Prompt 4.13: Conditional Content</a></li>
+  <li><a href="#prompt-4.14-batch-render-for-all-provinces" id="toc-prompt-4.14-batch-render-for-all-provinces" class="nav-link" data-scroll-target="#prompt-4.14-batch-render-for-all-provinces"><span class="header-section-number">5.2.5</span> Prompt 4.14: Batch Render for All Provinces</a></li>
+  <li><a href="#prompt-4.15-automated-provincial-profiles" id="toc-prompt-4.15-automated-provincial-profiles" class="nav-link" data-scroll-target="#prompt-4.15-automated-provincial-profiles"><span class="header-section-number">5.2.6</span> Prompt 4.15: Automated Provincial Profiles</a></li>
+  </ul></li>
+  <li><a href="#dashboard-prompts" id="toc-dashboard-prompts" class="nav-link" data-scroll-target="#dashboard-prompts"><span class="header-section-number">5.3</span> Dashboard Prompts</a>
+  <ul class="collapse">
+  <li><a href="#prompt-4.16-flexdashboard-layout" id="toc-prompt-4.16-flexdashboard-layout" class="nav-link" data-scroll-target="#prompt-4.16-flexdashboard-layout"><span class="header-section-number">5.3.1</span> Prompt 4.16: Flexdashboard Layout</a></li>
+  <li><a href="#prompt-4.17-value-boxes-with-indicators" id="toc-prompt-4.17-value-boxes-with-indicators" class="nav-link" data-scroll-target="#prompt-4.17-value-boxes-with-indicators"><span class="header-section-number">5.3.2</span> Prompt 4.17: Value Boxes with Indicators</a></li>
+  <li><a href="#prompt-4.18-interactive-dashboard-filters" id="toc-prompt-4.18-interactive-dashboard-filters" class="nav-link" data-scroll-target="#prompt-4.18-interactive-dashboard-filters"><span class="header-section-number">5.3.3</span> Prompt 4.18: Interactive Dashboard Filters</a></li>
+  <li><a href="#prompt-4.19-linked-dashboard-components" id="toc-prompt-4.19-linked-dashboard-components" class="nav-link" data-scroll-target="#prompt-4.19-linked-dashboard-components"><span class="header-section-number">5.3.4</span> Prompt 4.19: Linked Dashboard Components</a></li>
+  <li><a href="#prompt-4.20-download-buttons" id="toc-prompt-4.20-download-buttons" class="nav-link" data-scroll-target="#prompt-4.20-download-buttons"><span class="header-section-number">5.3.5</span> Prompt 4.20: Download Buttons</a></li>
+  <li><a href="#prompt-4.21-responsive-dashboard-design" id="toc-prompt-4.21-responsive-dashboard-design" class="nav-link" data-scroll-target="#prompt-4.21-responsive-dashboard-design"><span class="header-section-number">5.3.6</span> Prompt 4.21: Responsive Dashboard Design</a></li>
+  <li><a href="#prompt-4.22-multi-page-dashboard" id="toc-prompt-4.22-multi-page-dashboard" class="nav-link" data-scroll-target="#prompt-4.22-multi-page-dashboard"><span class="header-section-number">5.3.7</span> Prompt 4.22: Multi-Page Dashboard</a></li>
+  </ul></li>
+  </ul></li>
+  <li><a href="#day-5-advanced-ai-powered-analysis-prompts" id="toc-day-5-advanced-ai-powered-analysis-prompts" class="nav-link" data-scroll-target="#day-5-advanced-ai-powered-analysis-prompts"><span class="header-section-number">6</span> Day 5: Advanced AI-Powered Analysis Prompts</a>
+  <ul class="collapse">
+  <li><a href="#complex-analysis-prompts" id="toc-complex-analysis-prompts" class="nav-link" data-scroll-target="#complex-analysis-prompts"><span class="header-section-number">6.1</span> Complex Analysis Prompts</a>
+  <ul class="collapse">
+  <li><a href="#prompt-5.1-comprehensive-data-audit" id="toc-prompt-5.1-comprehensive-data-audit" class="nav-link" data-scroll-target="#prompt-5.1-comprehensive-data-audit"><span class="header-section-number">6.1.1</span> Prompt 5.1: Comprehensive Data Audit</a></li>
+  <li><a href="#prompt-5.2-multiple-imputation-for-missing-data" id="toc-prompt-5.2-multiple-imputation-for-missing-data" class="nav-link" data-scroll-target="#prompt-5.2-multiple-imputation-for-missing-data"><span class="header-section-number">6.1.2</span> Prompt 5.2: Multiple Imputation for Missing Data</a></li>
+  <li><a href="#prompt-5.3-complex-survey-analysis-pipeline" id="toc-prompt-5.3-complex-survey-analysis-pipeline" class="nav-link" data-scroll-target="#prompt-5.3-complex-survey-analysis-pipeline"><span class="header-section-number">6.1.3</span> Prompt 5.3: Complex Survey Analysis Pipeline</a></li>
+  <li><a href="#prompt-5.4-longitudinal-analysis" id="toc-prompt-5.4-longitudinal-analysis" class="nav-link" data-scroll-target="#prompt-5.4-longitudinal-analysis"><span class="header-section-number">6.1.4</span> Prompt 5.4: Longitudinal Analysis</a></li>
+  <li><a href="#prompt-5.5-decomposition-analysis" id="toc-prompt-5.5-decomposition-analysis" class="nav-link" data-scroll-target="#prompt-5.5-decomposition-analysis"><span class="header-section-number">6.1.5</span> Prompt 5.5: Decomposition Analysis</a></li>
+  <li><a href="#prompt-5.6-inequality-analysis" id="toc-prompt-5.6-inequality-analysis" class="nav-link" data-scroll-target="#prompt-5.6-inequality-analysis"><span class="header-section-number">6.1.6</span> Prompt 5.6: Inequality Analysis</a></li>
+  <li><a href="#prompt-5.7-multilevel-modeling" id="toc-prompt-5.7-multilevel-modeling" class="nav-link" data-scroll-target="#prompt-5.7-multilevel-modeling"><span class="header-section-number">6.1.7</span> Prompt 5.7: Multilevel Modeling</a></li>
+  <li><a href="#prompt-5.8-survival-analysis" id="toc-prompt-5.8-survival-analysis" class="nav-link" data-scroll-target="#prompt-5.8-survival-analysis"><span class="header-section-number">6.1.8</span> Prompt 5.8: Survival Analysis</a></li>
+  <li><a href="#prompt-5.9-path-analysis-mediation" id="toc-prompt-5.9-path-analysis-mediation" class="nav-link" data-scroll-target="#prompt-5.9-path-analysis-mediation"><span class="header-section-number">6.1.9</span> Prompt 5.9: Path Analysis / Mediation</a></li>
+  <li><a href="#prompt-5.10-machine-learning-for-prediction" id="toc-prompt-5.10-machine-learning-for-prediction" class="nav-link" data-scroll-target="#prompt-5.10-machine-learning-for-prediction"><span class="header-section-number">6.1.10</span> Prompt 5.10: Machine Learning for Prediction</a></li>
+  </ul></li>
+  <li><a href="#advanced-visualization-prompts" id="toc-advanced-visualization-prompts" class="nav-link" data-scroll-target="#advanced-visualization-prompts"><span class="header-section-number">6.2</span> Advanced Visualization Prompts</a>
+  <ul class="collapse">
+  <li><a href="#prompt-5.11-small-multiples-dashboard" id="toc-prompt-5.11-small-multiples-dashboard" class="nav-link" data-scroll-target="#prompt-5.11-small-multiples-dashboard"><span class="header-section-number">6.2.1</span> Prompt 5.11: Small Multiples Dashboard</a></li>
+  <li><a href="#prompt-5.12-sankey-diagram" id="toc-prompt-5.12-sankey-diagram" class="nav-link" data-scroll-target="#prompt-5.12-sankey-diagram"><span class="header-section-number">6.2.2</span> Prompt 5.12: Sankey Diagram</a></li>
+  <li><a href="#prompt-5.13-dendrogramclustering" id="toc-prompt-5.13-dendrogramclustering" class="nav-link" data-scroll-target="#prompt-5.13-dendrogramclustering"><span class="header-section-number">6.2.3</span> Prompt 5.13: Dendrogram/Clustering</a></li>
+  <li><a href="#prompt-5.14-network-graph" id="toc-prompt-5.14-network-graph" class="nav-link" data-scroll-target="#prompt-5.14-network-graph"><span class="header-section-number">6.2.4</span> Prompt 5.14: Network Graph</a></li>
+  <li><a href="#prompt-5.15-animated-gif-export" id="toc-prompt-5.15-animated-gif-export" class="nav-link" data-scroll-target="#prompt-5.15-animated-gif-export"><span class="header-section-number">6.2.5</span> Prompt 5.15: Animated GIF Export</a></li>
+  <li><a href="#prompt-5.16-3d-surface-plot" id="toc-prompt-5.16-3d-surface-plot" class="nav-link" data-scroll-target="#prompt-5.16-3d-surface-plot"><span class="header-section-number">6.2.6</span> Prompt 5.16: 3D Surface Plot</a></li>
+  <li><a href="#prompt-5.17-circularradar-chart" id="toc-prompt-5.17-circularradar-chart" class="nav-link" data-scroll-target="#prompt-5.17-circularradar-chart"><span class="header-section-number">6.2.7</span> Prompt 5.17: Circular/Radar Chart</a></li>
+  <li><a href="#prompt-5.18-waffle-chart" id="toc-prompt-5.18-waffle-chart" class="nav-link" data-scroll-target="#prompt-5.18-waffle-chart"><span class="header-section-number">6.2.8</span> Prompt 5.18: Waffle Chart</a></li>
+  <li><a href="#prompt-5.19-ridgeline-plot" id="toc-prompt-5.19-ridgeline-plot" class="nav-link" data-scroll-target="#prompt-5.19-ridgeline-plot"><span class="header-section-number">6.2.9</span> Prompt 5.19: Ridgeline Plot</a></li>
+  <li><a href="#prompt-5.20-upset-plot" id="toc-prompt-5.20-upset-plot" class="nav-link" data-scroll-target="#prompt-5.20-upset-plot"><span class="header-section-number">6.2.10</span> Prompt 5.20: Upset Plot</a></li>
+  </ul></li>
+  <li><a href="#documentation-reproducibility-prompts" id="toc-documentation-reproducibility-prompts" class="nav-link" data-scroll-target="#documentation-reproducibility-prompts"><span class="header-section-number">6.3</span> Documentation &amp; Reproducibility Prompts</a>
+  <ul class="collapse">
+  <li><a href="#prompt-5.21-create-data-dictionary" id="toc-prompt-5.21-create-data-dictionary" class="nav-link" data-scroll-target="#prompt-5.21-create-data-dictionary"><span class="header-section-number">6.3.1</span> Prompt 5.21: Create Data Dictionary</a></li>
+  <li><a href="#prompt-5.22-session-info-documentation" id="toc-prompt-5.22-session-info-documentation" class="nav-link" data-scroll-target="#prompt-5.22-session-info-documentation"><span class="header-section-number">6.3.2</span> Prompt 5.22: Session Info Documentation</a></li>
+  <li><a href="#prompt-5.23-automated-method-section" id="toc-prompt-5.23-automated-method-section" class="nav-link" data-scroll-target="#prompt-5.23-automated-method-section"><span class="header-section-number">6.3.3</span> Prompt 5.23: Automated Method Section</a></li>
+  <li><a href="#prompt-5.24-code-style-and-documentation" id="toc-prompt-5.24-code-style-and-documentation" class="nav-link" data-scroll-target="#prompt-5.24-code-style-and-documentation"><span class="header-section-number">6.3.4</span> Prompt 5.24: Code Style and Documentation</a></li>
+  <li><a href="#prompt-5.25-create-analysis-pipeline-flowchart" id="toc-prompt-5.25-create-analysis-pipeline-flowchart" class="nav-link" data-scroll-target="#prompt-5.25-create-analysis-pipeline-flowchart"><span class="header-section-number">6.3.5</span> Prompt 5.25: Create Analysis Pipeline Flowchart</a></li>
+  </ul></li>
+  <li><a href="#prompt-engineering-tips" id="toc-prompt-engineering-tips" class="nav-link" data-scroll-target="#prompt-engineering-tips"><span class="header-section-number">6.4</span> Prompt Engineering Tips</a>
+  <ul class="collapse">
+  <li><a href="#prompt-5.26-multi-step-analysis-request" id="toc-prompt-5.26-multi-step-analysis-request" class="nav-link" data-scroll-target="#prompt-5.26-multi-step-analysis-request"><span class="header-section-number">6.4.1</span> Prompt 5.26: Multi-Step Analysis Request</a></li>
+  <li><a href="#prompt-5.27-providing-context" id="toc-prompt-5.27-providing-context" class="nav-link" data-scroll-target="#prompt-5.27-providing-context"><span class="header-section-number">6.4.2</span> Prompt 5.27: Providing Context</a></li>
+  <li><a href="#prompt-5.28-requesting-specific-packages" id="toc-prompt-5.28-requesting-specific-packages" class="nav-link" data-scroll-target="#prompt-5.28-requesting-specific-packages"><span class="header-section-number">6.4.3</span> Prompt 5.28: Requesting Specific Packages</a></li>
+  <li><a href="#prompt-5.29-asking-for-explanations" id="toc-prompt-5.29-asking-for-explanations" class="nav-link" data-scroll-target="#prompt-5.29-asking-for-explanations"><span class="header-section-number">6.4.4</span> Prompt 5.29: Asking for Explanations</a></li>
+  <li><a href="#prompt-5.30-iterative-refinement" id="toc-prompt-5.30-iterative-refinement" class="nav-link" data-scroll-target="#prompt-5.30-iterative-refinement"><span class="header-section-number">6.4.5</span> Prompt 5.30: Iterative Refinement</a></li>
+  <li><a href="#prompt-5.31-error-debugging" id="toc-prompt-5.31-error-debugging" class="nav-link" data-scroll-target="#prompt-5.31-error-debugging"><span class="header-section-number">6.4.6</span> Prompt 5.31: Error Debugging</a></li>
+  <li><a href="#prompt-5.32-validation-requests" id="toc-prompt-5.32-validation-requests" class="nav-link" data-scroll-target="#prompt-5.32-validation-requests"><span class="header-section-number">6.4.7</span> Prompt 5.32: Validation Requests</a></li>
+  </ul></li>
+  </ul></li>
+  <li><a href="#appendix-quick-reference" id="toc-appendix-quick-reference" class="nav-link" data-scroll-target="#appendix-quick-reference"><span class="header-section-number">7</span> Appendix: Quick Reference</a>
+  <ul class="collapse">
+  <li><a href="#common-data-structures" id="toc-common-data-structures" class="nav-link" data-scroll-target="#common-data-structures"><span class="header-section-number">7.1</span> Common Data Structures</a>
+  <ul class="collapse">
+  <li><a href="#pdhs-variables" id="toc-pdhs-variables" class="nav-link" data-scroll-target="#pdhs-variables"><span class="header-section-number">7.1.1</span> PDHS Variables</a></li>
+  <li><a href="#nhanes-variables" id="toc-nhanes-variables" class="nav-link" data-scroll-target="#nhanes-variables"><span class="header-section-number">7.1.2</span> NHANES Variables</a></li>
+  </ul></li>
+  <li><a href="#essential-packages" id="toc-essential-packages" class="nav-link" data-scroll-target="#essential-packages"><span class="header-section-number">7.2</span> Essential Packages</a></li>
+  <li><a href="#color-palette-recommendations" id="toc-color-palette-recommendations" class="nav-link" data-scroll-target="#color-palette-recommendations"><span class="header-section-number">7.3</span> Color Palette Recommendations</a></li>
+  <li><a href="#useful-resources" id="toc-useful-resources" class="nav-link" data-scroll-target="#useful-resources"><span class="header-section-number">7.4</span> Useful Resources</a></li>
+  </ul></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/Zahedasghar/d4d/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li><li><a href="https://github.com/Zahedasghar/d4d/blob/main/reference/ai-prompts/02-ai-prompts-library.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../reference/ai-prompts/index.html">AI prompt library</a></li><li class="breadcrumb-item"><a href="../../reference/ai-prompts/02-ai-prompts-library.html">AI Prompts Library for Demographic Analysis Workshop</a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title">AI Prompts Library for Demographic Analysis Workshop</h1>
+<p class="subtitle lead">Comprehensive Prompts for Data Analysis, EDA, and Spatial Visualization</p>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>5-Day Workshop: Demographic Analysis Using R </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">August 30, 2026</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="introduction-to-ai-powered-data-analysis" class="level1" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> Introduction to AI-Powered Data Analysis</h1>
+<p>This document provides a comprehensive collection of AI prompts for demographic data analysis. These prompts are designed to work with AI assistants in Positron IDE or similar tools that support natural language code generation.</p>
+<section id="how-to-use-these-prompts" class="level2" data-number="1.1">
+<h2 data-number="1.1" class="anchored" data-anchor-id="how-to-use-these-prompts"><span class="header-section-number">1.1</span> How to Use These Prompts</h2>
+<ol type="1">
+<li><strong>Copy the prompt</strong> relevant to your task</li>
+<li><strong>Paste into your AI assistant</strong> (Positron’s Copilot, GitHub Copilot, etc.)</li>
+<li><strong>Review and modify</strong> the generated code</li>
+<li><strong>Validate the output</strong> before using in production</li>
+<li><strong>Iterate</strong> by refining your prompt if needed</li>
+</ol>
+</section>
+<section id="prompt-structure-guidelines" class="level2" data-number="1.2">
+<h2 data-number="1.2" class="anchored" data-anchor-id="prompt-structure-guidelines"><span class="header-section-number">1.2</span> Prompt Structure Guidelines</h2>
+<p><strong>Good Prompts Include:</strong> - Clear objective - Data structure description - Expected output format - Specific package preferences (if any) - Variable names or data examples</p>
+</section>
+</section>
+<section id="day-1-data-import-wrangling-prompts" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> Day 1: Data Import &amp; Wrangling Prompts</h1>
+<section id="setting-up-environment" class="level2" data-number="2.1">
+<h2 data-number="2.1" class="anchored" data-anchor-id="setting-up-environment"><span class="header-section-number">2.1</span> Setting Up Environment</h2>
+<section id="prompt-1.1-project-setup" class="level3" data-number="2.1.1">
+<h3 data-number="2.1.1" class="anchored" data-anchor-id="prompt-1.1-project-setup"><span class="header-section-number">2.1.1</span> Prompt 1.1: Project Setup</h3>
+<pre><code>Create an R script to set up a new demographic analysis project with:
+- Required packages: tidyverse, haven, readxl, httr, jsonlite
+- Create folder structure: data/, outputs/, scripts/, figures/
+- Set up relative file paths using here package
+- Include package installation check that only installs missing packages</code></pre>
+</section>
+<section id="prompt-1.2-load-essential-packages" class="level3" data-number="2.1.2">
+<h3 data-number="2.1.2" class="anchored" data-anchor-id="prompt-1.2-load-essential-packages"><span class="header-section-number">2.1.2</span> Prompt 1.2: Load Essential Packages</h3>
+<pre><code>Write R code to load all necessary packages for demographic analysis including:
+- Data manipulation: tidyverse, janitor
+- Data import: haven, readxl, foreign
+- Survey data: survey, srvyr
+- Tables: gt, gtsummary, kableExtra
+- Visualization: ggplot2, plotly, patchwork
+Include error handling for missing packages</code></pre>
+</section>
+</section>
+<section id="data-import-prompts" class="level2" data-number="2.2">
+<h2 data-number="2.2" class="anchored" data-anchor-id="data-import-prompts"><span class="header-section-number">2.2</span> Data Import Prompts</h2>
+<section id="prompt-1.3-import-csv-data" class="level3" data-number="2.2.1">
+<h3 data-number="2.2.1" class="anchored" data-anchor-id="prompt-1.3-import-csv-data"><span class="header-section-number">2.2.1</span> Prompt 1.3: Import CSV Data</h3>
+<pre><code>Write R code to import a CSV file containing demographic data with:
+- Automatic data type detection
+- Proper handling of missing values (NA, blank, "N/A")
+- Column name cleaning (remove spaces, special characters)
+- Display first few rows and data structure
+- Show summary statistics
+File path: here::here("data/population_data.csv")</code></pre>
+</section>
+<section id="prompt-1.4-import-excel-with-multiple-sheets" class="level3" data-number="2.2.2">
+<h3 data-number="2.2.2" class="anchored" data-anchor-id="prompt-1.4-import-excel-with-multiple-sheets"><span class="header-section-number">2.2.2</span> Prompt 1.4: Import Excel with Multiple Sheets</h3>
+<pre><code>Create a function to import all sheets from an Excel file containing:
+- Sheet 1: Population by age group
+- Sheet 2: Fertility indicators
+- Sheet 3: Mortality rates
+Store each sheet as a separate dataframe with descriptive names
+File: here::here("data/demographic_indicators.xlsx")</code></pre>
+</section>
+<section id="prompt-1.5-import-pdhs-data-stata-format" class="level3" data-number="2.2.3">
+<h3 data-number="2.2.3" class="anchored" data-anchor-id="prompt-1.5-import-pdhs-data-stata-format"><span class="header-section-number">2.2.3</span> Prompt 1.5: Import PDHS Data (Stata Format)</h3>
+<pre><code>Write R code to import PDHS individual recode data from .dta file with:
+- Preserve value labels from Stata
+- Convert labeled variables to factors where appropriate
+- Keep variable labels as attributes
+- Show variable names, labels, and value labels for key variables
+- Handle survey weights properly
+File: here::here("data/PKIR71FL.DTA")</code></pre>
+</section>
+<section id="prompt-1.6-import-spss-dataset" class="level3" data-number="2.2.4">
+<h3 data-number="2.2.4" class="anchored" data-anchor-id="prompt-1.6-import-spss-dataset"><span class="header-section-number">2.2.4</span> Prompt 1.6: Import SPSS Dataset</h3>
+<pre><code>Import SPSS (.sav) file from PSLM survey:
+- Maintain variable labels and value labels
+- Convert to tibble format
+- Create a data dictionary showing variable names, labels, and types
+- Handle missing values coded as 99 or 999
+File: here::here("data/pslm_2020.sav")</code></pre>
+</section>
+<section id="prompt-1.7-api-data-import---world-bank" class="level3" data-number="2.2.5">
+<h3 data-number="2.2.5" class="anchored" data-anchor-id="prompt-1.7-api-data-import---world-bank"><span class="header-section-number">2.2.5</span> Prompt 1.7: API Data Import - World Bank</h3>
+<pre><code>Write R code to fetch demographic indicators from World Bank API:
+- Indicators: Population total, fertility rate, life expectancy
+- Countries: Pakistan, India, Bangladesh
+- Years: 2010-2023
+- Clean and reshape data to long format
+- Handle API errors gracefully</code></pre>
+</section>
+<section id="prompt-1.8-api-data-import---un-population-division" class="level3" data-number="2.2.6">
+<h3 data-number="2.2.6" class="anchored" data-anchor-id="prompt-1.8-api-data-import---un-population-division"><span class="header-section-number">2.2.6</span> Prompt 1.8: API Data Import - UN Population Division</h3>
+<pre><code>Create code to download population data from UN API:
+- Age-specific population by sex
+- For Pakistan
+- Years 2020-2030
+- Parse JSON response and convert to dataframe</code></pre>
+</section>
+<section id="prompt-1.9-import-nhanes-data" class="level3" data-number="2.2.7">
+<h3 data-number="2.2.7" class="anchored" data-anchor-id="prompt-1.9-import-nhanes-data"><span class="header-section-number">2.2.7</span> Prompt 1.9: Import NHANES Data</h3>
+<pre><code>Write R code to import NHANES (National Health and Nutrition Examination Survey) data:
+- Demographics file (DEMO)
+- Examination data (body measurements)
+- Merge datasets using SEQN (respondent sequence number)
+- Keep only complete cases for BMI analysis
+- Apply survey weights
+Use nhanesA package if available, otherwise download from CDC website</code></pre>
+</section>
+<section id="prompt-1.10-import-our-world-in-data-csv" class="level3" data-number="2.2.8">
+<h3 data-number="2.2.8" class="anchored" data-anchor-id="prompt-1.10-import-our-world-in-data-csv"><span class="header-section-number">2.2.8</span> Prompt 1.10: Import Our World in Data CSV</h3>
+<pre><code>Import COVID-19 or health-related data from Our World in Data:
+- URL: https://covid.ourworldindata.org/data/owid-covid-data.csv
+- Filter for South Asian countries
+- Select relevant columns: date, location, total_cases, new_deaths
+- Convert date to proper format
+- Handle missing values</code></pre>
+</section>
+</section>
+<section id="data-wrangling-prompts" class="level2" data-number="2.3">
+<h2 data-number="2.3" class="anchored" data-anchor-id="data-wrangling-prompts"><span class="header-section-number">2.3</span> Data Wrangling Prompts</h2>
+<section id="prompt-1.11-basic-data-cleaning" class="level3" data-number="2.3.1">
+<h3 data-number="2.3.1" class="anchored" data-anchor-id="prompt-1.11-basic-data-cleaning"><span class="header-section-number">2.3.1</span> Prompt 1.11: Basic Data Cleaning</h3>
+<pre><code>Clean demographic survey data:
+- Remove duplicate rows based on household ID
+- Standardize column names to lowercase with underscores
+- Convert character variables to appropriate types (factor, numeric, date)
+- Replace negative values (-1, -8, -9) with NA
+- Create age groups: 0-14, 15-49, 50-64, 65+</code></pre>
+</section>
+<section id="prompt-1.12-recode-variables" class="level3" data-number="2.3.2">
+<h3 data-number="2.3.2" class="anchored" data-anchor-id="prompt-1.12-recode-variables"><span class="header-section-number">2.3.2</span> Prompt 1.12: Recode Variables</h3>
+<pre><code>Recode education variable in survey data:
+- Original: 0=No education, 1=Primary, 2=Secondary, 3=Higher
+- Create new factor with labels: "No education", "Primary", "Secondary", "Higher"
+- Create binary variable: educated (Secondary or Higher) vs not
+- Handle missing values appropriately
+Variable name: v106 or education_level</code></pre>
+</section>
+<section id="prompt-1.13-create-wealth-index" class="level3" data-number="2.3.3">
+<h3 data-number="2.3.3" class="anchored" data-anchor-id="prompt-1.13-create-wealth-index"><span class="header-section-number">2.3.3</span> Prompt 1.13: Create Wealth Index</h3>
+<pre><code>Create wealth quintiles from asset ownership data:
+- Variables: has_tv, has_radio, has_bicycle, has_car, has_electricity
+- Use principal component analysis or simple scoring
+- Divide into quintiles: Poorest, Poorer, Middle, Richer, Richest
+- Show distribution across urban/rural residence</code></pre>
+</section>
+<section id="prompt-1.14-age-group-creation" class="level3" data-number="2.3.4">
+<h3 data-number="2.3.4" class="anchored" data-anchor-id="prompt-1.14-age-group-creation"><span class="header-section-number">2.3.4</span> Prompt 1.14: Age Group Creation</h3>
+<pre><code>Create multiple age groupings from age variable:
+- 5-year age groups (0-4, 5-9, 10-14, ...)
+- Reproductive age (15-49) indicator
+- Elderly (65+) indicator
+- Custom grouping: Child (0-14), Adult (15-64), Elderly (65+)
+Handle missing ages and outliers (age &gt; 120)</code></pre>
+</section>
+<section id="prompt-1.15-geographic-variable-creation" class="level3" data-number="2.3.5">
+<h3 data-number="2.3.5" class="anchored" data-anchor-id="prompt-1.15-geographic-variable-creation"><span class="header-section-number">2.3.5</span> Prompt 1.15: Geographic Variable Creation</h3>
+<pre><code>Create geographic hierarchy variables:
+- Extract province from district code
+- Create urban/rural from residence variable
+- Create regional grouping (North, South, Central, etc.)
+- Handle special administrative areas
+Based on Pakistan geographic codes</code></pre>
+</section>
+<section id="prompt-1.16-filter-and-select-data" class="level3" data-number="2.3.6">
+<h3 data-number="2.3.6" class="anchored" data-anchor-id="prompt-1.16-filter-and-select-data"><span class="header-section-number">2.3.6</span> Prompt 1.16: Filter and Select Data</h3>
+<pre><code>From PDHS dataset, create subset for maternal health analysis:
+- Keep only women aged 15-49
+- Filter for births in last 5 years
+- Select variables: age, education, wealth, antenatal visits, delivery place
+- Remove records with missing outcome variable
+- Keep survey weights</code></pre>
+</section>
+<section id="prompt-1.17-summarize-by-groups" class="level3" data-number="2.3.7">
+<h3 data-number="2.3.7" class="anchored" data-anchor-id="prompt-1.17-summarize-by-groups"><span class="header-section-number">2.3.7</span> Prompt 1.17: Summarize by Groups</h3>
+<pre><code>Calculate summary statistics by province and urban/rural:
+- Mean age at first birth
+- Median number of children
+- Percentage with secondary education
+- Sample size in each group
+- Include survey weights in calculations
+Display in publication-ready table</code></pre>
+</section>
+<section id="prompt-1.18-merge-household-and-individual-data" class="level3" data-number="2.3.8">
+<h3 data-number="2.3.8" class="anchored" data-anchor-id="prompt-1.18-merge-household-and-individual-data"><span class="header-section-number">2.3.8</span> Prompt 1.18: Merge Household and Individual Data</h3>
+<pre><code>Merge PDHS household and individual files:
+- Household file: household characteristics, wealth index
+- Individual file: women's reproductive history
+- Merge key: household cluster and number
+- Keep all individuals, add household characteristics
+- Verify merge success (check for unmatched records)</code></pre>
+</section>
+<section id="prompt-1.19-reshape-wide-to-long" class="level3" data-number="2.3.9">
+<h3 data-number="2.3.9" class="anchored" data-anchor-id="prompt-1.19-reshape-wide-to-long"><span class="header-section-number">2.3.9</span> Prompt 1.19: Reshape Wide to Long</h3>
+<pre><code>Reshape birth history data from wide to long format:
+- Wide: one row per woman with variables b1_01, b1_02, ... (birth dates)
+- Long: one row per birth with columns: woman_id, birth_order, birth_date
+- Handle missing births (women with fewer children)
+- Calculate birth intervals</code></pre>
+</section>
+<section id="prompt-1.20-create-composite-indicators" class="level3" data-number="2.3.10">
+<h3 data-number="2.3.10" class="anchored" data-anchor-id="prompt-1.20-create-composite-indicators"><span class="header-section-number">2.3.10</span> Prompt 1.20: Create Composite Indicators</h3>
+<pre><code>Create composite maternal health care index:
+- Components: 4+ ANC visits, skilled birth attendance, PNC within 48 hours
+- Scoring: 0-3 scale
+- Categorize as: No care, Partial care, Full care
+- Calculate by socioeconomic characteristics
+Show distribution and means</code></pre>
+</section>
+</section>
+</section>
+<section id="day-2-exploratory-data-analysis-visualization-prompts" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> Day 2: Exploratory Data Analysis &amp; Visualization Prompts</h1>
+<section id="descriptive-statistics-prompts" class="level2" data-number="3.1">
+<h2 data-number="3.1" class="anchored" data-anchor-id="descriptive-statistics-prompts"><span class="header-section-number">3.1</span> Descriptive Statistics Prompts</h2>
+<section id="prompt-2.1-basic-summary-statistics" class="level3" data-number="3.1.1">
+<h3 data-number="3.1.1" class="anchored" data-anchor-id="prompt-2.1-basic-summary-statistics"><span class="header-section-number">3.1.1</span> Prompt 2.1: Basic Summary Statistics</h3>
+<pre><code>Create comprehensive summary statistics for PDHS data:
+- Numeric variables: mean, median, SD, min, max, missing count
+- Categorical variables: frequency counts and percentages
+- Stratify by urban/rural residence
+- Format as publication-ready table using gt package
+Variables: age, education, children_born, wealth_index</code></pre>
+</section>
+<section id="prompt-2.2-frequency-tables" class="level3" data-number="3.1.2">
+<h3 data-number="3.1.2" class="anchored" data-anchor-id="prompt-2.2-frequency-tables"><span class="header-section-number">3.1.2</span> Prompt 2.2: Frequency Tables</h3>
+<pre><code>Generate frequency tables for key demographic indicators:
+- Contraceptive use by method type
+- Cross-tabulate by age group and residence
+- Include row and column percentages
+- Add chi-square test for independence
+- Format with gtsummary package</code></pre>
+</section>
+<section id="prompt-2.3-survey-weighted-summary-tables" class="level3" data-number="3.1.3">
+<h3 data-number="3.1.3" class="anchored" data-anchor-id="prompt-2.3-survey-weighted-summary-tables"><span class="header-section-number">3.1.3</span> Prompt 2.3: Survey-Weighted Summary Tables</h3>
+<pre><code>Create survey-weighted summary statistics using PDHS data:
+- Account for stratification, clustering, and sampling weights
+- Variables: stunting, wasting, underweight in children
+- Stratify by province and wealth quintile
+- Include 95% confidence intervals
+- Use srvyr package</code></pre>
+</section>
+<section id="prompt-2.4-cross-tabulation-matrix" class="level3" data-number="3.1.4">
+<h3 data-number="3.1.4" class="anchored" data-anchor-id="prompt-2.4-cross-tabulation-matrix"><span class="header-section-number">3.1.4</span> Prompt 2.4: Cross-Tabulation Matrix</h3>
+<pre><code>Create cross-tabulation of:
+- Rows: Mother's education level (4 categories)
+- Columns: Child vaccination status (complete, incomplete, none)
+- Include: counts, row %, column %, total %
+- Add statistical test (chi-square)
+- Highlight significant associations
+- Use janitor::tabyl() or gtsummary</code></pre>
+</section>
+<section id="prompt-2.5-comparison-table-across-provinces" class="level3" data-number="3.1.5">
+<h3 data-number="3.1.5" class="anchored" data-anchor-id="prompt-2.5-comparison-table-across-provinces"><span class="header-section-number">3.1.5</span> Prompt 2.5: Comparison Table Across Provinces</h3>
+<pre><code>Create comparison table of maternal health indicators across provinces:
+- Indicators: ANC 4+ visits, institutional delivery, skilled attendance
+- Columns: Punjab, Sindh, KPK, Balochistan, ICT
+- Include sample size, percentage, 95% CI
+- Add overall Pakistan estimate
+- Format professionally with gt package</code></pre>
+</section>
+<section id="prompt-2.6-interactive-data-table" class="level3" data-number="3.1.6">
+<h3 data-number="3.1.6" class="anchored" data-anchor-id="prompt-2.6-interactive-data-table"><span class="header-section-number">3.1.6</span> Prompt 2.6: Interactive Data Table</h3>
+<pre><code>Create interactive datatable for exploring NHANES data:
+- Include: ID, age, sex, BMI, blood pressure, diabetes status
+- Add filters for each column
+- Enable search functionality
+- Add download buttons (CSV, Excel)
+- Color code BMI categories
+- Use DT package with extensions</code></pre>
+</section>
+</section>
+<section id="static-visualization-prompts" class="level2" data-number="3.2">
+<h2 data-number="3.2" class="anchored" data-anchor-id="static-visualization-prompts"><span class="header-section-number">3.2</span> Static Visualization Prompts</h2>
+<section id="prompt-2.7-population-pyramid" class="level3" data-number="3.2.1">
+<h3 data-number="3.2.1" class="anchored" data-anchor-id="prompt-2.7-population-pyramid"><span class="header-section-number">3.2.1</span> Prompt 2.7: Population Pyramid</h3>
+<pre><code>Create population pyramid for Pakistan showing:
+- Age groups: 5-year intervals (0-4, 5-9, ... 80+)
+- Males on left (negative), females on right (positive)
+- Different colors for male/female
+- Age labels on y-axis
+- Clean theme suitable for publication
+- Add percentage scale on x-axis
+Data: population counts by age and sex</code></pre>
+</section>
+<section id="prompt-2.8-population-pyramid-comparison" class="level3" data-number="3.2.2">
+<h3 data-number="3.2.2" class="anchored" data-anchor-id="prompt-2.8-population-pyramid-comparison"><span class="header-section-number">3.2.2</span> Prompt 2.8: Population Pyramid Comparison</h3>
+<pre><code>Create side-by-side population pyramids comparing:
+- Urban vs Rural Pakistan
+- Use facet_wrap or create two separate pyramids
+- Same scale for comparison
+- Add population size annotations
+- Use consistent color scheme
+- Include title and caption with data source</code></pre>
+</section>
+<section id="prompt-2.9-fertility-trends-over-time" class="level3" data-number="3.2.3">
+<h3 data-number="3.2.3" class="anchored" data-anchor-id="prompt-2.9-fertility-trends-over-time"><span class="header-section-number">3.2.3</span> Prompt 2.9: Fertility Trends Over Time</h3>
+<pre><code>Create line graph showing total fertility rate trends:
+- Data: Pakistan, 1990-2023
+- Y-axis: TFR (0-6 range)
+- X-axis: Year
+- Add reference line at replacement level (2.1)
+- Include confidence intervals as ribbon
+- Use colorblind-friendly colors
+- Add data labels for key years</code></pre>
+</section>
+<section id="prompt-2.10-multiple-trend-lines" class="level3" data-number="3.2.4">
+<h3 data-number="3.2.4" class="anchored" data-anchor-id="prompt-2.10-multiple-trend-lines"><span class="header-section-number">3.2.4</span> Prompt 2.10: Multiple Trend Lines</h3>
+<pre><code>Plot trends for multiple countries:
+- Countries: Pakistan, India, Bangladesh, Afghanistan
+- Indicator: Under-5 mortality rate
+- Time: 2000-2023
+- Different line types and colors for each country
+- Legend positioned appropriately
+- Format axes with proper labels and scales</code></pre>
+</section>
+<section id="prompt-2.11-bar-chart---province-comparison" class="level3" data-number="3.2.5">
+<h3 data-number="3.2.5" class="anchored" data-anchor-id="prompt-2.11-bar-chart---province-comparison"><span class="header-section-number">3.2.5</span> Prompt 2.11: Bar Chart - Province Comparison</h3>
+<pre><code>Create grouped bar chart comparing provinces:
+- Indicators: Literacy rate for males and females
+- X-axis: Provinces
+- Grouped bars for male/female
+- Add value labels on bars
+- Order provinces by total literacy rate
+- Use professional color palette
+- Include sample sizes in caption</code></pre>
+</section>
+<section id="prompt-2.12-stacked-bar-chart" class="level3" data-number="3.2.6">
+<h3 data-number="3.2.6" class="anchored" data-anchor-id="prompt-2.12-stacked-bar-chart"><span class="header-section-number">3.2.6</span> Prompt 2.12: Stacked Bar Chart</h3>
+<pre><code>Create stacked bar chart for contraceptive method mix:
+- X-axis: Years (2007, 2013, 2018, 2023)
+- Y-axis: Percentage (0-100%)
+- Stacks: Different contraceptive methods
+- Show percentage labels for major methods
+- Use distinct colors for each method
+- Add legend</code></pre>
+</section>
+<section id="prompt-2.13-scatter-plot-with-regression" class="level3" data-number="3.2.7">
+<h3 data-number="3.2.7" class="anchored" data-anchor-id="prompt-2.13-scatter-plot-with-regression"><span class="header-section-number">3.2.7</span> Prompt 2.13: Scatter Plot with Regression</h3>
+<pre><code>Create scatter plot showing relationship between:
+- X-axis: Female literacy rate (%)
+- Y-axis: Total fertility rate
+- Points: Districts of Pakistan
+- Add linear regression line with 95% CI
+- Label outlier districts
+- Color points by province
+- Add correlation coefficient annotation</code></pre>
+</section>
+<section id="prompt-2.14-faceted-plots" class="level3" data-number="3.2.8">
+<h3 data-number="3.2.8" class="anchored" data-anchor-id="prompt-2.14-faceted-plots"><span class="header-section-number">3.2.8</span> Prompt 2.14: Faceted Plots</h3>
+<pre><code>Create faceted visualization:
+- Plot: BMI distribution (histogram or density)
+- Facets: By age group (4 groups) and sex (2 groups)
+- Total facets: 8 (4x2 grid)
+- Same x-axis scale for comparison
+- Add mean line in each facet
+- Use theme_minimal()
+Data: NHANES</code></pre>
+</section>
+<section id="prompt-2.15-box-plots-by-group" class="level3" data-number="3.2.9">
+<h3 data-number="3.2.9" class="anchored" data-anchor-id="prompt-2.15-box-plots-by-group"><span class="header-section-number">3.2.9</span> Prompt 2.15: Box Plots by Group</h3>
+<pre><code>Create box plots showing:
+- Y-axis: Age at first birth
+- X-axis: Education level (4 categories)
+- Color: Urban/Rural residence
+- Show individual points with jitter
+- Add mean as diamond
+- Include sample sizes
+- Horizontal layout for readability</code></pre>
+</section>
+<section id="prompt-2.16-violin-plots" class="level3" data-number="3.2.10">
+<h3 data-number="3.2.10" class="anchored" data-anchor-id="prompt-2.16-violin-plots"><span class="header-section-number">3.2.10</span> Prompt 2.16: Violin Plots</h3>
+<pre><code>Create violin plots for income distribution:
+- By wealth quintile
+- Overlay box plot inside violin
+- Show median and quartiles
+- Use semi-transparent fills
+- Add individual data points
+- Compare across provinces</code></pre>
+</section>
+<section id="prompt-2.17-heatmap-for-correlation-matrix" class="level3" data-number="3.2.11">
+<h3 data-number="3.2.11" class="anchored" data-anchor-id="prompt-2.17-heatmap-for-correlation-matrix"><span class="header-section-number">3.2.11</span> Prompt 2.17: Heatmap for Correlation Matrix</h3>
+<pre><code>Create correlation heatmap for health indicators:
+- Variables: BMI, blood pressure, cholesterol, glucose, age
+- Show correlation coefficients in cells
+- Use diverging color scale (blue-white-red)
+- Cluster similar variables together
+- Add significance stars (* p&lt;0.05, ** p&lt;0.01)
+Data: NHANES</code></pre>
+</section>
+<section id="prompt-2.18-composite-multi-panel-figure" class="level3" data-number="3.2.12">
+<h3 data-number="3.2.12" class="anchored" data-anchor-id="prompt-2.18-composite-multi-panel-figure"><span class="header-section-number">3.2.12</span> Prompt 2.18: Composite Multi-Panel Figure</h3>
+<pre><code>Create publication-quality multi-panel figure:
+- Panel A: Population pyramid
+- Panel B: Fertility trend line
+- Panel C: Province comparison bar chart
+- Panel D: Education by wealth scatter
+- Use patchwork package to combine
+- Add panel labels (A, B, C, D)
+- Ensure consistent styling across panels</code></pre>
+</section>
+</section>
+<section id="interactive-visualization-prompts" class="level2" data-number="3.3">
+<h2 data-number="3.3" class="anchored" data-anchor-id="interactive-visualization-prompts"><span class="header-section-number">3.3</span> Interactive Visualization Prompts</h2>
+<section id="prompt-2.19-interactive-line-chart" class="level3" data-number="3.3.1">
+<h3 data-number="3.3.1" class="anchored" data-anchor-id="prompt-2.19-interactive-line-chart"><span class="header-section-number">3.3.1</span> Prompt 2.19: Interactive Line Chart</h3>
+<pre><code>Create interactive plotly chart:
+- Multiple demographic indicators over time
+- Toggle different indicators on/off
+- Hover shows: year, value, indicator name
+- Zoom and pan enabled
+- Download plot option
+- Professional theme
+Indicators: Population growth rate, fertility rate, mortality rate</code></pre>
+</section>
+<section id="prompt-2.20-animated-population-pyramid" class="level3" data-number="3.3.2">
+<h3 data-number="3.3.2" class="anchored" data-anchor-id="prompt-2.20-animated-population-pyramid"><span class="header-section-number">3.3.2</span> Prompt 2.20: Animated Population Pyramid</h3>
+<pre><code>Create animated population pyramid showing demographic transition:
+- Animate through years: 1990, 2000, 2010, 2020, 2030
+- Smooth transitions between years
+- Show year prominently on plot
+- Play/pause controls
+- Use gganimate or plotly
+- Export as GIF or HTML</code></pre>
+</section>
+<section id="prompt-2.21-interactive-scatter-plot" class="level3" data-number="3.3.3">
+<h3 data-number="3.3.3" class="anchored" data-anchor-id="prompt-2.21-interactive-scatter-plot"><span class="header-section-number">3.3.3</span> Prompt 2.21: Interactive Scatter Plot</h3>
+<pre><code>Create interactive scatter plot with plotly:
+- X: GDP per capita
+- Y: Life expectancy
+- Size: Population size
+- Color: Region
+- Animation: Year (2000-2023)
+- Hover: Country name and exact values
+- Play/pause animation controls
+Data: Our World in Data or World Bank</code></pre>
+</section>
+<section id="prompt-2.22-interactive-dashboard-component" class="level3" data-number="3.3.4">
+<h3 data-number="3.3.4" class="anchored" data-anchor-id="prompt-2.22-interactive-dashboard-component"><span class="header-section-number">3.3.4</span> Prompt 2.22: Interactive Dashboard Component</h3>
+<pre><code>Create interactive plotly bar chart for dashboard:
+- Vaccination coverage by type (BCG, DPT, Measles, Polio)
+- Dropdown to select province
+- Update plot when selection changes
+- Show percentages on bars
+- Add target line (e.g., 90% coverage)
+- Responsive design</code></pre>
+</section>
+</section>
+</section>
+<section id="day-3-statistical-modeling-spatial-analysis-prompts" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> Day 3: Statistical Modeling &amp; Spatial Analysis Prompts</h1>
+<section id="survey-design-prompts" class="level2" data-number="4.1">
+<h2 data-number="4.1" class="anchored" data-anchor-id="survey-design-prompts"><span class="header-section-number">4.1</span> Survey Design Prompts</h2>
+<section id="prompt-3.1-define-survey-design" class="level3" data-number="4.1.1">
+<h3 data-number="4.1.1" class="anchored" data-anchor-id="prompt-3.1-define-survey-design"><span class="header-section-number">4.1.1</span> Prompt 3.1: Define Survey Design</h3>
+<pre><code>Set up survey design object for PDHS data:
+- Stratification variable: province
+- Cluster variable: PSU (primary sampling unit)
+- Sampling weights: v005 (individual weight)
+- Finite population correction if available
+- Use survey or srvyr package
+- Verify design with summary statistics</code></pre>
+</section>
+<section id="prompt-3.2-survey-weighted-means" class="level3" data-number="4.1.2">
+<h3 data-number="4.1.2" class="anchored" data-anchor-id="prompt-3.2-survey-weighted-means"><span class="header-section-number">4.1.2</span> Prompt 3.2: Survey-Weighted Means</h3>
+<pre><code>Calculate survey-weighted means with standard errors:
+- Outcome: Number of antenatal care visits
+- By groups: Education level, wealth quintile
+- Include: mean, SE, 95% CI, design effect
+- Compare weighted vs unweighted estimates
+- Format results in table</code></pre>
+</section>
+</section>
+<section id="regression-modeling-prompts" class="level2" data-number="4.2">
+<h2 data-number="4.2" class="anchored" data-anchor-id="regression-modeling-prompts"><span class="header-section-number">4.2</span> Regression Modeling Prompts</h2>
+<section id="prompt-3.3-simple-linear-regression" class="level3" data-number="4.2.1">
+<h3 data-number="4.2.1" class="anchored" data-anchor-id="prompt-3.3-simple-linear-regression"><span class="header-section-number">4.2.1</span> Prompt 3.3: Simple Linear Regression</h3>
+<pre><code>Run linear regression to predict:
+- Outcome: Age at first birth (continuous)
+- Predictor: Years of education
+- Include: regression table with coefficients, SE, p-values
+- Check assumptions: residual plots, normality, homoscedasticity
+- Calculate R-squared
+- Interpret coefficient in context</code></pre>
+</section>
+<section id="prompt-3.4-multiple-linear-regression" class="level3" data-number="4.2.2">
+<h3 data-number="4.2.2" class="anchored" data-anchor-id="prompt-3.4-multiple-linear-regression"><span class="header-section-number">4.2.2</span> Prompt 3.4: Multiple Linear Regression</h3>
+<pre><code>Build multiple regression model for:
+- Outcome: Number of children ever born
+- Predictors: age, education, wealth index, urban/rural
+- Check multicollinearity (VIF)
+- Create regression table with stargazer or gtsummary
+- Test overall model significance
+- Interpret adjusted R-squared</code></pre>
+</section>
+<section id="prompt-3.5-logistic-regression-binary-outcome" class="level3" data-number="4.2.3">
+<h3 data-number="4.2.3" class="anchored" data-anchor-id="prompt-3.5-logistic-regression-binary-outcome"><span class="header-section-number">4.2.3</span> Prompt 3.5: Logistic Regression (Binary Outcome)</h3>
+<pre><code>Run logistic regression to predict:
+- Outcome: Institutional delivery (Yes/No)
+- Predictors: mother's education, wealth, age, ANC visits
+- Report: odds ratios, 95% CI, p-values
+- Interpret odds ratios in plain language
+- Check model fit: Hosmer-Lemeshow test, AUC
+- Create coefficient plot with confidence intervals</code></pre>
+</section>
+<section id="prompt-3.6-survey-weighted-logistic-regression" class="level3" data-number="4.2.4">
+<h3 data-number="4.2.4" class="anchored" data-anchor-id="prompt-3.6-survey-weighted-logistic-regression"><span class="header-section-number">4.2.4</span> Prompt 3.6: Survey-Weighted Logistic Regression</h3>
+<pre><code>Run survey-weighted logistic regression:
+- Outcome: Complete child vaccination (binary)
+- Predictors: mother's education, wealth quintile, residence
+- Account for complex survey design
+- Calculate design-adjusted odds ratios and CI
+- Report both crude and adjusted models
+- Use svyglm() from survey package</code></pre>
+</section>
+<section id="prompt-3.7-multinomial-logistic-regression" class="level3" data-number="4.2.5">
+<h3 data-number="4.2.5" class="anchored" data-anchor-id="prompt-3.7-multinomial-logistic-regression"><span class="header-section-number">4.2.5</span> Prompt 3.7: Multinomial Logistic Regression</h3>
+<pre><code>Fit multinomial model for:
+- Outcome: Contraceptive method type (None, Traditional, Modern)
+- Predictors: age, parity, education, wealth
+- Calculate relative risk ratios
+- Create table of results for each outcome category
+- Include predicted probabilities example
+- Use nnet::multinom() or similar</code></pre>
+</section>
+<section id="prompt-3.8-poisson-regression" class="level3" data-number="4.2.6">
+<h3 data-number="4.2.6" class="anchored" data-anchor-id="prompt-3.8-poisson-regression"><span class="header-section-number">4.2.6</span> Prompt 3.8: Poisson Regression</h3>
+<pre><code>Model count outcome using Poisson regression:
+- Outcome: Number of ANC visits (count)
+- Predictors: education, wealth, distance to facility
+- Check for overdispersion
+- If overdispersed, use negative binomial
+- Report incidence rate ratios (IRR)
+- Interpret coefficients</code></pre>
+</section>
+<section id="prompt-3.9-model-comparison" class="level3" data-number="4.2.7">
+<h3 data-number="4.2.7" class="anchored" data-anchor-id="prompt-3.9-model-comparison"><span class="header-section-number">4.2.7</span> Prompt 3.9: Model Comparison</h3>
+<pre><code>Compare multiple models for child stunting:
+- Model 1: Socioeconomic factors only
+- Model 2: Model 1 + maternal factors
+- Model 3: Model 2 + child factors
+- Compare using: AIC, BIC, pseudo R-squared
+- Likelihood ratio tests between nested models
+- Create comparison table</code></pre>
+</section>
+<section id="prompt-3.10-regression-diagnostics" class="level3" data-number="4.2.8">
+<h3 data-number="4.2.8" class="anchored" data-anchor-id="prompt-3.10-regression-diagnostics"><span class="header-section-number">4.2.8</span> Prompt 3.10: Regression Diagnostics</h3>
+<pre><code>Perform comprehensive regression diagnostics:
+- Check linearity: component-residual plots
+- Test homoscedasticity: Breusch-Pagan test
+- Assess normality: Q-Q plot, Shapiro-Wilk test
+- Identify influential observations: Cook's distance, leverage
+- Check multicollinearity: VIF for each predictor
+- Create diagnostic plots panel</code></pre>
+</section>
+<section id="prompt-3.11-interaction-effects" class="level3" data-number="4.2.9">
+<h3 data-number="4.2.9" class="anchored" data-anchor-id="prompt-3.11-interaction-effects"><span class="header-section-number">4.2.9</span> Prompt 3.11: Interaction Effects</h3>
+<pre><code>Model interaction between education and wealth:
+- Outcome: Contraceptive use
+- Main effects: education, wealth
+- Interaction: education × wealth
+- Test interaction significance
+- Create interaction plot showing predicted probabilities
+- Interpret interaction in context</code></pre>
+</section>
+<section id="prompt-3.12-predicted-probabilities" class="level3" data-number="4.2.10">
+<h3 data-number="4.2.10" class="anchored" data-anchor-id="prompt-3.12-predicted-probabilities"><span class="header-section-number">4.2.10</span> Prompt 3.12: Predicted Probabilities</h3>
+<pre><code>Calculate and visualize predicted probabilities from logistic model:
+- Vary education while holding other variables at means
+- Show probability of institutional delivery
+- Create plot with 95% confidence bands
+- Add rug plot showing actual data distribution
+- Use ggeffects or margins package</code></pre>
+</section>
+</section>
+<section id="spatial-data-prompts" class="level2" data-number="4.3">
+<h2 data-number="4.3" class="anchored" data-anchor-id="spatial-data-prompts"><span class="header-section-number">4.3</span> Spatial Data Prompts</h2>
+<section id="prompt-3.13-load-pakistan-shapefiles" class="level3" data-number="4.3.1">
+<h3 data-number="4.3.1" class="anchored" data-anchor-id="prompt-3.13-load-pakistan-shapefiles"><span class="header-section-number">4.3.1</span> Prompt 3.13: Load Pakistan Shapefiles</h3>
+<pre><code>Load and prepare Pakistan geographic data:
+- Import district-level shapefile
+- Import province boundaries
+- Check coordinate reference system (CRS)
+- Convert to sf object if not already
+- Display basic map to verify
+- Count number of districts and provinces</code></pre>
+</section>
+<section id="prompt-3.14-clean-and-match-geographic-data" class="level3" data-number="4.3.2">
+<h3 data-number="4.3.2" class="anchored" data-anchor-id="prompt-3.14-clean-and-match-geographic-data"><span class="header-section-number">4.3.2</span> Prompt 3.14: Clean and Match Geographic Data</h3>
+<pre><code>Prepare district names for matching:
+- Standardize district names (remove spaces, special characters)
+- Convert to title case
+- Create matching key
+- Handle districts with name changes
+- Document unmatched districts
+- Create crosswalk table</code></pre>
+</section>
+<section id="prompt-3.15-join-demographic-data-to-shapefile" class="level3" data-number="4.3.3">
+<h3 data-number="4.3.3" class="anchored" data-anchor-id="prompt-3.15-join-demographic-data-to-shapefile"><span class="header-section-number">4.3.3</span> Prompt 3.15: Join Demographic Data to Shapefile</h3>
+<pre><code>Join district-level literacy data to shapefile:
+- Data: literacy rates by district
+- Shapefile: Pakistan districts
+- Match on: district name
+- Check for unmatched records on both sides
+- Calculate % successfully matched
+- Handle districts with missing data</code></pre>
+</section>
+<section id="prompt-3.16-basic-choropleth-map" class="level3" data-number="4.3.4">
+<h3 data-number="4.3.4" class="anchored" data-anchor-id="prompt-3.16-basic-choropleth-map"><span class="header-section-number">4.3.4</span> Prompt 3.16: Basic Choropleth Map</h3>
+<pre><code>Create choropleth map showing:
+- Indicator: Infant mortality rate by district
+- Color scale: Sequential (light to dark)
+- 5-6 breaks using quantile method
+- Add province boundaries
+- Include legend with clear labels
+- Use viridis or similar colorblind-friendly palette
+- Add title and data source</code></pre>
+</section>
+<section id="prompt-3.17-classification-methods-comparison" class="level3" data-number="4.3.5">
+<h3 data-number="4.3.5" class="anchored" data-anchor-id="prompt-3.17-classification-methods-comparison"><span class="header-section-number">4.3.5</span> Prompt 3.17: Classification Methods Comparison</h3>
+<pre><code>Create same map with different classification methods:
+- Equal interval
+- Quantile
+- Natural breaks (Jenks)
+- Show 3 maps side-by-side
+- Same color scheme
+- Explain which is most appropriate for this data
+- Use classInt package</code></pre>
+</section>
+<section id="prompt-3.18-bivariate-choropleth-map" class="level3" data-number="4.3.6">
+<h3 data-number="4.3.6" class="anchored" data-anchor-id="prompt-3.18-bivariate-choropleth-map"><span class="header-section-number">4.3.6</span> Prompt 3.18: Bivariate Choropleth Map</h3>
+<pre><code>Create bivariate map showing:
+- Variable 1: Poverty rate
+- Variable 2: Education level
+- Use 3x3 classification
+- Create bivariate color scheme (e.g., purple-green)
+- Add custom legend
+- Use biscale package
+District level for Pakistan</code></pre>
+</section>
+<section id="prompt-3.19-map-with-province-facets" class="level3" data-number="4.3.7">
+<h3 data-number="4.3.7" class="anchored" data-anchor-id="prompt-3.19-map-with-province-facets"><span class="header-section-number">4.3.7</span> Prompt 3.19: Map with Province Facets</h3>
+<pre><code>Create faceted maps:
+- One map per province
+- Show same indicator (e.g., literacy) at district level
+- Use same color scale across facets
+- Arrange in grid layout
+- Add province labels
+- Highlight provincial capitals</code></pre>
+</section>
+<section id="prompt-3.20-map-with-inset-for-small-areas" class="level3" data-number="4.3.8">
+<h3 data-number="4.3.8" class="anchored" data-anchor-id="prompt-3.20-map-with-inset-for-small-areas"><span class="header-section-number">4.3.8</span> Prompt 3.20: Map with Inset for Small Areas</h3>
+<pre><code>Create map with inset for:
+- Main map: All Pakistan districts
+- Inset: Islamabad Capital Territory (zoomed in)
+- Use cowplot or patchwork to combine
+- Add box on main map showing inset location
+- Ensure both use same color scheme</code></pre>
+</section>
+</section>
+<section id="interactive-mapping-prompts" class="level2" data-number="4.4">
+<h2 data-number="4.4" class="anchored" data-anchor-id="interactive-mapping-prompts"><span class="header-section-number">4.4</span> Interactive Mapping Prompts</h2>
+<section id="prompt-3.21-basic-leaflet-map" class="level3" data-number="4.4.1">
+<h3 data-number="4.4.1" class="anchored" data-anchor-id="prompt-3.21-basic-leaflet-map"><span class="header-section-number">4.4.1</span> Prompt 3.21: Basic Leaflet Map</h3>
+<pre><code>Create interactive leaflet map:
+- Show Pakistan districts
+- Color by literacy rate
+- Add hover tooltip with district name and value
+- Include zoom controls
+- Add layer control to toggle base maps
+- Set appropriate initial zoom and center</code></pre>
+</section>
+<section id="prompt-3.22-leaflet-with-popups" class="level3" data-number="4.4.2">
+<h3 data-number="4.4.2" class="anchored" data-anchor-id="prompt-3.22-leaflet-with-popups"><span class="header-section-number">4.4.2</span> Prompt 3.22: Leaflet with Popups</h3>
+<pre><code>Create interactive map with detailed popups:
+- Click district to show popup with:
+  - District name
+  - Population size
+  - Literacy rate
+  - Fertility rate
+  - Under-5 mortality
+- Format numbers appropriately
+- Add mini bar chart in popup if possible</code></pre>
+</section>
+<section id="prompt-3.23-multi-layer-interactive-map" class="level3" data-number="4.4.3">
+<h3 data-number="4.4.3" class="anchored" data-anchor-id="prompt-3.23-multi-layer-interactive-map"><span class="header-section-number">4.4.3</span> Prompt 3.23: Multi-Layer Interactive Map</h3>
+<pre><code>Create leaflet map with multiple layers:
+- Layer 1: Health facilities (points)
+- Layer 2: Literacy rate (choropleth)
+- Layer 3: Population density (choropleth)
+- Add layer control to toggle each
+- Different color schemes for each layer
+- Appropriate icons for point data</code></pre>
+</section>
+<section id="prompt-3.24-time-series-interactive-map" class="level3" data-number="4.4.4">
+<h3 data-number="4.4.4" class="anchored" data-anchor-id="prompt-3.24-time-series-interactive-map"><span class="header-section-number">4.4.4</span> Prompt 3.24: Time-Series Interactive Map</h3>
+<pre><code>Create animated/slider map showing change over time:
+- Indicator: Contraceptive prevalence rate
+- Years: 2007, 2013, 2018, 2023
+- Slider to change year
+- Update choropleth as year changes
+- Show year prominently on map
+- Use leaflet.extras or plotly</code></pre>
+</section>
+<section id="prompt-3.25-quick-mapview" class="level3" data-number="4.4.5">
+<h3 data-number="4.4.5" class="anchored" data-anchor-id="prompt-3.25-quick-mapview"><span class="header-section-number">4.4.5</span> Prompt 3.25: Quick Mapview</h3>
+<pre><code>Create quick interactive map for data exploration:
+- Use mapview package for rapid visualization
+- Show district-level stunting rates
+- Default settings are fine
+- Include popup with district name and value
+- For quick EDA, not publication</code></pre>
+</section>
+</section>
+<section id="advanced-spatial-analysis-prompts" class="level2" data-number="4.5">
+<h2 data-number="4.5" class="anchored" data-anchor-id="advanced-spatial-analysis-prompts"><span class="header-section-number">4.5</span> Advanced Spatial Analysis Prompts</h2>
+<section id="prompt-3.26-calculate-spatial-neighbors" class="level3" data-number="4.5.1">
+<h3 data-number="4.5.1" class="anchored" data-anchor-id="prompt-3.26-calculate-spatial-neighbors"><span class="header-section-number">4.5.1</span> Prompt 3.26: Calculate Spatial Neighbors</h3>
+<pre><code>Identify neighboring districts:
+- Define neighbors using queen contiguity
+- Calculate weights matrix
+- Show districts with most neighbors
+- Visualize neighbor relationships on map
+- Use spdep package</code></pre>
+</section>
+<section id="prompt-3.27-spatial-autocorrelation" class="level3" data-number="4.5.2">
+<h3 data-number="4.5.2" class="anchored" data-anchor-id="prompt-3.27-spatial-autocorrelation"><span class="header-section-number">4.5.2</span> Prompt 3.27: Spatial Autocorrelation</h3>
+<pre><code>Test for spatial autocorrelation:
+- Calculate Moran's I for literacy rates
+- Test significance with permutation test
+- Create Moran scatterplot
+- Identify spatial clusters (high-high, low-low)
+- Map significant clusters</code></pre>
+</section>
+<section id="prompt-3.28-spatial-smoothing" class="level3" data-number="4.5.3">
+<h3 data-number="4.5.3" class="anchored" data-anchor-id="prompt-3.28-spatial-smoothing"><span class="header-section-number">4.5.3</span> Prompt 3.28: Spatial Smoothing</h3>
+<pre><code>Apply spatial smoothing to reduce noise:
+- Raw rates: Under-5 mortality by district
+- Apply Empirical Bayes smoothing
+- Compare raw vs smoothed maps side-by-side
+- Identify where smoothing had biggest impact
+- Use appropriate package (DCluster or spdep)</code></pre>
+</section>
+</section>
+</section>
+<section id="day-4-reporting-dashboard-prompts" class="level1" data-number="5">
+<h1 data-number="5"><span class="header-section-number">5</span> Day 4: Reporting &amp; Dashboard Prompts</h1>
+<section id="quarto-report-prompts" class="level2" data-number="5.1">
+<h2 data-number="5.1" class="anchored" data-anchor-id="quarto-report-prompts"><span class="header-section-number">5.1</span> Quarto Report Prompts</h2>
+<section id="prompt-4.1-basic-quarto-document-structure" class="level3" data-number="5.1.1">
+<h3 data-number="5.1.1" class="anchored" data-anchor-id="prompt-4.1-basic-quarto-document-structure"><span class="header-section-number">5.1.1</span> Prompt 4.1: Basic Quarto Document Structure</h3>
+<pre><code>Create Quarto document template for demographic analysis:
+- YAML header with title, author, date
+- Output format: HTML with table of contents
+- Code folding enabled
+- Include sections: Introduction, Data, Methods, Results, Conclusion
+- Add cross-references for figures and tables
+- Set global chunk options (echo, warning, message)</code></pre>
+</section>
+<section id="prompt-4.2-executive-summary-with-key-indicators" class="level3" data-number="5.1.2">
+<h3 data-number="5.1.2" class="anchored" data-anchor-id="prompt-4.2-executive-summary-with-key-indicators"><span class="header-section-number">5.1.2</span> Prompt 4.2: Executive Summary with Key Indicators</h3>
+<pre><code>Create executive summary section with:
+- 4-6 key demographic indicators as value boxes
+- Population total, growth rate, TFR, IMR, life expectancy
+- Show current value and change from previous survey
+- Use color coding (green for improvement, red for decline)
+- Add icon for each indicator
+- Format numbers with appropriate decimals and commas</code></pre>
+</section>
+<section id="prompt-4.3-embed-tables-in-report" class="level3" data-number="5.1.3">
+<h3 data-number="5.1.3" class="anchored" data-anchor-id="prompt-4.3-embed-tables-in-report"><span class="header-section-number">5.1.3</span> Prompt 4.3: Embed Tables in Report</h3>
+<pre><code>Create properly formatted table in Quarto:
+- Survey-weighted estimates by province
+- Cross-reference as @tbl-provincial-estimates
+- Add table caption with data source
+- Format percentages with 1 decimal
+- Format confidence intervals as (lower-upper)
+- Use gt package for professional appearance</code></pre>
+</section>
+<section id="prompt-4.4-embed-figures-in-report" class="level3" data-number="5.1.4">
+<h3 data-number="5.1.4" class="anchored" data-anchor-id="prompt-4.4-embed-figures-in-report"><span class="header-section-number">5.1.4</span> Prompt 4.4: Embed Figures in Report</h3>
+<pre><code>Create and embed figure in Quarto:
+- Population pyramid
+- Cross-reference as @fig-pyramid
+- Add detailed caption
+- Set figure dimensions (fig-width, fig-height)
+- Set resolution (dpi)
+- Center alignment
+- Add alt text for accessibility</code></pre>
+</section>
+<section id="prompt-4.5-cross-reference-multiple-elements" class="level3" data-number="5.1.5">
+<h3 data-number="5.1.5" class="anchored" data-anchor-id="prompt-4.5-cross-reference-multiple-elements"><span class="header-section-number">5.1.5</span> Prompt 4.5: Cross-Reference Multiple Elements</h3>
+<pre><code>Write narrative text with cross-references:
+- Reference Table 1 showing provincial rates (@tbl-provincial)
+- Reference Figure 2 displaying trends (@fig-trends)
+- Reference Section 3 for methods (@sec-methods)
+- Ensure auto-numbering works properly
+- Add hyperlinks to referenced elements</code></pre>
+</section>
+<section id="prompt-4.6-code-folding-and-annotations" class="level3" data-number="5.1.6">
+<h3 data-number="5.1.6" class="anchored" data-anchor-id="prompt-4.6-code-folding-and-annotations"><span class="header-section-number">5.1.6</span> Prompt 4.6: Code Folding and Annotations</h3>
+<pre><code>Create code chunk with:
+- Descriptive chunk label
+- Code folding enabled by default
+- Option to show/hide code
+- Annotations explaining key steps
+- Suppress warnings and messages
+- Cache results for long computations</code></pre>
+</section>
+<section id="prompt-4.7-multiple-output-formats" class="level3" data-number="5.1.7">
+<h3 data-number="5.1.7" class="anchored" data-anchor-id="prompt-4.7-multiple-output-formats"><span class="header-section-number">5.1.7</span> Prompt 4.7: Multiple Output Formats</h3>
+<pre><code>Configure Quarto document to render to:
+- HTML with interactive plots
+- PDF with static plots
+- Word document for stakeholders
+- Adjust plot types based on output format
+- Use conditional code: knitr::is_html_output()
+- Ensure tables format well in all outputs</code></pre>
+</section>
+<section id="prompt-4.8-tabbed-content" class="level3" data-number="5.1.8">
+<h3 data-number="5.1.8" class="anchored" data-anchor-id="prompt-4.8-tabbed-content"><span class="header-section-number">5.1.8</span> Prompt 4.8: Tabbed Content</h3>
+<pre><code>Create tabbed section showing:
+- Tab 1: Data table
+- Tab 2: Visualization
+- Tab 3: Statistical summary
+- Tab 4: Interpretation
+Use Quarto tabset feature</code></pre>
+</section>
+<section id="prompt-4.9-callout-boxes" class="level3" data-number="5.1.9">
+<h3 data-number="5.1.9" class="anchored" data-anchor-id="prompt-4.9-callout-boxes"><span class="header-section-number">5.1.9</span> Prompt 4.9: Callout Boxes</h3>
+<pre><code>Create callout boxes for:
+- Important findings (note)
+- Key insights (tip)
+- Limitations (warning)
+- Critical issues (caution)
+Use Quarto callout syntax with appropriate styling</code></pre>
+</section>
+</section>
+<section id="parameterized-reports-prompts" class="level2" data-number="5.2">
+<h2 data-number="5.2" class="anchored" data-anchor-id="parameterized-reports-prompts"><span class="header-section-number">5.2</span> Parameterized Reports Prompts</h2>
+<section id="prompt-4.10-set-up-parameters" class="level3" data-number="5.2.1">
+<h3 data-number="5.2.1" class="anchored" data-anchor-id="prompt-4.10-set-up-parameters"><span class="header-section-number">5.2.1</span> Prompt 4.10: Set Up Parameters</h3>
+<pre><code>Create parameterized Quarto report:
+- Parameter: province name
+- Parameter: survey year
+- Parameter: indicator of interest
+- Define in YAML with default values
+- Use params$province in code
+- Document parameter usage</code></pre>
+</section>
+<section id="prompt-4.11-filter-data-by-parameter" class="level3" data-number="5.2.2">
+<h3 data-number="5.2.2" class="anchored" data-anchor-id="prompt-4.11-filter-data-by-parameter"><span class="header-section-number">5.2.2</span> Prompt 4.11: Filter Data by Parameter</h3>
+<pre><code>Write code to filter data based on parameter:
+- If province parameter = "Punjab", filter for Punjab
+- If province = "All", include all provinces
+- Handle case sensitivity
+- Validate parameter value
+- Show filtered sample size
+Use params$province from YAML</code></pre>
+</section>
+<section id="prompt-4.12-dynamic-titles-and-text" class="level3" data-number="5.2.3">
+<h3 data-number="5.2.3" class="anchored" data-anchor-id="prompt-4.12-dynamic-titles-and-text"><span class="header-section-number">5.2.3</span> Prompt 4.12: Dynamic Titles and Text</h3>
+<pre><code>Create dynamic report elements:
+- Title includes province name from parameter
+- Text adapts: "In Punjab, the literacy rate is..."
+- Figure captions include province and year
+- Use inline R code with params
+- Ensure grammatically correct output</code></pre>
+</section>
+<section id="prompt-4.13-conditional-content" class="level3" data-number="5.2.4">
+<h3 data-number="5.2.4" class="anchored" data-anchor-id="prompt-4.13-conditional-content"><span class="header-section-number">5.2.4</span> Prompt 4.13: Conditional Content</h3>
+<pre><code>Add conditional sections based on parameters:
+- If urban/rural parameter is specified, add urban-rural analysis
+- If province is "All", add provincial comparison
+- If year range provided, add trend analysis
+- Use conditional R chunks or if statements</code></pre>
+</section>
+<section id="prompt-4.14-batch-render-for-all-provinces" class="level3" data-number="5.2.5">
+<h3 data-number="5.2.5" class="anchored" data-anchor-id="prompt-4.14-batch-render-for-all-provinces"><span class="header-section-number">5.2.5</span> Prompt 4.14: Batch Render for All Provinces</h3>
+<pre><code>Create R script to batch render reports:
+- Loop through all provinces: Punjab, Sindh, KPK, Balochistan, ICT
+- Render report for each with province parameter
+- Save output with province-specific filename
+- Create summary log of successful renders
+- Handle errors gracefully</code></pre>
+</section>
+<section id="prompt-4.15-automated-provincial-profiles" class="level3" data-number="5.2.6">
+<h3 data-number="5.2.6" class="anchored" data-anchor-id="prompt-4.15-automated-provincial-profiles"><span class="header-section-number">5.2.6</span> Prompt 4.15: Automated Provincial Profiles</h3>
+<pre><code>Generate automated provincial profile including:
+- Province name and flag (if available)
+- Key demographic indicators table
+- Population pyramid for that province
+- Comparison to national average
+- Trend graphs (if multi-year data available)
+- Render for all provinces automatically</code></pre>
+</section>
+</section>
+<section id="dashboard-prompts" class="level2" data-number="5.3">
+<h2 data-number="5.3" class="anchored" data-anchor-id="dashboard-prompts"><span class="header-section-number">5.3</span> Dashboard Prompts</h2>
+<section id="prompt-4.16-flexdashboard-layout" class="level3" data-number="5.3.1">
+<h3 data-number="5.3.1" class="anchored" data-anchor-id="prompt-4.16-flexdashboard-layout"><span class="header-section-number">5.3.1</span> Prompt 4.16: Flexdashboard Layout</h3>
+<pre><code>Create flexdashboard with:
+- Sidebar with filters (province, indicator, year)
+- Row 1: Value boxes for key metrics
+- Row 2, Column 1: Interactive map (60% width)
+- Row 2, Column 2: Trend chart (40% width)
+- Row 3: Data table
+- Professional color scheme</code></pre>
+</section>
+<section id="prompt-4.17-value-boxes-with-indicators" class="level3" data-number="5.3.2">
+<h3 data-number="5.3.2" class="anchored" data-anchor-id="prompt-4.17-value-boxes-with-indicators"><span class="header-section-number">5.3.2</span> Prompt 4.17: Value Boxes with Indicators</h3>
+<pre><code>Create value boxes showing:
+- Total population (with icon)
+- Fertility rate (with trend arrow)
+- Literacy rate (with color coding)
+- Under-5 mortality (with comparison to target)
+Update dynamically based on filter selections</code></pre>
+</section>
+<section id="prompt-4.18-interactive-dashboard-filters" class="level3" data-number="5.3.3">
+<h3 data-number="5.3.3" class="anchored" data-anchor-id="prompt-4.18-interactive-dashboard-filters"><span class="header-section-number">5.3.3</span> Prompt 4.18: Interactive Dashboard Filters</h3>
+<pre><code>Add Shiny-style inputs to dashboard:
+- Dropdown: Select province
+- Radio buttons: Urban/Rural/Both
+- Slider: Year range
+- Checkbox group: Indicators to display
+- Update all visualizations when filters change</code></pre>
+</section>
+<section id="prompt-4.19-linked-dashboard-components" class="level3" data-number="5.3.4">
+<h3 data-number="5.3.4" class="anchored" data-anchor-id="prompt-4.19-linked-dashboard-components"><span class="header-section-number">5.3.4</span> Prompt 4.19: Linked Dashboard Components</h3>
+<pre><code>Create linked dashboard where:
+- Clicking on map district updates charts for that district
+- Selecting year on slider updates map and charts
+- Hovering on chart highlights corresponding map area
+- Use crosstalk or Shiny for linking</code></pre>
+</section>
+<section id="prompt-4.20-download-buttons" class="level3" data-number="5.3.5">
+<h3 data-number="5.3.5" class="anchored" data-anchor-id="prompt-4.20-download-buttons"><span class="header-section-number">5.3.5</span> Prompt 4.20: Download Buttons</h3>
+<pre><code>Add download functionality:
+- Download current data view as CSV
+- Download current chart as PNG
+- Download current map as PDF
+- Export full report as HTML
+Include buttons in dashboard sidebar</code></pre>
+</section>
+<section id="prompt-4.21-responsive-dashboard-design" class="level3" data-number="5.3.6">
+<h3 data-number="5.3.6" class="anchored" data-anchor-id="prompt-4.21-responsive-dashboard-design"><span class="header-section-number">5.3.6</span> Prompt 4.21: Responsive Dashboard Design</h3>
+<pre><code>Create mobile-responsive dashboard:
+- Adapt layout for different screen sizes
+- Stack columns vertically on mobile
+- Adjust plot sizes automatically
+- Ensure readable on tablets and phones
+- Test across devices</code></pre>
+</section>
+<section id="prompt-4.22-multi-page-dashboard" class="level3" data-number="5.3.7">
+<h3 data-number="5.3.7" class="anchored" data-anchor-id="prompt-4.22-multi-page-dashboard"><span class="header-section-number">5.3.7</span> Prompt 4.22: Multi-Page Dashboard</h3>
+<pre><code>Create multi-page dashboard with navigation:
+- Page 1: Overview (key indicators)
+- Page 2: Demographics (population, fertility)
+- Page 3: Health (mortality, nutrition)
+- Page 4: Education (literacy, enrollment)
+- Page 5: Spatial Analysis (maps)
+- Consistent header/navigation across pages</code></pre>
+</section>
+</section>
+</section>
+<section id="day-5-advanced-ai-powered-analysis-prompts" class="level1" data-number="6">
+<h1 data-number="6"><span class="header-section-number">6</span> Day 5: Advanced AI-Powered Analysis Prompts</h1>
+<section id="complex-analysis-prompts" class="level2" data-number="6.1">
+<h2 data-number="6.1" class="anchored" data-anchor-id="complex-analysis-prompts"><span class="header-section-number">6.1</span> Complex Analysis Prompts</h2>
+<section id="prompt-5.1-comprehensive-data-audit" class="level3" data-number="6.1.1">
+<h3 data-number="6.1.1" class="anchored" data-anchor-id="prompt-5.1-comprehensive-data-audit"><span class="header-section-number">6.1.1</span> Prompt 5.1: Comprehensive Data Audit</h3>
+<pre><code>Perform comprehensive data quality audit:
+- Check completeness: % missing for each variable
+- Identify outliers: values &gt;3 SD from mean
+- Find duplicates: based on ID and key variables
+- Check logical consistency: age, birth dates
+- Validate ranges: all values within expected bounds
+- Create detailed audit report with recommendations</code></pre>
+</section>
+<section id="prompt-5.2-multiple-imputation-for-missing-data" class="level3" data-number="6.1.2">
+<h3 data-number="6.1.2" class="anchored" data-anchor-id="prompt-5.2-multiple-imputation-for-missing-data"><span class="header-section-number">6.1.2</span> Prompt 5.2: Multiple Imputation for Missing Data</h3>
+<pre><code>Implement multiple imputation for missing data:
+- Variables with missingness: education, wealth index
+- Use mice package with appropriate methods
+- Generate 5 imputations
+- Run analysis on each imputed dataset
+- Pool results using Rubin's rules
+- Compare complete case vs imputed results</code></pre>
+</section>
+<section id="prompt-5.3-complex-survey-analysis-pipeline" class="level3" data-number="6.1.3">
+<h3 data-number="6.1.3" class="anchored" data-anchor-id="prompt-5.3-complex-survey-analysis-pipeline"><span class="header-section-number">6.1.3</span> Prompt 5.3: Complex Survey Analysis Pipeline</h3>
+<pre><code>Create complete survey analysis pipeline:
+1. Load PDHS data with proper formats
+2. Define complex survey design
+3. Calculate weighted prevalence with CI
+4. Run multivariable regression
+5. Create publication tables
+6. Generate diagnostic plots
+7. Export results
+Include error handling and logging</code></pre>
+</section>
+<section id="prompt-5.4-longitudinal-analysis" class="level3" data-number="6.1.4">
+<h3 data-number="6.1.4" class="anchored" data-anchor-id="prompt-5.4-longitudinal-analysis"><span class="header-section-number">6.1.4</span> Prompt 5.4: Longitudinal Analysis</h3>
+<pre><code>Analyze trends across multiple surveys:
+- Data: PDHS 2007, 2013, 2018, 2023
+- Harmonize variables across waves
+- Calculate indicator trends with confidence intervals
+- Test for significant changes over time
+- Adjust for design changes between surveys
+- Create trend visualization with annotations</code></pre>
+</section>
+<section id="prompt-5.5-decomposition-analysis" class="level3" data-number="6.1.5">
+<h3 data-number="6.1.5" class="anchored" data-anchor-id="prompt-5.5-decomposition-analysis"><span class="header-section-number">6.1.5</span> Prompt 5.5: Decomposition Analysis</h3>
+<pre><code>Decompose changes in indicator over time:
+- Outcome: Change in contraceptive prevalence
+- Decompose into: changes in education, wealth, age structure
+- Use Kitagawa method or similar
+- Quantify contribution of each factor
+- Visualize decomposition results
+- Interpret findings</code></pre>
+</section>
+<section id="prompt-5.6-inequality-analysis" class="level3" data-number="6.1.6">
+<h3 data-number="6.1.6" class="anchored" data-anchor-id="prompt-5.6-inequality-analysis"><span class="header-section-number">6.1.6</span> Prompt 5.6: Inequality Analysis</h3>
+<pre><code>Calculate and visualize health inequalities:
+- Indicator: Child vaccination coverage
+- Stratifier: Wealth quintile
+- Calculate: Concentration index, slope index of inequality
+- Create concentration curve
+- Test statistical significance
+- Compare inequality across provinces</code></pre>
+</section>
+<section id="prompt-5.7-multilevel-modeling" class="level3" data-number="6.1.7">
+<h3 data-number="6.1.7" class="anchored" data-anchor-id="prompt-5.7-multilevel-modeling"><span class="header-section-number">6.1.7</span> Prompt 5.7: Multilevel Modeling</h3>
+<pre><code>Fit multilevel model with:
+- Level 1: Individual women
+- Level 2: Districts
+- Outcome: Contraceptive use
+- Random intercept for district
+- Fixed effects: age, education, wealth
+- Calculate ICC and variance partition
+- Use lme4 or nlme package</code></pre>
+</section>
+<section id="prompt-5.8-survival-analysis" class="level3" data-number="6.1.8">
+<h3 data-number="6.1.8" class="anchored" data-anchor-id="prompt-5.8-survival-analysis"><span class="header-section-number">6.1.8</span> Prompt 5.8: Survival Analysis</h3>
+<pre><code>Conduct survival analysis:
+- Event: First birth
+- Time: Age at first birth
+- Covariates: education, marriage age, residence
+- Create Kaplan-Meier curves by education
+- Fit Cox proportional hazards model
+- Check proportional hazards assumption
+- Interpret hazard ratios</code></pre>
+</section>
+<section id="prompt-5.9-path-analysis-mediation" class="level3" data-number="6.1.9">
+<h3 data-number="6.1.9" class="anchored" data-anchor-id="prompt-5.9-path-analysis-mediation"><span class="header-section-number">6.1.9</span> Prompt 5.9: Path Analysis / Mediation</h3>
+<pre><code>Test mediation hypothesis:
+- X: Mother's education
+- M: Antenatal care visits (mediator)
+- Y: Low birth weight
+- Calculate direct and indirect effects
+- Test significance of mediation
+- Create path diagram
+- Use lavaan or mediation package</code></pre>
+</section>
+<section id="prompt-5.10-machine-learning-for-prediction" class="level3" data-number="6.1.10">
+<h3 data-number="6.1.10" class="anchored" data-anchor-id="prompt-5.10-machine-learning-for-prediction"><span class="header-section-number">6.1.10</span> Prompt 5.10: Machine Learning for Prediction</h3>
+<pre><code>Build predictive model for child stunting:
+- Algorithms: Random forest, XGBoost, logistic regression
+- Features: Maternal, household, child characteristics
+- Split data: 70% train, 30% test
+- Tune hyperparameters
+- Compare model performance: AUC, accuracy, sensitivity
+- Identify most important predictors
+- Validate on holdout data</code></pre>
+</section>
+</section>
+<section id="advanced-visualization-prompts" class="level2" data-number="6.2">
+<h2 data-number="6.2" class="anchored" data-anchor-id="advanced-visualization-prompts"><span class="header-section-number">6.2</span> Advanced Visualization Prompts</h2>
+<section id="prompt-5.11-small-multiples-dashboard" class="level3" data-number="6.2.1">
+<h3 data-number="6.2.1" class="anchored" data-anchor-id="prompt-5.11-small-multiples-dashboard"><span class="header-section-number">6.2.1</span> Prompt 5.11: Small Multiples Dashboard</h3>
+<pre><code>Create small multiples visualization:
+- Show trends for each district (100+ districts)
+- Same scale for all plots
+- Highlight significant trends
+- Arrange geographically if possible
+- Include overall Pakistan trend for reference
+- Use facet_geo if available</code></pre>
+</section>
+<section id="prompt-5.12-sankey-diagram" class="level3" data-number="6.2.2">
+<h3 data-number="6.2.2" class="anchored" data-anchor-id="prompt-5.12-sankey-diagram"><span class="header-section-number">6.2.2</span> Prompt 5.12: Sankey Diagram</h3>
+<pre><code>Create Sankey diagram showing:
+- Flow from education levels to wealth quintiles to outcomes
+- Width proportional to number of observations
+- Color code by initial category
+- Interactive hover for exact numbers
+- Use networkD3 or plotly package</code></pre>
+</section>
+<section id="prompt-5.13-dendrogramclustering" class="level3" data-number="6.2.3">
+<h3 data-number="6.2.3" class="anchored" data-anchor-id="prompt-5.13-dendrogramclustering"><span class="header-section-number">6.2.3</span> Prompt 5.13: Dendrogram/Clustering</h3>
+<pre><code>Create hierarchical clustering visualization:
+- Cluster districts based on demographic indicators
+- Variables: TFR, IMR, literacy, wealth
+- Display as dendrogram
+- Color branches by clusters
+- Add district labels
+- Determine optimal number of clusters</code></pre>
+</section>
+<section id="prompt-5.14-network-graph" class="level3" data-number="6.2.4">
+<h3 data-number="6.2.4" class="anchored" data-anchor-id="prompt-5.14-network-graph"><span class="header-section-number">6.2.4</span> Prompt 5.14: Network Graph</h3>
+<pre><code>Create network graph showing:
+- Nodes: Districts
+- Edges: Connect districts with similar demographic profiles
+- Edge weight: Similarity measure
+- Node size: Population
+- Node color: Province
+- Use igraph or tidygraph</code></pre>
+</section>
+<section id="prompt-5.15-animated-gif-export" class="level3" data-number="6.2.5">
+<h3 data-number="6.2.5" class="anchored" data-anchor-id="prompt-5.15-animated-gif-export"><span class="header-section-number">6.2.5</span> Prompt 5.15: Animated GIF Export</h3>
+<pre><code>Create animated GIF showing:
+- Population pyramid evolution 1990-2030
+- Smooth transitions between years
+- 2 seconds per frame
+- Loop continuously
+- Add year annotation
+- Export as high-quality GIF
+- Use gganimate or magick</code></pre>
+</section>
+<section id="prompt-5.16-3d-surface-plot" class="level3" data-number="6.2.6">
+<h3 data-number="6.2.6" class="anchored" data-anchor-id="prompt-5.16-3d-surface-plot"><span class="header-section-number">6.2.6</span> Prompt 5.16: 3D Surface Plot</h3>
+<pre><code>Create 3D surface showing:
+- X: Mother's age
+- Y: Number of children
+- Z: Probability of contraceptive use
+- Interactive rotation
+- Color gradient for Z-values
+- Use plotly for interactivity</code></pre>
+</section>
+<section id="prompt-5.17-circularradar-chart" class="level3" data-number="6.2.7">
+<h3 data-number="6.2.7" class="anchored" data-anchor-id="prompt-5.17-circularradar-chart"><span class="header-section-number">6.2.7</span> Prompt 5.17: Circular/Radar Chart</h3>
+<pre><code>Create radar chart comparing provinces:
+- Dimensions: 5-6 health indicators (literacy, IMR, TFR, etc.)
+- Separate polygon for each province
+- Standardize indicators to 0-100 scale
+- Show ideal target as reference
+- Use ggradar or fmsb package</code></pre>
+</section>
+<section id="prompt-5.18-waffle-chart" class="level3" data-number="6.2.8">
+<h3 data-number="6.2.8" class="anchored" data-anchor-id="prompt-5.18-waffle-chart"><span class="header-section-number">6.2.8</span> Prompt 5.18: Waffle Chart</h3>
+<pre><code>Create waffle chart showing:
+- Contraceptive method mix
+- 100 squares representing 100%
+- Color each square by method type
+- Arrange in 10x10 grid
+- Add legend
+- Use waffle package</code></pre>
+</section>
+<section id="prompt-5.19-ridgeline-plot" class="level3" data-number="6.2.9">
+<h3 data-number="6.2.9" class="anchored" data-anchor-id="prompt-5.19-ridgeline-plot"><span class="header-section-number">6.2.9</span> Prompt 5.19: Ridgeline Plot</h3>
+<pre><code>Create ridgeline plot showing:
+- Distribution of age at first birth
+- Separate ridge for each education level
+- Order from lowest to highest education
+- Color by education
+- Show median line on each ridge
+- Use ggridges package</code></pre>
+</section>
+<section id="prompt-5.20-upset-plot" class="level3" data-number="6.2.10">
+<h3 data-number="6.2.10" class="anchored" data-anchor-id="prompt-5.20-upset-plot"><span class="header-section-number">6.2.10</span> Prompt 5.20: Upset Plot</h3>
+<pre><code>Create upset plot for:
+- Set membership: Which ANC services received
+- Services: Blood pressure check, blood test, urine test, counseling
+- Show most common combinations
+- Annotate with percentages
+- Use UpSetR package</code></pre>
+</section>
+</section>
+<section id="documentation-reproducibility-prompts" class="level2" data-number="6.3">
+<h2 data-number="6.3" class="anchored" data-anchor-id="documentation-reproducibility-prompts"><span class="header-section-number">6.3</span> Documentation &amp; Reproducibility Prompts</h2>
+<section id="prompt-5.21-create-data-dictionary" class="level3" data-number="6.3.1">
+<h3 data-number="6.3.1" class="anchored" data-anchor-id="prompt-5.21-create-data-dictionary"><span class="header-section-number">6.3.1</span> Prompt 5.21: Create Data Dictionary</h3>
+<pre><code>Generate comprehensive data dictionary:
+- Variable name
+- Variable label
+- Data type
+- Value labels (for categorical)
+- Missing value codes
+- Summary statistics
+- Export as formatted Excel file
+Use codebook package or similar</code></pre>
+</section>
+<section id="prompt-5.22-session-info-documentation" class="level3" data-number="6.3.2">
+<h3 data-number="6.3.2" class="anchored" data-anchor-id="prompt-5.22-session-info-documentation"><span class="header-section-number">6.3.2</span> Prompt 5.22: Session Info Documentation</h3>
+<pre><code>Create reproducibility appendix:
+- R version and platform
+- List all loaded packages with versions
+- System information
+- Random seed (if used)
+- Data access dates
+- Format as table in report</code></pre>
+</section>
+<section id="prompt-5.23-automated-method-section" class="level3" data-number="6.3.3">
+<h3 data-number="6.3.3" class="anchored" data-anchor-id="prompt-5.23-automated-method-section"><span class="header-section-number">6.3.3</span> Prompt 5.23: Automated Method Section</h3>
+<pre><code>Generate methods section text from code:
+- Extract analysis decisions from code
+- Describe: sample size, weights, statistical tests used
+- Create formatted text suitable for report
+- Include appropriate citations for methods
+- Use officer or similar for Word output</code></pre>
+</section>
+<section id="prompt-5.24-code-style-and-documentation" class="level3" data-number="6.3.4">
+<h3 data-number="6.3.4" class="anchored" data-anchor-id="prompt-5.24-code-style-and-documentation"><span class="header-section-number">6.3.4</span> Prompt 5.24: Code Style and Documentation</h3>
+<pre><code>Improve code quality:
+- Add roxygen-style comments to functions
+- Follow tidyverse style guide
+- Add section headers
+- Document all assumptions
+- Include example usage
+- Add error handling with informative messages</code></pre>
+</section>
+<section id="prompt-5.25-create-analysis-pipeline-flowchart" class="level3" data-number="6.3.5">
+<h3 data-number="6.3.5" class="anchored" data-anchor-id="prompt-5.25-create-analysis-pipeline-flowchart"><span class="header-section-number">6.3.5</span> Prompt 5.25: Create Analysis Pipeline Flowchart</h3>
+<pre><code>Generate flowchart of analysis pipeline:
+- Start: Data import
+- Steps: Cleaning, merging, analysis, visualization
+- Decision points: Quality checks
+- End: Report generation
+- Use DiagrammeR or similar
+- Export as PNG or SVG</code></pre>
+</section>
+</section>
+<section id="prompt-engineering-tips" class="level2" data-number="6.4">
+<h2 data-number="6.4" class="anchored" data-anchor-id="prompt-engineering-tips"><span class="header-section-number">6.4</span> Prompt Engineering Tips</h2>
+<section id="prompt-5.26-multi-step-analysis-request" class="level3" data-number="6.4.1">
+<h3 data-number="6.4.1" class="anchored" data-anchor-id="prompt-5.26-multi-step-analysis-request"><span class="header-section-number">6.4.1</span> Prompt 5.26: Multi-Step Analysis Request</h3>
+<pre><code>Break complex task into steps. Example:
+
+"I need to analyze PDHS data. Please help me:
+
+Step 1: Load data and check structure
+Step 2: Create age groups and education categories
+Step 3: Calculate weighted means by province
+Step 4: Create comparison table with gt
+Step 5: Generate visualization
+
+Let's start with Step 1."</code></pre>
+</section>
+<section id="prompt-5.27-providing-context" class="level3" data-number="6.4.2">
+<h3 data-number="6.4.2" class="anchored" data-anchor-id="prompt-5.27-providing-context"><span class="header-section-number">6.4.2</span> Prompt 5.27: Providing Context</h3>
+<pre><code>Good prompt structure:
+
+"I have PDHS individual recode data with 50,000 women.
+Variables: age (numeric, 15-49), education (0-3), weight (v005).
+
+Task: Calculate mean age at first birth by education level using survey weights.
+
+Expected output: Formatted table showing education categories, mean, SE, and 95% CI."</code></pre>
+</section>
+<section id="prompt-5.28-requesting-specific-packages" class="level3" data-number="6.4.3">
+<h3 data-number="6.4.3" class="anchored" data-anchor-id="prompt-5.28-requesting-specific-packages"><span class="header-section-number">6.4.3</span> Prompt 5.28: Requesting Specific Packages</h3>
+<pre><code>Specify tools:
+
+"Create population pyramid using ggplot2 (not base R).
+Requirements:
+- Use geom_col for bars
+- Age groups on y-axis
+- theme_minimal()
+- Viridis color palette
+- Percentage labels on x-axis"</code></pre>
+</section>
+<section id="prompt-5.29-asking-for-explanations" class="level3" data-number="6.4.4">
+<h3 data-number="6.4.4" class="anchored" data-anchor-id="prompt-5.29-asking-for-explanations"><span class="header-section-number">6.4.4</span> Prompt 5.29: Asking for Explanations</h3>
+<pre><code>Request understanding:
+
+"Explain the code you provided:
+- What does each major step do?
+- Why did you choose this approach?
+- What are the assumptions?
+- How should I interpret the output?
+- What are limitations?"</code></pre>
+</section>
+<section id="prompt-5.30-iterative-refinement" class="level3" data-number="6.4.5">
+<h3 data-number="6.4.5" class="anchored" data-anchor-id="prompt-5.30-iterative-refinement"><span class="header-section-number">6.4.5</span> Prompt 5.30: Iterative Refinement</h3>
+<pre><code>Refine outputs:
+
+"The previous code worked but:
+- Change colors to colorblind-friendly palette
+- Add province labels directly on bars
+- Increase font size to 12pt
+- Order provinces from highest to lowest
+- Add sample sizes to x-axis labels"</code></pre>
+</section>
+<section id="prompt-5.31-error-debugging" class="level3" data-number="6.4.6">
+<h3 data-number="6.4.6" class="anchored" data-anchor-id="prompt-5.31-error-debugging"><span class="header-section-number">6.4.6</span> Prompt 5.31: Error Debugging</h3>
+<pre><code>Debug effectively:
+
+"I got this error: [paste error message]
+
+My code: [paste code]
+
+My data structure: [paste str(data)]
+
+What's wrong and how do I fix it?"</code></pre>
+</section>
+<section id="prompt-5.32-validation-requests" class="level3" data-number="6.4.7">
+<h3 data-number="6.4.7" class="anchored" data-anchor-id="prompt-5.32-validation-requests"><span class="header-section-number">6.4.7</span> Prompt 5.32: Validation Requests</h3>
+<pre><code>Check correctness:
+
+"I calculated weighted means. Can you:
+1. Verify my survey design specification is correct
+2. Check if weights are applied properly
+3. Suggest how to validate results
+4. Identify any potential issues"</code></pre>
+</section>
+</section>
+</section>
+<section id="appendix-quick-reference" class="level1" data-number="7">
+<h1 data-number="7"><span class="header-section-number">7</span> Appendix: Quick Reference</h1>
+<section id="common-data-structures" class="level2" data-number="7.1">
+<h2 data-number="7.1" class="anchored" data-anchor-id="common-data-structures"><span class="header-section-number">7.1</span> Common Data Structures</h2>
+<section id="pdhs-variables" class="level3" data-number="7.1.1">
+<h3 data-number="7.1.1" class="anchored" data-anchor-id="pdhs-variables"><span class="header-section-number">7.1.1</span> PDHS Variables</h3>
+<ul>
+<li><code>v005</code>: Individual sample weight</li>
+<li><code>v024</code>: Province</li>
+<li><code>v025</code>: Urban/Rural</li>
+<li><code>v106</code>: Education level</li>
+<li><code>v190</code>: Wealth quintile</li>
+<li><code>v212</code>: Age at first birth</li>
+<li><code>v201</code>: Children ever born</li>
+</ul>
+</section>
+<section id="nhanes-variables" class="level3" data-number="7.1.2">
+<h3 data-number="7.1.2" class="anchored" data-anchor-id="nhanes-variables"><span class="header-section-number">7.1.2</span> NHANES Variables</h3>
+<ul>
+<li><code>SEQN</code>: Respondent sequence number</li>
+<li><code>RIAGENDR</code>: Gender</li>
+<li><code>RIDAGEYR</code>: Age in years</li>
+<li><code>BMXBMI</code>: Body Mass Index</li>
+<li><code>WTINT2YR</code>: Interview weight</li>
+</ul>
+</section>
+</section>
+<section id="essential-packages" class="level2" data-number="7.2">
+<h2 data-number="7.2" class="anchored" data-anchor-id="essential-packages"><span class="header-section-number">7.2</span> Essential Packages</h2>
+<ul>
+<li>Data manipulation: <code>tidyverse</code>, <code>janitor</code>, <code>skimr</code></li>
+<li>Survey data: <code>survey</code>, <code>srvyr</code></li>
+<li>Spatial: <code>sf</code>, <code>tmap</code>, <code>leaflet</code>, <code>mapview</code></li>
+<li>Tables: <code>gt</code>, <code>gtsummary</code>, <code>kableExtra</code>, <code>DT</code></li>
+<li>Visualization: <code>ggplot2</code>, <code>plotly</code>, <code>gganimate</code>, <code>patchwork</code></li>
+<li>Reporting: <code>quarto</code>, <code>rmarkdown</code>, <code>flexdashboard</code></li>
+<li>Modeling: <code>broom</code>, <code>performance</code>, <code>marginaleffects</code></li>
+</ul>
+</section>
+<section id="color-palette-recommendations" class="level2" data-number="7.3">
+<h2 data-number="7.3" class="anchored" data-anchor-id="color-palette-recommendations"><span class="header-section-number">7.3</span> Color Palette Recommendations</h2>
+<ul>
+<li>Sequential: <code>scale_fill_viridis_c(option = "viridis")</code></li>
+<li>Diverging: <code>scale_fill_distiller(palette = "RdBu")</code></li>
+<li>Categorical: <code>scale_fill_brewer(palette = "Set2")</code></li>
+<li>Colorblind-safe: Use <code>viridis</code>, <code>RColorBrewer</code> palettes</li>
+</ul>
+</section>
+<section id="useful-resources" class="level2" data-number="7.4">
+<h2 data-number="7.4" class="anchored" data-anchor-id="useful-resources"><span class="header-section-number">7.4</span> Useful Resources</h2>
+<ul>
+<li>Positron AI Documentation: In-IDE help</li>
+<li>R for Data Science: https://r4ds.hadley.nz/</li>
+<li>Quarto Guide: https://quarto.org/docs/guide/</li>
+<li>DHS Program: https://dhsprogram.com/</li>
+<li>NHANES: https://www.cdc.gov/nchs/nhanes/</li>
+<li>Our World in Data: https://ourworldindata.org/</li>
+</ul>
+<hr>
+<p><em>This prompt library is designed for the 5-Day Demographic Analysis Workshop. Prompts should be adapted to your specific data and research questions.</em></p>
+
+
+</section>
+</section>
+
+<a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/zahedasghar\.github\.io\/d4d\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../../reference/ai-prompts/01-data-prompt-manual.html" class="pagination-link" aria-label="5-Day Workshop: Data Analysis Using AI Prompts">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">5-Day Workshop: Data Analysis Using AI Prompts</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../../reference/ai-prompts/03-ai-prompts-library-full.html" class="pagination-link" aria-label="AI Prompts Library for Demographic Analysis Workshop">
+        <span class="nav-page-text">AI Prompts Library for Demographic Analysis Workshop</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>School of Economics, Quaid-i-Azam University, Islamabad</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    <div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/Zahedasghar/d4d/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li><li><a href="https://github.com/Zahedasghar/d4d/blob/main/reference/ai-prompts/02-ai-prompts-library.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li></ul></div></div>
+    <div class="nav-footer-right">
+<p>Built with <a href="https://quarto.org">Quarto</a></p>
+</div>
+  </div>
+</footer>
+
+
+
+
+</body></html>

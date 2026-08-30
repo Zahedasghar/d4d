@@ -1,0 +1,1735 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.37">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<meta name="author" content="Zahid Asghar">
+<title>5 verbs for data wrangling – Data for Development</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../reference/ai-prompts/index.html" rel="next">
+<link href="../reference/r-essentials.html" rel="prev">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-2b40426cb6f0ae44c39a7d7961966715.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-1134f32b897c80ade09b81f85d07011f.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light"><script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script><link href="../site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet">
+<script src="../site_libs/pagedtable-1.1/js/pagedtable.js"></script>
+</head>
+<body class="nav-sidebar docked nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top"><nav class="navbar navbar-expand-lg " data-bs-theme="dark"><div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Data for Development</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+<li class="nav-item">
+    <a class="nav-link" href="../index.html"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../agenda.html"> 
+<span class="menu-text">Agenda</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../setup.html"> 
+<span class="menu-text">Setup</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-days" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Days</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-days">
+<li>
+    <a class="dropdown-item" href="../days/01-foundations/index.html">
+ <span class="dropdown-text">Day 1 — Foundations, Data Acquisition &amp; AI Toolkit</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../days/02-indicators-visualisation/index.html">
+ <span class="dropdown-text">Day 2 — Indicators, Prices &amp; Visualisation</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../days/03-modelling-spatial/index.html">
+ <span class="dropdown-text">Day 3 — Spatial Analysis &amp; Statistical Modelling</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../days/04-reporting-dashboards/index.html">
+ <span class="dropdown-text">Day 4 — Automation &amp; Reproducible Reporting</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../days/05-revision-presentations/index.html">
+ <span class="dropdown-text">Day 5 — Revision, Presentations &amp; Close</span></a>
+  </li>  
+    </ul>
+</li>
+  <li class="nav-item">
+    <a class="nav-link active" href="../reference/r-essentials.html" aria-current="page"> 
+<span class="menu-text">Reference</span></a>
+  </li>  
+</ul>
+<ul class="navbar-nav navbar-nav-scroll ms-auto">
+<li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/Zahedasghar/d4d"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+</div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav><nav class="quarto-secondary-nav"><div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../reference/r-essentials.html">Reference</a></li><li class="breadcrumb-item"><a href="../reference/five-verbs-data-wrangling.html"><span class="flow">5 verbs for data wrangling</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav></header><!-- content --><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto"><div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+<li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Day 1 — Foundations &amp; Acquisition</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../days/01-foundations/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Day 1 — Foundations, Data Acquisition &amp; the AI Toolkit</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../days/01-foundations/00-orientation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Day 1 · Session 1</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../days/01-foundations/01-r-fundamentals.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Introduction to R</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../days/01-foundations/02-rstudio-git-session.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Getting Started with R</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../days/01-foundations/03-data-import-export.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Communicating Better With Data: Import, Export &amp; APIs in R</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../days/01-foundations/04-dplyr-wrangling-floods.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Working Smarter with dplyr 1.2.0</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../days/01-foundations/05-demographic-analysis-nhanes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Demographic Analysis Using R</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+ <span class="menu-text">days/01-foundations/06-demographic-analysis-workbook.qmd</span>
+  </li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Day 2 — Indicators, Prices &amp; Visualisation</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../days/02-indicators-visualisation/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Day 2 — Indicators, Prices &amp; Visualisation</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../days/02-indicators-visualisation/01-wfp-prices-pipeline.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Reading, Cleaning and Mapping WFP Food Prices</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../days/02-indicators-visualisation/02-pak-food-prices-workflow.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Food Prices in Pakistan</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../days/02-indicators-visualisation/03-combining-prices-markets.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Combining the WFP Prices and Markets Files</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../days/02-indicators-visualisation/04-index-numbers.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Index Numbers in R</span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Day 3 — Spatial &amp; Modelling</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../days/03-modelling-spatial/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Day 3 — Spatial Analysis &amp; Statistical Modelling</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../days/03-modelling-spatial/01-dhs-model-datasets.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Demographic Analysis in R using DHS Model Datasets</span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
+ <span class="menu-text">Day 4 — Automation &amp; Reporting</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../days/04-reporting-dashboards/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Day 4 — Automation &amp; Reproducible Reporting</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../days/04-reporting-dashboards/01-quarto-basics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">01-quarto-basics.html</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../days/04-reporting-dashboards/02-quarto-document-writing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Quarto for Academic Writing</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../days/04-reporting-dashboards/03-parameterised-reports.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Life Expectancy Report</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../days/04-reporting-dashboards/04-odi-report.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Batting Performance of <code>r params$player</code></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+ <span class="menu-text">days/04-reporting-dashboards/05-project-outline.qmd</span>
+  </li>
+          <li class="sidebar-item">
+ <span class="menu-text">days/04-reporting-dashboards/06-demographic-survey-outline.qmd</span>
+  </li>
+          <li class="sidebar-item">
+ <span class="menu-text">days/04-reporting-dashboards/07-r-user-group.qmd</span>
+  </li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
+ <span class="menu-text">Day 5 — Revision &amp; Presentations</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../days/05-revision-presentations/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Day 5 — Revision, Presentations &amp; Close</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../days/05-revision-presentations/01-week-in-review.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">The Week in One Hour</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../days/05-revision-presentations/02-group-presentation-brief.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Group Presentation Brief</span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true">
+ <span class="menu-text">Reference</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/r-essentials.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">R essentials</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/five-verbs-data-wrangling.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="flow">5 verbs for data wrangling</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+ <span class="menu-text">reference/dummy-variable-regression.qmd</span>
+  </li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true">
+ <span class="menu-text">AI prompt library</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/ai-prompts/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">AI Prompt Library</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/ai-prompts/01-data-prompt-manual.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">5-Day Workshop: Data Analysis Using AI Prompts</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/ai-prompts/02-ai-prompts-library.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">AI Prompts Library for Demographic Analysis Workshop</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/ai-prompts/03-ai-prompts-library-full.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">AI Prompts Library for Demographic Analysis Workshop</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/ai-prompts/04-master-data-prompt-pack.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Master Data Prompt Pack</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference/ai-prompts/05-prompt-cheatsheet-poster.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">AI Prompt Cheat Sheet Poster</span></a>
+  </div>
+</li>
+      </ul>
+</li>
+    </ul>
+</div>
+</nav><div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">On this page</h2>
+   
+  <ul>
+<li><a href="#getting-started" id="toc-getting-started" class="nav-link active" data-scroll-target="#getting-started">Getting started</a></li>
+  <li>
+<a href="#verbs" id="toc-verbs" class="nav-link" data-scroll-target="#verbs">5 verbs</a>
+  <ul class="collapse">
+<li><a href="#arrange" id="toc-arrange" class="nav-link" data-scroll-target="#arrange">arrange</a></li>
+  <li><a href="#select" id="toc-select" class="nav-link" data-scroll-target="#select">select</a></li>
+  <li><a href="#mutate" id="toc-mutate" class="nav-link" data-scroll-target="#mutate">mutate</a></li>
+  <li><a href="#filter" id="toc-filter" class="nav-link" data-scroll-target="#filter">filter</a></li>
+  <li><a href="#summarise" id="toc-summarise" class="nav-link" data-scroll-target="#summarise">summarise</a></li>
+  </ul>
+</li>
+  <li>
+<a href="#arrange-1" id="toc-arrange-1" class="nav-link" data-scroll-target="#arrange-1">Arrange</a>
+  <ul class="collapse">
+<li><a href="#example" id="toc-example" class="nav-link" data-scroll-target="#example">Example</a></li>
+  <li><a href="#q1" id="toc-q1" class="nav-link" data-scroll-target="#q1">Q1</a></li>
+  <li><a href="#q2" id="toc-q2" class="nav-link" data-scroll-target="#q2">Q2</a></li>
+  <li><a href="#q3" id="toc-q3" class="nav-link" data-scroll-target="#q3">Q3</a></li>
+  </ul>
+</li>
+  <li>
+<a href="#select-1" id="toc-select-1" class="nav-link" data-scroll-target="#select-1">Select</a>
+  <ul class="collapse">
+<li><a href="#example-1" id="toc-example-1" class="nav-link" data-scroll-target="#example-1">Example</a></li>
+  <li><a href="#q1-1" id="toc-q1-1" class="nav-link" data-scroll-target="#q1-1">Q1</a></li>
+  <li><a href="#q2-1" id="toc-q2-1" class="nav-link" data-scroll-target="#q2-1">Q2</a></li>
+  <li><a href="#q3-1" id="toc-q3-1" class="nav-link" data-scroll-target="#q3-1">Q3</a></li>
+  </ul>
+</li>
+  <li>
+<a href="#filter-1" id="toc-filter-1" class="nav-link" data-scroll-target="#filter-1">Filter</a>
+  <ul class="collapse">
+<li><a href="#example-2" id="toc-example-2" class="nav-link" data-scroll-target="#example-2">Example</a></li>
+  <li><a href="#q1-2" id="toc-q1-2" class="nav-link" data-scroll-target="#q1-2">Q1</a></li>
+  <li><a href="#q2-2" id="toc-q2-2" class="nav-link" data-scroll-target="#q2-2">Q2</a></li>
+  <li><a href="#q3-2" id="toc-q3-2" class="nav-link" data-scroll-target="#q3-2">Q3</a></li>
+  <li><a href="#q4" id="toc-q4" class="nav-link" data-scroll-target="#q4">Q4</a></li>
+  <li><a href="#q5" id="toc-q5" class="nav-link" data-scroll-target="#q5">Q5</a></li>
+  <li><a href="#challenge" id="toc-challenge" class="nav-link" data-scroll-target="#challenge">Challenge</a></li>
+  </ul>
+</li>
+  <li>
+<a href="#filter-with-groups" id="toc-filter-with-groups" class="nav-link" data-scroll-target="#filter-with-groups">Filter with groups</a>
+  <ul class="collapse">
+<li><a href="#example-3" id="toc-example-3" class="nav-link" data-scroll-target="#example-3">Example</a></li>
+  <li><a href="#q1-3" id="toc-q1-3" class="nav-link" data-scroll-target="#q1-3">Q1</a></li>
+  <li><a href="#q2-3" id="toc-q2-3" class="nav-link" data-scroll-target="#q2-3">Q2</a></li>
+  </ul>
+</li>
+  <li>
+<a href="#mutate-1" id="toc-mutate-1" class="nav-link" data-scroll-target="#mutate-1">Mutate</a>
+  <ul class="collapse">
+<li><a href="#example-4" id="toc-example-4" class="nav-link" data-scroll-target="#example-4">Example</a></li>
+  <li><a href="#q1-4" id="toc-q1-4" class="nav-link" data-scroll-target="#q1-4">Q1</a></li>
+  <li><a href="#q2-4" id="toc-q2-4" class="nav-link" data-scroll-target="#q2-4">Q2</a></li>
+  <li><a href="#q3-3" id="toc-q3-3" class="nav-link" data-scroll-target="#q3-3">Q3</a></li>
+  <li><a href="#q4-1" id="toc-q4-1" class="nav-link" data-scroll-target="#q4-1">Q4</a></li>
+  </ul>
+</li>
+  <li>
+<a href="#mutate-with-groups" id="toc-mutate-with-groups" class="nav-link" data-scroll-target="#mutate-with-groups">Mutate with groups</a>
+  <ul class="collapse">
+<li><a href="#q1-5" id="toc-q1-5" class="nav-link" data-scroll-target="#q1-5">Q1</a></li>
+  <li><a href="#q2-5" id="toc-q2-5" class="nav-link" data-scroll-target="#q2-5">Q2</a></li>
+  <li><a href="#q3-4" id="toc-q3-4" class="nav-link" data-scroll-target="#q3-4">Q3</a></li>
+  </ul>
+</li>
+  <li>
+<a href="#summarize" id="toc-summarize" class="nav-link" data-scroll-target="#summarize">Summarize</a>
+  <ul class="collapse">
+<li><a href="#example-5" id="toc-example-5" class="nav-link" data-scroll-target="#example-5">Example</a></li>
+  <li><a href="#q1-6" id="toc-q1-6" class="nav-link" data-scroll-target="#q1-6">Q1</a></li>
+  <li><a href="#q2-6" id="toc-q2-6" class="nav-link" data-scroll-target="#q2-6">Q2</a></li>
+  <li><a href="#q3-5" id="toc-q3-5" class="nav-link" data-scroll-target="#q3-5">Q3</a></li>
+  </ul>
+</li>
+  <li>
+<a href="#summarize-with-groups" id="toc-summarize-with-groups" class="nav-link" data-scroll-target="#summarize-with-groups">Summarize with groups</a>
+  <ul class="collapse">
+<li><a href="#example-6" id="toc-example-6" class="nav-link" data-scroll-target="#example-6">Example</a></li>
+  <li><a href="#q1-7" id="toc-q1-7" class="nav-link" data-scroll-target="#q1-7">Q1</a></li>
+  <li><a href="#q2-7" id="toc-q2-7" class="nav-link" data-scroll-target="#q2-7">Q2</a></li>
+  <li><a href="#q3-6" id="toc-q3-6" class="nav-link" data-scroll-target="#q3-6">Q3</a></li>
+  <li><a href="#q4-2" id="toc-q4-2" class="nav-link" data-scroll-target="#q4-2">Q4</a></li>
+  </ul>
+</li>
+  <li>
+<a href="#combining-verbs" id="toc-combining-verbs" class="nav-link" data-scroll-target="#combining-verbs">Combining verbs</a>
+  <ul class="collapse">
+<li><a href="#example-7" id="toc-example-7" class="nav-link" data-scroll-target="#example-7">Example</a></li>
+  <li><a href="#q1-8" id="toc-q1-8" class="nav-link" data-scroll-target="#q1-8">Q1</a></li>
+  <li><a href="#q2-8" id="toc-q2-8" class="nav-link" data-scroll-target="#q2-8">Q2</a></li>
+  <li><a href="#q3-7" id="toc-q3-7" class="nav-link" data-scroll-target="#q3-7">Q3</a></li>
+  <li><a href="#q4-3" id="toc-q4-3" class="nav-link" data-scroll-target="#q4-3">Q4</a></li>
+  <li><a href="#challenge-1" id="toc-challenge-1" class="nav-link" data-scroll-target="#challenge-1">Challenge</a></li>
+  </ul>
+</li>
+  </ul><div class="toc-actions"><ul><li><a href="https://github.com/Zahedasghar/d4d/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li><li><a href="https://github.com/Zahedasghar/d4d/blob/main/reference/five-verbs-data-wrangling.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../reference/r-essentials.html">Reference</a></li><li class="breadcrumb-item"><a href="../reference/five-verbs-data-wrangling.html"><span class="flow">5 verbs for data wrangling</span></a></li></ol></nav><div class="quarto-title">
+<h1 class="title"><span class="flow">5 verbs for data wrangling</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Zahid Asghar </p>
+          </div>
+  </div>
+    
+  
+    
+  </div>
+  
+
+
+</header><section id="getting-started" class="level1"><h1>Getting started</h1>
+<p>HEAD How to install R and RStudio , please have a quick watch of this video. </p>
+<div class="quarto-video ratio ratio-16x9"><iframe data-external="1" src="https://www.youtube.com/embed/ZNBZevfYgo0" title="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe></div>. Once you have installed R, Rtools (in some cases using Windows) and RStudio, you need to install a package. A package is like fixing a bulb and you have to do it only once. Once you have installed relevant package(s), next is to recall it using <code><a href="https://rdrr.io/r/base/library.html">library()</a></code> which is like switching on a button of a bulb. There is base-R commands but very easy and useful is to learn <code>tidyverse</code> which consists of many useful packages, we will talk later on.
+<p>Once you have installed R, Rtools (in some cases using Windows) and RStudio</p>
+<div class="quarto-video ratio ratio-16x9"><iframe data-external="1" src="https://www.youtube.com/embed/ZNBZevfYgo0" title="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe></div>, you need to install a package. A package is like fixing a bulb and you have to do it only once. Once you have installed relevant package(s), next is to recall it using <code><a href="https://rdrr.io/r/base/library.html">library()</a></code> which is like switching on a button of a bulb. There is base-R commands but very easy and useful is to learn <code>tidyverse</code> which consists of many useful packages, we will talk later on.
+<p>As always, the first thing we will do is load the tidyverse.</p>
+<p><em>Note: If you haven’t yet installed the tidyverse, you’ll first have to run the code install.packages(“tidyverse”).</em> You may get some warnings when you recall it. Ignore these warnings and go ahead. What are errors, warnings and messages, you may watch my video </p>
+<div class="quarto-video ratio ratio-16x9"><iframe data-external="1" src="https://www.youtube.com/embed/SRSNdCZ_QnE" title="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe></div>.
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org">tidyverse</a></span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section><section id="verbs" class="level1"><h1>5 verbs</h1>
+<section id="arrange" class="level2"><h2 class="anchored" data-anchor-id="arrange">arrange</h2>
+</section><section id="select" class="level2"><h2 class="anchored" data-anchor-id="select">select</h2>
+</section><section id="mutate" class="level2"><h2 class="anchored" data-anchor-id="mutate">mutate</h2>
+</section><section id="filter" class="level2"><h2 class="anchored" data-anchor-id="filter">filter</h2>
+</section><section id="summarise" class="level2"><h2 class="anchored" data-anchor-id="summarise">summarise</h2>
+<p>To study these five verbs, I am going to work with a very simple data. We shall use it for big data later on once you understand these <code>5 verbs</code>. <strong>All the next stuff is discussed in this video</strong> </p>
+<div class="quarto-video ratio ratio-16x9"><iframe data-external="1" src="https://www.youtube.com/embed/dpIYsMRDWks" title="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe></div>
+<p>To study these five verbs, I am going to work with a very simple data. We shall use it for big data later on once you understand these <code>5 verbs</code>. &gt;&gt;&gt;&gt;&gt;&gt;&gt; 2cc1b25 (Add files)</p>
+<p>Here’s the dataframe that we’ll analyze in this exercise. This type of data can also be directly imported from <code>excel</code> ,<code>csv</code> ,<code>stata</code>, <code>spss</code> and other softwares in R. But at the moment I have data entered in R. Each variable is a <code>vector</code>. <code>name</code>, <code>school</code>, <code>teacher</code> are <code>character</code> vectors while others are numeric. When one has mixture of numeric, character, factor vectors combined, its called data frame or we shall use term <code>tibble</code> which is just a better display of <code>data frame</code>.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">scores</span> <span class="op">&lt;-</span> </span>
+<span>  <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html">tibble</a></span><span class="op">(</span></span>
+<span>  name <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"munir"</span>, <span class="st">"raeesa"</span>, <span class="st">"rafiq"</span>, <span class="st">"maria"</span>, <span class="st">"pervaiz"</span>, <span class="st">"jamila"</span>, <span class="st">"bobby"</span>, <span class="st">"saima"</span>, <span class="st">"alina"</span><span class="op">)</span>,</span>
+<span>  school <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"rural"</span>, <span class="st">"rural"</span>, <span class="st">"rural"</span>, <span class="st">"rural"</span>, <span class="st">"urban"</span>, <span class="st">"urban"</span>, <span class="st">"urban"</span>, <span class="st">"rural"</span>, <span class="st">"rural"</span><span class="op">)</span>,</span>
+<span>  teacher <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"jamil"</span>, <span class="st">"jamil"</span>, <span class="st">"jamil"</span>, <span class="st">"jamil"</span>,  <span class="st">"sami"</span>, <span class="st">"sami"</span>, <span class="st">"sami"</span>, <span class="st">"fareeha"</span>, <span class="st">"fareeha"</span><span class="op">)</span>,</span>
+<span>  sex <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"male"</span>, <span class="st">"female"</span>, <span class="st">"male"</span>, <span class="st">"female"</span>, <span class="st">"male"</span>, <span class="st">"female"</span>, <span class="st">"male"</span>, <span class="st">"female"</span>, <span class="st">"female"</span><span class="op">)</span>,</span>
+<span>  math_score <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">4</span>, <span class="fl">3</span>, <span class="fl">2</span>, <span class="fl">4</span>, <span class="fl">3</span>, <span class="fl">4</span>, <span class="fl">5</span>, <span class="fl">4</span>, <span class="fl">5</span><span class="op">)</span>,</span>
+<span>  reading_score <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">5</span>, <span class="fl">2</span>, <span class="fl">4</span>, <span class="fl">5</span>, <span class="fl">4</span>, <span class="fl">1</span>, <span class="fl">5</span>, <span class="fl">4</span><span class="op">)</span></span>
+<span>  <span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Lets have a look at data as follows :</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">scores</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["name"],"name":[1],"type":["chr"],"align":["left"]},{"label":["school"],"name":[2],"type":["chr"],"align":["left"]},{"label":["teacher"],"name":[3],"type":["chr"],"align":["left"]},{"label":["sex"],"name":[4],"type":["chr"],"align":["left"]},{"label":["math_score"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["reading_score"],"name":[6],"type":["dbl"],"align":["right"]}],"data":[{"1":"munir","2":"rural","3":"jamil","4":"male","5":"4","6":"1"},{"1":"raeesa","2":"rural","3":"jamil","4":"female","5":"3","6":"5"},{"1":"rafiq","2":"rural","3":"jamil","4":"male","5":"2","6":"2"},{"1":"maria","2":"rural","3":"jamil","4":"female","5":"4","6":"4"},{"1":"pervaiz","2":"urban","3":"sami","4":"male","5":"3","6":"5"},{"1":"jamila","2":"urban","3":"sami","4":"female","5":"4","6":"4"},{"1":"bobby","2":"urban","3":"sami","4":"male","5":"5","6":"1"},{"1":"saima","2":"rural","3":"fareeha","4":"female","5":"4","6":"5"},{"1":"alina","2":"rural","3":"fareeha","4":"female","5":"5","6":"4"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+<p>Before we get started, I want to make sure you <strong>understand the difference between doing something and assigning it to a new name and just doing it without naming it</strong>. Assigning means we have defined a new data name while doing simply means you can do but its not stored. In first line, we are getting first 4 rows but not assigning it any new name, while in the second line we are assigning it as a new data name called <code>scores_small</code>.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># get the first 4 rows</span></span>
+<span><span class="va">scores</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html">slice</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">4</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["name"],"name":[1],"type":["chr"],"align":["left"]},{"label":["school"],"name":[2],"type":["chr"],"align":["left"]},{"label":["teacher"],"name":[3],"type":["chr"],"align":["left"]},{"label":["sex"],"name":[4],"type":["chr"],"align":["left"]},{"label":["math_score"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["reading_score"],"name":[6],"type":["dbl"],"align":["right"]}],"data":[{"1":"munir","2":"rural","3":"jamil","4":"male","5":"4","6":"1"},{"1":"raeesa","2":"rural","3":"jamil","4":"female","5":"3","6":"5"},{"1":"rafiq","2":"rural","3":"jamil","4":"male","5":"2","6":"2"},{"1":"maria","2":"rural","3":"jamil","4":"female","5":"4","6":"4"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># get the first 4 rows, and assign it to a new name "scores_small"</span></span>
+<span><span class="va">scores_small</span> <span class="op">&lt;-</span> <span class="va">scores</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html">slice</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">4</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># see what's in "scores_small"</span></span>
+<span><span class="va">scores_small</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["name"],"name":[1],"type":["chr"],"align":["left"]},{"label":["school"],"name":[2],"type":["chr"],"align":["left"]},{"label":["teacher"],"name":[3],"type":["chr"],"align":["left"]},{"label":["sex"],"name":[4],"type":["chr"],"align":["left"]},{"label":["math_score"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["reading_score"],"name":[6],"type":["dbl"],"align":["right"]}],"data":[{"1":"munir","2":"rural","3":"jamil","4":"male","5":"4","6":"1"},{"1":"raeesa","2":"rural","3":"jamil","4":"female","5":"3","6":"5"},{"1":"rafiq","2":"rural","3":"jamil","4":"male","5":"2","6":"2"},{"1":"maria","2":"rural","3":"jamil","4":"female","5":"4","6":"4"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+<p>So if you want to just get results but dont want to assign them, then you can proceed as in the following exercises. You can use <code>&lt;-</code> or <code>=</code> operator if want to save.</p>
+</section></section><section id="arrange-1" class="level1"><h1>Arrange</h1>
+<section id="example" class="level2"><h2 class="anchored" data-anchor-id="example">Example</h2>
+<p><strong>Question:</strong> Sort the data by reading_score from high to low. Who had the worst reading score?</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">scores</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html">arrange</a></span><span class="op">(</span><span class="va">reading_score</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["name"],"name":[1],"type":["chr"],"align":["left"]},{"label":["school"],"name":[2],"type":["chr"],"align":["left"]},{"label":["teacher"],"name":[3],"type":["chr"],"align":["left"]},{"label":["sex"],"name":[4],"type":["chr"],"align":["left"]},{"label":["math_score"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["reading_score"],"name":[6],"type":["dbl"],"align":["right"]}],"data":[{"1":"munir","2":"rural","3":"jamil","4":"male","5":"4","6":"1"},{"1":"bobby","2":"urban","3":"sami","4":"male","5":"5","6":"1"},{"1":"rafiq","2":"rural","3":"jamil","4":"male","5":"2","6":"2"},{"1":"maria","2":"rural","3":"jamil","4":"female","5":"4","6":"4"},{"1":"jamila","2":"urban","3":"sami","4":"female","5":"4","6":"4"},{"1":"alina","2":"rural","3":"fareeha","4":"female","5":"5","6":"4"},{"1":"raeesa","2":"rural","3":"jamil","4":"female","5":"3","6":"5"},{"1":"pervaiz","2":"urban","3":"sami","4":"male","5":"3","6":"5"},{"1":"saima","2":"rural","3":"fareeha","4":"female","5":"4","6":"5"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+<p><strong>Answer:</strong> Munir and Bobby both tied for the lowest reading score</p>
+<p><strong>Who had the highest reading score</strong></p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">scores</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html">arrange</a></span><span class="op">(</span><span class="op">-</span><span class="va">reading_score</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["name"],"name":[1],"type":["chr"],"align":["left"]},{"label":["school"],"name":[2],"type":["chr"],"align":["left"]},{"label":["teacher"],"name":[3],"type":["chr"],"align":["left"]},{"label":["sex"],"name":[4],"type":["chr"],"align":["left"]},{"label":["math_score"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["reading_score"],"name":[6],"type":["dbl"],"align":["right"]}],"data":[{"1":"raeesa","2":"rural","3":"jamil","4":"female","5":"3","6":"5"},{"1":"pervaiz","2":"urban","3":"sami","4":"male","5":"3","6":"5"},{"1":"saima","2":"rural","3":"fareeha","4":"female","5":"4","6":"5"},{"1":"maria","2":"rural","3":"jamil","4":"female","5":"4","6":"4"},{"1":"jamila","2":"urban","3":"sami","4":"female","5":"4","6":"4"},{"1":"alina","2":"rural","3":"fareeha","4":"female","5":"5","6":"4"},{"1":"rafiq","2":"rural","3":"jamil","4":"male","5":"2","6":"2"},{"1":"munir","2":"rural","3":"jamil","4":"male","5":"4","6":"1"},{"1":"bobby","2":"urban","3":"sami","4":"male","5":"5","6":"1"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+<p>Raeesa and Pervaiz both tied for the highest score.</p>
+</section><section id="q1" class="level2"><h2 class="anchored" data-anchor-id="q1">Q1</h2>
+<p><strong>Question:</strong> Sort the data by name from last to first in the alphabet.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">scores</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html">arrange</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/desc.html">desc</a></span><span class="op">(</span><span class="va">name</span><span class="op">)</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["name"],"name":[1],"type":["chr"],"align":["left"]},{"label":["school"],"name":[2],"type":["chr"],"align":["left"]},{"label":["teacher"],"name":[3],"type":["chr"],"align":["left"]},{"label":["sex"],"name":[4],"type":["chr"],"align":["left"]},{"label":["math_score"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["reading_score"],"name":[6],"type":["dbl"],"align":["right"]}],"data":[{"1":"saima","2":"rural","3":"fareeha","4":"female","5":"4","6":"5"},{"1":"rafiq","2":"rural","3":"jamil","4":"male","5":"2","6":"2"},{"1":"raeesa","2":"rural","3":"jamil","4":"female","5":"3","6":"5"},{"1":"pervaiz","2":"urban","3":"sami","4":"male","5":"3","6":"5"},{"1":"munir","2":"rural","3":"jamil","4":"male","5":"4","6":"1"},{"1":"maria","2":"rural","3":"jamil","4":"female","5":"4","6":"4"},{"1":"jamila","2":"urban","3":"sami","4":"female","5":"4","6":"4"},{"1":"bobby","2":"urban","3":"sami","4":"male","5":"5","6":"1"},{"1":"alina","2":"rural","3":"fareeha","4":"female","5":"5","6":"4"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+</section><section id="q2" class="level2"><h2 class="anchored" data-anchor-id="q2">Q2</h2>
+<p><strong>Question:</strong> Sort the data by sex so females show up first. Which sex appears to have better reading scores?</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">scores</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html">arrange</a></span><span class="op">(</span><span class="va">sex</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["name"],"name":[1],"type":["chr"],"align":["left"]},{"label":["school"],"name":[2],"type":["chr"],"align":["left"]},{"label":["teacher"],"name":[3],"type":["chr"],"align":["left"]},{"label":["sex"],"name":[4],"type":["chr"],"align":["left"]},{"label":["math_score"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["reading_score"],"name":[6],"type":["dbl"],"align":["right"]}],"data":[{"1":"raeesa","2":"rural","3":"jamil","4":"female","5":"3","6":"5"},{"1":"maria","2":"rural","3":"jamil","4":"female","5":"4","6":"4"},{"1":"jamila","2":"urban","3":"sami","4":"female","5":"4","6":"4"},{"1":"saima","2":"rural","3":"fareeha","4":"female","5":"4","6":"5"},{"1":"alina","2":"rural","3":"fareeha","4":"female","5":"5","6":"4"},{"1":"munir","2":"rural","3":"jamil","4":"male","5":"4","6":"1"},{"1":"rafiq","2":"rural","3":"jamil","4":"male","5":"2","6":"2"},{"1":"pervaiz","2":"urban","3":"sami","4":"male","5":"3","6":"5"},{"1":"bobby","2":"urban","3":"sami","4":"male","5":"5","6":"1"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+<p><strong>Answer:</strong> Females seem to have better reading scores – they all got either 4 or 5.</p>
+</section><section id="q3" class="level2"><h2 class="anchored" data-anchor-id="q3">Q3</h2>
+<p><strong>Question:</strong> Sort the data by school, then teacher, then sex, then math_score, and finally by reading_score.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">scores</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html">arrange</a></span><span class="op">(</span><span class="va">school</span>, <span class="va">teacher</span>, <span class="va">sex</span>, <span class="va">math_score</span>, <span class="va">reading_score</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["name"],"name":[1],"type":["chr"],"align":["left"]},{"label":["school"],"name":[2],"type":["chr"],"align":["left"]},{"label":["teacher"],"name":[3],"type":["chr"],"align":["left"]},{"label":["sex"],"name":[4],"type":["chr"],"align":["left"]},{"label":["math_score"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["reading_score"],"name":[6],"type":["dbl"],"align":["right"]}],"data":[{"1":"saima","2":"rural","3":"fareeha","4":"female","5":"4","6":"5"},{"1":"alina","2":"rural","3":"fareeha","4":"female","5":"5","6":"4"},{"1":"raeesa","2":"rural","3":"jamil","4":"female","5":"3","6":"5"},{"1":"maria","2":"rural","3":"jamil","4":"female","5":"4","6":"4"},{"1":"rafiq","2":"rural","3":"jamil","4":"male","5":"2","6":"2"},{"1":"munir","2":"rural","3":"jamil","4":"male","5":"4","6":"1"},{"1":"jamila","2":"urban","3":"sami","4":"female","5":"4","6":"4"},{"1":"pervaiz","2":"urban","3":"sami","4":"male","5":"3","6":"5"},{"1":"bobby","2":"urban","3":"sami","4":"male","5":"5","6":"1"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+</section></section><section id="select-1" class="level1"><h1>Select</h1>
+<section id="example-1" class="level2"><h2 class="anchored" data-anchor-id="example-1">Example</h2>
+<p><strong>Question:</strong> Select only the name, math_score, and reading_score columns.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">scores</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">name</span>, <span class="va">math_score</span>, <span class="va">reading_score</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["name"],"name":[1],"type":["chr"],"align":["left"]},{"label":["math_score"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["reading_score"],"name":[3],"type":["dbl"],"align":["right"]}],"data":[{"1":"munir","2":"4","3":"1"},{"1":"raeesa","2":"3","3":"5"},{"1":"rafiq","2":"2","3":"2"},{"1":"maria","2":"4","3":"4"},{"1":"pervaiz","2":"3","3":"5"},{"1":"jamila","2":"4","3":"4"},{"1":"bobby","2":"5","3":"1"},{"1":"saima","2":"4","3":"5"},{"1":"alina","2":"5","3":"4"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+</section><section id="q1-1" class="level2"><h2 class="anchored" data-anchor-id="q1-1">Q1</h2>
+<p><strong>Question:</strong> Select all of the columns except the sex column.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">scores</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="op">-</span><span class="va">sex</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["name"],"name":[1],"type":["chr"],"align":["left"]},{"label":["school"],"name":[2],"type":["chr"],"align":["left"]},{"label":["teacher"],"name":[3],"type":["chr"],"align":["left"]},{"label":["math_score"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["reading_score"],"name":[5],"type":["dbl"],"align":["right"]}],"data":[{"1":"munir","2":"rural","3":"jamil","4":"4","5":"1"},{"1":"raeesa","2":"rural","3":"jamil","4":"3","5":"5"},{"1":"rafiq","2":"rural","3":"jamil","4":"2","5":"2"},{"1":"maria","2":"rural","3":"jamil","4":"4","5":"4"},{"1":"pervaiz","2":"urban","3":"sami","4":"3","5":"5"},{"1":"jamila","2":"urban","3":"sami","4":"4","5":"4"},{"1":"bobby","2":"urban","3":"sami","4":"5","5":"1"},{"1":"saima","2":"rural","3":"fareeha","4":"4","5":"5"},{"1":"alina","2":"rural","3":"fareeha","4":"5","5":"4"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+</section><section id="q2-1" class="level2"><h2 class="anchored" data-anchor-id="q2-1">Q2</h2>
+<p><strong>Question:</strong> Select all of the columns except the math_score and reading_score columns.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">scores</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="op">-</span><span class="va">math_score</span>, <span class="op">-</span><span class="va">reading_score</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["name"],"name":[1],"type":["chr"],"align":["left"]},{"label":["school"],"name":[2],"type":["chr"],"align":["left"]},{"label":["teacher"],"name":[3],"type":["chr"],"align":["left"]},{"label":["sex"],"name":[4],"type":["chr"],"align":["left"]}],"data":[{"1":"munir","2":"rural","3":"jamil","4":"male"},{"1":"raeesa","2":"rural","3":"jamil","4":"female"},{"1":"rafiq","2":"rural","3":"jamil","4":"male"},{"1":"maria","2":"rural","3":"jamil","4":"female"},{"1":"pervaiz","2":"urban","3":"sami","4":"male"},{"1":"jamila","2":"urban","3":"sami","4":"female"},{"1":"bobby","2":"urban","3":"sami","4":"male"},{"1":"saima","2":"rural","3":"fareeha","4":"female"},{"1":"alina","2":"rural","3":"fareeha","4":"female"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+</section><section id="q3-1" class="level2"><h2 class="anchored" data-anchor-id="q3-1">Q3</h2>
+<p><strong>Question:</strong> Keep all of the columns but rearrange them so sex is the first column.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">scores</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">sex</span>, <span class="fu"><a href="https://tidyselect.r-lib.org/reference/everything.html">everything</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["sex"],"name":[1],"type":["chr"],"align":["left"]},{"label":["name"],"name":[2],"type":["chr"],"align":["left"]},{"label":["school"],"name":[3],"type":["chr"],"align":["left"]},{"label":["teacher"],"name":[4],"type":["chr"],"align":["left"]},{"label":["math_score"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["reading_score"],"name":[6],"type":["dbl"],"align":["right"]}],"data":[{"1":"male","2":"munir","3":"rural","4":"jamil","5":"4","6":"1"},{"1":"female","2":"raeesa","3":"rural","4":"jamil","5":"3","6":"5"},{"1":"male","2":"rafiq","3":"rural","4":"jamil","5":"2","6":"2"},{"1":"female","2":"maria","3":"rural","4":"jamil","5":"4","6":"4"},{"1":"male","2":"pervaiz","3":"urban","4":"sami","5":"3","6":"5"},{"1":"female","2":"jamila","3":"urban","4":"sami","5":"4","6":"4"},{"1":"male","2":"bobby","3":"urban","4":"sami","5":"5","6":"1"},{"1":"female","2":"saima","3":"rural","4":"fareeha","5":"4","6":"5"},{"1":"female","2":"alina","3":"rural","4":"fareeha","5":"5","6":"4"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+</section></section><section id="filter-1" class="level1"><h1>Filter</h1>
+<section id="example-2" class="level2"><h2 class="anchored" data-anchor-id="example-2">Example</h2>
+<p><strong>Question:</strong> Filter to students who are male and went to rural area school.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Option 1</span></span>
+<span><span class="va">scores</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">sex</span> <span class="op">==</span> <span class="st">"male"</span> <span class="op">&amp;</span> <span class="va">school</span> <span class="op">==</span> <span class="st">"rural"</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["name"],"name":[1],"type":["chr"],"align":["left"]},{"label":["school"],"name":[2],"type":["chr"],"align":["left"]},{"label":["teacher"],"name":[3],"type":["chr"],"align":["left"]},{"label":["sex"],"name":[4],"type":["chr"],"align":["left"]},{"label":["math_score"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["reading_score"],"name":[6],"type":["dbl"],"align":["right"]}],"data":[{"1":"munir","2":"rural","3":"jamil","4":"male","5":"4","6":"1"},{"1":"rafiq","2":"rural","3":"jamil","4":"male","5":"2","6":"2"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Option 2</span></span>
+<span><span class="va">scores</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">sex</span> <span class="op">==</span> <span class="st">"male"</span>, <span class="va">school</span> <span class="op">==</span> <span class="st">"rural"</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["name"],"name":[1],"type":["chr"],"align":["left"]},{"label":["school"],"name":[2],"type":["chr"],"align":["left"]},{"label":["teacher"],"name":[3],"type":["chr"],"align":["left"]},{"label":["sex"],"name":[4],"type":["chr"],"align":["left"]},{"label":["math_score"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["reading_score"],"name":[6],"type":["dbl"],"align":["right"]}],"data":[{"1":"munir","2":"rural","3":"jamil","4":"male","5":"4","6":"1"},{"1":"rafiq","2":"rural","3":"jamil","4":"male","5":"2","6":"2"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+</section><section id="q1-2" class="level2"><h2 class="anchored" data-anchor-id="q1-2">Q1</h2>
+<p><strong>Question:</strong> Filter to students who did well in math (you decide what “well” means).</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">scores</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">math_score</span> <span class="op">&gt;=</span> <span class="fl">4</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["name"],"name":[1],"type":["chr"],"align":["left"]},{"label":["school"],"name":[2],"type":["chr"],"align":["left"]},{"label":["teacher"],"name":[3],"type":["chr"],"align":["left"]},{"label":["sex"],"name":[4],"type":["chr"],"align":["left"]},{"label":["math_score"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["reading_score"],"name":[6],"type":["dbl"],"align":["right"]}],"data":[{"1":"munir","2":"rural","3":"jamil","4":"male","5":"4","6":"1"},{"1":"maria","2":"rural","3":"jamil","4":"female","5":"4","6":"4"},{"1":"jamila","2":"urban","3":"sami","4":"female","5":"4","6":"4"},{"1":"bobby","2":"urban","3":"sami","4":"male","5":"5","6":"1"},{"1":"saima","2":"rural","3":"fareeha","4":"female","5":"4","6":"5"},{"1":"alina","2":"rural","3":"fareeha","4":"female","5":"5","6":"4"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+</section><section id="q2-2" class="level2"><h2 class="anchored" data-anchor-id="q2-2">Q2</h2>
+<p><strong>Question:</strong> Use filter to figure out how many students had a math score of 4 or more and a reading score of 3 or more.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">scores</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">math_score</span> <span class="op">&gt;=</span> <span class="fl">4</span>, <span class="va">reading_score</span> <span class="op">&gt;=</span> <span class="fl">3</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["name"],"name":[1],"type":["chr"],"align":["left"]},{"label":["school"],"name":[2],"type":["chr"],"align":["left"]},{"label":["teacher"],"name":[3],"type":["chr"],"align":["left"]},{"label":["sex"],"name":[4],"type":["chr"],"align":["left"]},{"label":["math_score"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["reading_score"],"name":[6],"type":["dbl"],"align":["right"]}],"data":[{"1":"maria","2":"rural","3":"jamil","4":"female","5":"4","6":"4"},{"1":"jamila","2":"urban","3":"sami","4":"female","5":"4","6":"4"},{"1":"saima","2":"rural","3":"fareeha","4":"female","5":"4","6":"5"},{"1":"alina","2":"rural","3":"fareeha","4":"female","5":"5","6":"4"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+<p><strong>Answer</strong> There are 4 such students.</p>
+</section><section id="q3-2" class="level2"><h2 class="anchored" data-anchor-id="q3-2">Q3</h2>
+<p><strong>Question:</strong> Explain the errors in each of the following code blocks, then fix it to make it right!</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb19"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># code block 1</span></span>
+<span><span class="va">scores</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">school</span> <span class="op">==</span> <span class="va">rural</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-error">
+<pre><code>Error in `filter()`:
+ℹ In argument: `school == rural`.
+Caused by error:
+! object 'rural' not found</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb21"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># code block 2</span></span>
+<span><span class="va">scores</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span>school <span class="op">=</span> <span class="st">"rural"</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-error">
+<pre><code>Error in `filter()`:
+! We detected a named input.
+ℹ This usually means that you've used `=` instead of `==`.
+ℹ Did you mean `school == "rural"`?</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb23"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># fix it! </span></span>
+<span><span class="va">scores</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">school</span> <span class="op">==</span> <span class="st">"rural"</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["name"],"name":[1],"type":["chr"],"align":["left"]},{"label":["school"],"name":[2],"type":["chr"],"align":["left"]},{"label":["teacher"],"name":[3],"type":["chr"],"align":["left"]},{"label":["sex"],"name":[4],"type":["chr"],"align":["left"]},{"label":["math_score"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["reading_score"],"name":[6],"type":["dbl"],"align":["right"]}],"data":[{"1":"munir","2":"rural","3":"jamil","4":"male","5":"4","6":"1"},{"1":"raeesa","2":"rural","3":"jamil","4":"female","5":"3","6":"5"},{"1":"rafiq","2":"rural","3":"jamil","4":"male","5":"2","6":"2"},{"1":"maria","2":"rural","3":"jamil","4":"female","5":"4","6":"4"},{"1":"saima","2":"rural","3":"fareeha","4":"female","5":"4","6":"5"},{"1":"alina","2":"rural","3":"fareeha","4":"female","5":"5","6":"4"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+<p><strong>Answer:</strong> Code block 1 doesn’t use quotation marks so R thinks it is looking for an object not a word. Code block 2 uses only one equals sign “=” when we need two equals signs “==” for comparison.</p>
+</section><section id="q4" class="level2"><h2 class="anchored" data-anchor-id="q4">Q4</h2>
+<p><strong>Question:</strong> You are creating a remediation program. Filter to students who got a 3 or worse in either math or reading.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb24"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">scores</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">math_score</span> <span class="op">&lt;=</span> <span class="fl">3</span> <span class="op">|</span> <span class="va">reading_score</span> <span class="op">&lt;=</span> <span class="fl">3</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["name"],"name":[1],"type":["chr"],"align":["left"]},{"label":["school"],"name":[2],"type":["chr"],"align":["left"]},{"label":["teacher"],"name":[3],"type":["chr"],"align":["left"]},{"label":["sex"],"name":[4],"type":["chr"],"align":["left"]},{"label":["math_score"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["reading_score"],"name":[6],"type":["dbl"],"align":["right"]}],"data":[{"1":"munir","2":"rural","3":"jamil","4":"male","5":"4","6":"1"},{"1":"raeesa","2":"rural","3":"jamil","4":"female","5":"3","6":"5"},{"1":"rafiq","2":"rural","3":"jamil","4":"male","5":"2","6":"2"},{"1":"pervaiz","2":"urban","3":"sami","4":"male","5":"3","6":"5"},{"1":"bobby","2":"urban","3":"sami","4":"male","5":"5","6":"1"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+</section><section id="q5" class="level2"><h2 class="anchored" data-anchor-id="q5">Q5</h2>
+<p><strong>Question:</strong> Filter to students who got a reading score of 2, 3, or 4.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb25"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># option 1</span></span>
+<span><span class="va">scores</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">reading_score</span> <span class="op"><a href="https://rdrr.io/r/base/match.html">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">4</span><span class="op">)</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["name"],"name":[1],"type":["chr"],"align":["left"]},{"label":["school"],"name":[2],"type":["chr"],"align":["left"]},{"label":["teacher"],"name":[3],"type":["chr"],"align":["left"]},{"label":["sex"],"name":[4],"type":["chr"],"align":["left"]},{"label":["math_score"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["reading_score"],"name":[6],"type":["dbl"],"align":["right"]}],"data":[{"1":"rafiq","2":"rural","3":"jamil","4":"male","5":"2","6":"2"},{"1":"maria","2":"rural","3":"jamil","4":"female","5":"4","6":"4"},{"1":"jamila","2":"urban","3":"sami","4":"female","5":"4","6":"4"},{"1":"alina","2":"rural","3":"fareeha","4":"female","5":"5","6":"4"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb26"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># option 2 (if you know that 1 and 5 are the only other 2 options)</span></span>
+<span><span class="va">scores</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">reading_score</span> <span class="op">!=</span> <span class="fl">1</span>, <span class="va">reading_score</span> <span class="op">!=</span> <span class="fl">5</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["name"],"name":[1],"type":["chr"],"align":["left"]},{"label":["school"],"name":[2],"type":["chr"],"align":["left"]},{"label":["teacher"],"name":[3],"type":["chr"],"align":["left"]},{"label":["sex"],"name":[4],"type":["chr"],"align":["left"]},{"label":["math_score"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["reading_score"],"name":[6],"type":["dbl"],"align":["right"]}],"data":[{"1":"rafiq","2":"rural","3":"jamil","4":"male","5":"2","6":"2"},{"1":"maria","2":"rural","3":"jamil","4":"female","5":"4","6":"4"},{"1":"jamila","2":"urban","3":"sami","4":"female","5":"4","6":"4"},{"1":"alina","2":"rural","3":"fareeha","4":"female","5":"5","6":"4"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+</section><section id="challenge" class="level2"><h2 class="anchored" data-anchor-id="challenge">Challenge</h2>
+<p><strong>Question:</strong> Filter to students who have a name that starts with an “m”. Hint: type “?substr” in the console and then scroll to the bottom of the help file to see useful examples.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb27"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">scores</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/substr.html">substr</a></span><span class="op">(</span><span class="va">name</span>, <span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span> <span class="op">==</span> <span class="st">"m"</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["name"],"name":[1],"type":["chr"],"align":["left"]},{"label":["school"],"name":[2],"type":["chr"],"align":["left"]},{"label":["teacher"],"name":[3],"type":["chr"],"align":["left"]},{"label":["sex"],"name":[4],"type":["chr"],"align":["left"]},{"label":["math_score"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["reading_score"],"name":[6],"type":["dbl"],"align":["right"]}],"data":[{"1":"munir","2":"rural","3":"jamil","4":"male","5":"4","6":"1"},{"1":"maria","2":"rural","3":"jamil","4":"female","5":"4","6":"4"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+</section></section><section id="filter-with-groups" class="level1"><h1>Filter with groups</h1>
+<section id="example-3" class="level2"><h2 class="anchored" data-anchor-id="example-3">Example</h2>
+<p><strong>Question:</strong> Filter to teachers whose best math student got a score of 5.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb28"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">scores</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">teacher</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span><span class="op">(</span><span class="va">math_score</span><span class="op">)</span> <span class="op">==</span> <span class="fl">5</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["name"],"name":[1],"type":["chr"],"align":["left"]},{"label":["school"],"name":[2],"type":["chr"],"align":["left"]},{"label":["teacher"],"name":[3],"type":["chr"],"align":["left"]},{"label":["sex"],"name":[4],"type":["chr"],"align":["left"]},{"label":["math_score"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["reading_score"],"name":[6],"type":["dbl"],"align":["right"]}],"data":[{"1":"pervaiz","2":"urban","3":"sami","4":"male","5":"3","6":"5"},{"1":"jamila","2":"urban","3":"sami","4":"female","5":"4","6":"4"},{"1":"bobby","2":"urban","3":"sami","4":"male","5":"5","6":"1"},{"1":"saima","2":"rural","3":"fareeha","4":"female","5":"4","6":"5"},{"1":"alina","2":"rural","3":"fareeha","4":"female","5":"5","6":"4"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+</section><section id="q1-3" class="level2"><h2 class="anchored" data-anchor-id="q1-3">Q1</h2>
+<p><strong>Question:</strong> Filter to the sex with a mean math score of 4.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb29"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">scores</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">sex</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">math_score</span><span class="op">)</span> <span class="op">==</span> <span class="fl">4</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["name"],"name":[1],"type":["chr"],"align":["left"]},{"label":["school"],"name":[2],"type":["chr"],"align":["left"]},{"label":["teacher"],"name":[3],"type":["chr"],"align":["left"]},{"label":["sex"],"name":[4],"type":["chr"],"align":["left"]},{"label":["math_score"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["reading_score"],"name":[6],"type":["dbl"],"align":["right"]}],"data":[{"1":"raeesa","2":"rural","3":"jamil","4":"female","5":"3","6":"5"},{"1":"maria","2":"rural","3":"jamil","4":"female","5":"4","6":"4"},{"1":"jamila","2":"urban","3":"sami","4":"female","5":"4","6":"4"},{"1":"saima","2":"rural","3":"fareeha","4":"female","5":"4","6":"5"},{"1":"alina","2":"rural","3":"fareeha","4":"female","5":"5","6":"4"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+</section><section id="q2-3" class="level2"><h2 class="anchored" data-anchor-id="q2-3">Q2</h2>
+<p><strong>Question:</strong> Explain why the following code removes students who have fareeha as their teacher.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb30"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">scores</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">teacher</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/context.html">n</a></span><span class="op">(</span><span class="op">)</span> <span class="op">&gt;=</span> <span class="fl">3</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["name"],"name":[1],"type":["chr"],"align":["left"]},{"label":["school"],"name":[2],"type":["chr"],"align":["left"]},{"label":["teacher"],"name":[3],"type":["chr"],"align":["left"]},{"label":["sex"],"name":[4],"type":["chr"],"align":["left"]},{"label":["math_score"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["reading_score"],"name":[6],"type":["dbl"],"align":["right"]}],"data":[{"1":"munir","2":"rural","3":"jamil","4":"male","5":"4","6":"1"},{"1":"raeesa","2":"rural","3":"jamil","4":"female","5":"3","6":"5"},{"1":"rafiq","2":"rural","3":"jamil","4":"male","5":"2","6":"2"},{"1":"maria","2":"rural","3":"jamil","4":"female","5":"4","6":"4"},{"1":"pervaiz","2":"urban","3":"sami","4":"male","5":"3","6":"5"},{"1":"jamila","2":"urban","3":"sami","4":"female","5":"4","6":"4"},{"1":"bobby","2":"urban","3":"sami","4":"male","5":"5","6":"1"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+<p><strong>Answer:</strong> The “n()” stands for the number of rows. This returns the teachers with 3 or more rows in the data frame. This excludes fareeha because there are only 2 students who have fareeha as their teacher.</p>
+</section></section><section id="mutate-1" class="level1"><h1>Mutate</h1>
+<section id="example-4" class="level2"><h2 class="anchored" data-anchor-id="example-4">Example</h2>
+<p><strong>Question:</strong> Both the math and reading scores were actually out of 50 – replace both variables to be 10 times their original values.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb31"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">scores</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>math_score <span class="op">=</span>  <span class="va">math_score</span> <span class="op">*</span> <span class="fl">10</span>,</span>
+<span>         reading_score <span class="op">=</span> <span class="va">reading_score</span> <span class="op">*</span> <span class="fl">10</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["name"],"name":[1],"type":["chr"],"align":["left"]},{"label":["school"],"name":[2],"type":["chr"],"align":["left"]},{"label":["teacher"],"name":[3],"type":["chr"],"align":["left"]},{"label":["sex"],"name":[4],"type":["chr"],"align":["left"]},{"label":["math_score"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["reading_score"],"name":[6],"type":["dbl"],"align":["right"]}],"data":[{"1":"munir","2":"rural","3":"jamil","4":"male","5":"40","6":"10"},{"1":"raeesa","2":"rural","3":"jamil","4":"female","5":"30","6":"50"},{"1":"rafiq","2":"rural","3":"jamil","4":"male","5":"20","6":"20"},{"1":"maria","2":"rural","3":"jamil","4":"female","5":"40","6":"40"},{"1":"pervaiz","2":"urban","3":"sami","4":"male","5":"30","6":"50"},{"1":"jamila","2":"urban","3":"sami","4":"female","5":"40","6":"40"},{"1":"bobby","2":"urban","3":"sami","4":"male","5":"50","6":"10"},{"1":"saima","2":"rural","3":"fareeha","4":"female","5":"40","6":"50"},{"1":"alina","2":"rural","3":"fareeha","4":"female","5":"50","6":"40"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+</section><section id="q1-4" class="level2"><h2 class="anchored" data-anchor-id="q1-4">Q1</h2>
+<p><strong>Question:</strong> Create a new column called “math_reading_avg” which is the average of a students math and reading scores.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb32"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">scores</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>math_reading_avg <span class="op">=</span> <span class="op">(</span><span class="va">math_score</span> <span class="op">+</span> <span class="va">reading_score</span><span class="op">)</span> <span class="op">/</span> <span class="fl">2</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["name"],"name":[1],"type":["chr"],"align":["left"]},{"label":["school"],"name":[2],"type":["chr"],"align":["left"]},{"label":["teacher"],"name":[3],"type":["chr"],"align":["left"]},{"label":["sex"],"name":[4],"type":["chr"],"align":["left"]},{"label":["math_score"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["reading_score"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["math_reading_avg"],"name":[7],"type":["dbl"],"align":["right"]}],"data":[{"1":"munir","2":"rural","3":"jamil","4":"male","5":"4","6":"1","7":"2.5"},{"1":"raeesa","2":"rural","3":"jamil","4":"female","5":"3","6":"5","7":"4.0"},{"1":"rafiq","2":"rural","3":"jamil","4":"male","5":"2","6":"2","7":"2.0"},{"1":"maria","2":"rural","3":"jamil","4":"female","5":"4","6":"4","7":"4.0"},{"1":"pervaiz","2":"urban","3":"sami","4":"male","5":"3","6":"5","7":"4.0"},{"1":"jamila","2":"urban","3":"sami","4":"female","5":"4","6":"4","7":"4.0"},{"1":"bobby","2":"urban","3":"sami","4":"male","5":"5","6":"1","7":"3.0"},{"1":"saima","2":"rural","3":"fareeha","4":"female","5":"4","6":"5","7":"4.5"},{"1":"alina","2":"rural","3":"fareeha","4":"female","5":"5","6":"4","7":"4.5"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+</section><section id="q2-4" class="level2"><h2 class="anchored" data-anchor-id="q2-4">Q2</h2>
+<p><strong>Question:</strong> Create a new column “high_math_achiever” that is an indicator of if a student got a 4 or better on their math_score.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb33"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">scores</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>high_math_achiever <span class="op">=</span> <span class="va">math_score</span> <span class="op">&gt;=</span> <span class="fl">4</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["name"],"name":[1],"type":["chr"],"align":["left"]},{"label":["school"],"name":[2],"type":["chr"],"align":["left"]},{"label":["teacher"],"name":[3],"type":["chr"],"align":["left"]},{"label":["sex"],"name":[4],"type":["chr"],"align":["left"]},{"label":["math_score"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["reading_score"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["high_math_achiever"],"name":[7],"type":["lgl"],"align":["right"]}],"data":[{"1":"munir","2":"rural","3":"jamil","4":"male","5":"4","6":"1","7":"TRUE"},{"1":"raeesa","2":"rural","3":"jamil","4":"female","5":"3","6":"5","7":"FALSE"},{"1":"rafiq","2":"rural","3":"jamil","4":"male","5":"2","6":"2","7":"FALSE"},{"1":"maria","2":"rural","3":"jamil","4":"female","5":"4","6":"4","7":"TRUE"},{"1":"pervaiz","2":"urban","3":"sami","4":"male","5":"3","6":"5","7":"FALSE"},{"1":"jamila","2":"urban","3":"sami","4":"female","5":"4","6":"4","7":"TRUE"},{"1":"bobby","2":"urban","3":"sami","4":"male","5":"5","6":"1","7":"TRUE"},{"1":"saima","2":"rural","3":"fareeha","4":"female","5":"4","6":"5","7":"TRUE"},{"1":"alina","2":"rural","3":"fareeha","4":"female","5":"5","6":"4","7":"TRUE"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+</section><section id="q3-3" class="level2"><h2 class="anchored" data-anchor-id="q3-3">Q3</h2>
+<p><strong>Question:</strong> Create a new column “reading_score_centered” that is a students reading score with the mean of all students’ reading scores subtracted from it.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb34"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">scores</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>reading_score_centered <span class="op">=</span> <span class="va">reading_score</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">reading_score</span><span class="op">)</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["name"],"name":[1],"type":["chr"],"align":["left"]},{"label":["school"],"name":[2],"type":["chr"],"align":["left"]},{"label":["teacher"],"name":[3],"type":["chr"],"align":["left"]},{"label":["sex"],"name":[4],"type":["chr"],"align":["left"]},{"label":["math_score"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["reading_score"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["reading_score_centered"],"name":[7],"type":["dbl"],"align":["right"]}],"data":[{"1":"munir","2":"rural","3":"jamil","4":"male","5":"4","6":"1","7":"-2.4444444"},{"1":"raeesa","2":"rural","3":"jamil","4":"female","5":"3","6":"5","7":"1.5555556"},{"1":"rafiq","2":"rural","3":"jamil","4":"male","5":"2","6":"2","7":"-1.4444444"},{"1":"maria","2":"rural","3":"jamil","4":"female","5":"4","6":"4","7":"0.5555556"},{"1":"pervaiz","2":"urban","3":"sami","4":"male","5":"3","6":"5","7":"1.5555556"},{"1":"jamila","2":"urban","3":"sami","4":"female","5":"4","6":"4","7":"0.5555556"},{"1":"bobby","2":"urban","3":"sami","4":"male","5":"5","6":"1","7":"-2.4444444"},{"1":"saima","2":"rural","3":"fareeha","4":"female","5":"4","6":"5","7":"1.5555556"},{"1":"alina","2":"rural","3":"fareeha","4":"female","5":"5","6":"4","7":"0.5555556"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+</section><section id="q4-1" class="level2"><h2 class="anchored" data-anchor-id="q4-1">Q4</h2>
+<p><strong>Question:</strong> Create a new column “science_score”. You can make up what the actual scores are!</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb35"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">scores</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>science_score <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">4</span>, <span class="fl">5</span>, <span class="fl">4</span>, <span class="fl">3</span>, <span class="fl">2</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["name"],"name":[1],"type":["chr"],"align":["left"]},{"label":["school"],"name":[2],"type":["chr"],"align":["left"]},{"label":["teacher"],"name":[3],"type":["chr"],"align":["left"]},{"label":["sex"],"name":[4],"type":["chr"],"align":["left"]},{"label":["math_score"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["reading_score"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["science_score"],"name":[7],"type":["dbl"],"align":["right"]}],"data":[{"1":"munir","2":"rural","3":"jamil","4":"male","5":"4","6":"1","7":"1"},{"1":"raeesa","2":"rural","3":"jamil","4":"female","5":"3","6":"5","7":"2"},{"1":"rafiq","2":"rural","3":"jamil","4":"male","5":"2","6":"2","7":"3"},{"1":"maria","2":"rural","3":"jamil","4":"female","5":"4","6":"4","7":"4"},{"1":"pervaiz","2":"urban","3":"sami","4":"male","5":"3","6":"5","7":"5"},{"1":"jamila","2":"urban","3":"sami","4":"female","5":"4","6":"4","7":"4"},{"1":"bobby","2":"urban","3":"sami","4":"male","5":"5","6":"1","7":"3"},{"1":"saima","2":"rural","3":"fareeha","4":"female","5":"4","6":"5","7":"2"},{"1":"alina","2":"rural","3":"fareeha","4":"female","5":"5","6":"4","7":"1"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+</section></section><section id="mutate-with-groups" class="level1"><h1>Mutate with groups</h1>
+<section id="q1-5" class="level2"><h2 class="anchored" data-anchor-id="q1-5">Q1</h2>
+<p><strong>Question:</strong> munir and saima both got a 4 for their math score. Explain why why munir has a higher “math_score_centered_by_sex” score.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb36"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">scores</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">sex</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>math_score_centered_by_sex <span class="op">=</span> <span class="va">math_score</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">math_score</span><span class="op">)</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["name"],"name":[1],"type":["chr"],"align":["left"]},{"label":["school"],"name":[2],"type":["chr"],"align":["left"]},{"label":["teacher"],"name":[3],"type":["chr"],"align":["left"]},{"label":["sex"],"name":[4],"type":["chr"],"align":["left"]},{"label":["math_score"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["reading_score"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["math_score_centered_by_sex"],"name":[7],"type":["dbl"],"align":["right"]}],"data":[{"1":"munir","2":"rural","3":"jamil","4":"male","5":"4","6":"1","7":"0.5"},{"1":"raeesa","2":"rural","3":"jamil","4":"female","5":"3","6":"5","7":"-1.0"},{"1":"rafiq","2":"rural","3":"jamil","4":"male","5":"2","6":"2","7":"-1.5"},{"1":"maria","2":"rural","3":"jamil","4":"female","5":"4","6":"4","7":"0.0"},{"1":"pervaiz","2":"urban","3":"sami","4":"male","5":"3","6":"5","7":"-0.5"},{"1":"jamila","2":"urban","3":"sami","4":"female","5":"4","6":"4","7":"0.0"},{"1":"bobby","2":"urban","3":"sami","4":"male","5":"5","6":"1","7":"1.5"},{"1":"saima","2":"rural","3":"fareeha","4":"female","5":"4","6":"5","7":"0.0"},{"1":"alina","2":"rural","3":"fareeha","4":"female","5":"5","6":"4","7":"1.0"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+<p><strong>Answer:</strong> We are subtracting the mean math score for that person’s sex off of their score. munir has a higher “math_score_centered_by_sex” because males did worse on average on math and so a small number is subtracted off of his score of 4.</p>
+</section><section id="q2-5" class="level2"><h2 class="anchored" data-anchor-id="q2-5">Q2</h2>
+<p><strong>Question:</strong> Create a “reading_score_centered_by_teacher” column. What can you learn from it?</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb37"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">scores</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">teacher</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>reading_score_centered_by_teacher <span class="op">=</span> <span class="va">reading_score</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">reading_score</span><span class="op">)</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["name"],"name":[1],"type":["chr"],"align":["left"]},{"label":["school"],"name":[2],"type":["chr"],"align":["left"]},{"label":["teacher"],"name":[3],"type":["chr"],"align":["left"]},{"label":["sex"],"name":[4],"type":["chr"],"align":["left"]},{"label":["math_score"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["reading_score"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["reading_score_centered_by_teacher"],"name":[7],"type":["dbl"],"align":["right"]}],"data":[{"1":"munir","2":"rural","3":"jamil","4":"male","5":"4","6":"1","7":"-2.0000000"},{"1":"raeesa","2":"rural","3":"jamil","4":"female","5":"3","6":"5","7":"2.0000000"},{"1":"rafiq","2":"rural","3":"jamil","4":"male","5":"2","6":"2","7":"-1.0000000"},{"1":"maria","2":"rural","3":"jamil","4":"female","5":"4","6":"4","7":"1.0000000"},{"1":"pervaiz","2":"urban","3":"sami","4":"male","5":"3","6":"5","7":"1.6666667"},{"1":"jamila","2":"urban","3":"sami","4":"female","5":"4","6":"4","7":"0.6666667"},{"1":"bobby","2":"urban","3":"sami","4":"male","5":"5","6":"1","7":"-2.3333333"},{"1":"saima","2":"rural","3":"fareeha","4":"female","5":"4","6":"5","7":"0.5000000"},{"1":"alina","2":"rural","3":"fareeha","4":"female","5":"5","6":"4","7":"-0.5000000"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+<p><strong>Answer:</strong> We can learn lots of things! For example, relative to other students in their class, bobby did worst on reading and raeesa did the best.</p>
+</section><section id="q3-4" class="level2"><h2 class="anchored" data-anchor-id="q3-4">Q3</h2>
+<p><strong>Question:</strong> Make a “number_of_students_in_class” column that is number of students in a student’s class. For example, it should be 4 for munir and 3 for pervaiz.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb38"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">scores</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">teacher</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>number_of_students_in_class <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/context.html">n</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["name"],"name":[1],"type":["chr"],"align":["left"]},{"label":["school"],"name":[2],"type":["chr"],"align":["left"]},{"label":["teacher"],"name":[3],"type":["chr"],"align":["left"]},{"label":["sex"],"name":[4],"type":["chr"],"align":["left"]},{"label":["math_score"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["reading_score"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["number_of_students_in_class"],"name":[7],"type":["int"],"align":["right"]}],"data":[{"1":"munir","2":"rural","3":"jamil","4":"male","5":"4","6":"1","7":"4"},{"1":"raeesa","2":"rural","3":"jamil","4":"female","5":"3","6":"5","7":"4"},{"1":"rafiq","2":"rural","3":"jamil","4":"male","5":"2","6":"2","7":"4"},{"1":"maria","2":"rural","3":"jamil","4":"female","5":"4","6":"4","7":"4"},{"1":"pervaiz","2":"urban","3":"sami","4":"male","5":"3","6":"5","7":"3"},{"1":"jamila","2":"urban","3":"sami","4":"female","5":"4","6":"4","7":"3"},{"1":"bobby","2":"urban","3":"sami","4":"male","5":"5","6":"1","7":"3"},{"1":"saima","2":"rural","3":"fareeha","4":"female","5":"4","6":"5","7":"2"},{"1":"alina","2":"rural","3":"fareeha","4":"female","5":"5","6":"4","7":"2"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+</section></section><section id="summarize" class="level1"><h1>Summarize</h1>
+<section id="example-5" class="level2"><h2 class="anchored" data-anchor-id="example-5">Example</h2>
+<p><strong>Question:</strong> Use the summarize command to find the mean math score for all students.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb39"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">scores</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarize</a></span><span class="op">(</span>math_score_mean <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">math_score</span><span class="op">)</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["math_score_mean"],"name":[1],"type":["dbl"],"align":["right"]}],"data":[{"1":"3.777778"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+</section><section id="q1-6" class="level2"><h2 class="anchored" data-anchor-id="q1-6">Q1</h2>
+<p><strong>Question:</strong> Use the summarize command to find the mean reading score for all students.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb40"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">scores</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarize</a></span><span class="op">(</span>reading_score_mean <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">reading_score</span><span class="op">)</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["reading_score_mean"],"name":[1],"type":["dbl"],"align":["right"]}],"data":[{"1":"3.444444"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+</section><section id="q2-6" class="level2"><h2 class="anchored" data-anchor-id="q2-6">Q2</h2>
+<p><strong>Question:</strong> Use the summarize command to find the median for both math scores and reading scores.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb41"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">scores</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarize</a></span><span class="op">(</span></span>
+<span>    math_score_median <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/median.html">median</a></span><span class="op">(</span><span class="va">math_score</span><span class="op">)</span>,</span>
+<span>    reading_score_median <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/median.html">median</a></span><span class="op">(</span><span class="va">reading_score</span><span class="op">)</span></span>
+<span>  <span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["math_score_median"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["reading_score_median"],"name":[2],"type":["dbl"],"align":["right"]}],"data":[{"1":"4","2":"4"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+</section><section id="q3-5" class="level2"><h2 class="anchored" data-anchor-id="q3-5">Q3</h2>
+<p><strong>Question:</strong> Look closely at the following code. Why is it throwing an error? How can Rstudio help you see this error?</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb42"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">scores</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarize</a></span><span class="op">(</span></span>
+<span>    math_score_max <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span><span class="op">(</span><span class="va">math_score</span><span class="op">)</span>,</span>
+<span>    reading_score_min <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">min</a></span><span class="op">(</span><span class="va">reading_score</span><span class="op">)</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["math_score_max"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["reading_score_min"],"name":[2],"type":["dbl"],"align":["right"]}],"data":[{"1":"5","2":"1"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+<p><strong>Answer:</strong> We need another “)” at the end of the code. The first “)” is for the min function but we also need a “)” to end the summarize function. Rstudio helps because if you go to the right of a paranthese, it highlights the corresponding closing paranthese.</p>
+</section></section><section id="summarize-with-groups" class="level1"><h1>Summarize with groups</h1>
+<section id="example-6" class="level2"><h2 class="anchored" data-anchor-id="example-6">Example</h2>
+<p><strong>Question:</strong> Find the minimum math score for each school.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb43"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">scores</span> <span class="op">|&gt;</span> </span>
+<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarize</a></span><span class="op">(</span>min_math_score <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">min</a></span><span class="op">(</span><span class="va">math_score</span><span class="op">)</span>,.by<span class="op">=</span><span class="va">school</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["school"],"name":[1],"type":["chr"],"align":["left"]},{"label":["min_math_score"],"name":[2],"type":["dbl"],"align":["right"]}],"data":[{"1":"rural","2":"2"},{"1":"urban","2":"3"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+</section><section id="q1-7" class="level2"><h2 class="anchored" data-anchor-id="q1-7">Q1</h2>
+<p><strong>Question:</strong> Find the maximum math score for each teacher.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb44"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">scores</span> <span class="op">|&gt;</span> </span>
+<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarize</a></span><span class="op">(</span>max_math_score <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span><span class="op">(</span><span class="va">math_score</span><span class="op">)</span>,.by<span class="op">=</span><span class="va">teacher</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["teacher"],"name":[1],"type":["chr"],"align":["left"]},{"label":["max_math_score"],"name":[2],"type":["dbl"],"align":["right"]}],"data":[{"1":"jamil","2":"4"},{"1":"sami","2":"5"},{"1":"fareeha","2":"5"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+</section><section id="q2-7" class="level2"><h2 class="anchored" data-anchor-id="q2-7">Q2</h2>
+<p><strong>Question:</strong> If we grouped by sex, and then summarized with the minimum reading score, how many rows would the resulting data frame have?</p>
+<p><strong>Answer:</strong> There would be one for each group. Because there are two sexs in the data frame, there would be two rows. See:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb45"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">scores</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">sex</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarize</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">min</a></span><span class="op">(</span><span class="va">reading_score</span><span class="op">)</span><span class="op">)</span> <span class="co"># side note: notice what happens when we don't provide a variable name</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["sex"],"name":[1],"type":["chr"],"align":["left"]},{"label":["min(reading_score)"],"name":[2],"type":["dbl"],"align":["right"]}],"data":[{"1":"female","2":"4"},{"1":"male","2":"1"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+</section><section id="q3-6" class="level2"><h2 class="anchored" data-anchor-id="q3-6">Q3</h2>
+<p><strong>Question:</strong> Remember that mutate always keeps the same number of rows but summarize usually reduces the number of rows. Why doesn’t the following use of summarize reduce the number of rows?</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb46"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">scores</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">name</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarize</a></span><span class="op">(</span>math_score_mean <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">math_score</span><span class="op">)</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["name"],"name":[1],"type":["chr"],"align":["left"]},{"label":["math_score_mean"],"name":[2],"type":["dbl"],"align":["right"]}],"data":[{"1":"alina","2":"5"},{"1":"bobby","2":"5"},{"1":"jamila","2":"4"},{"1":"maria","2":"4"},{"1":"munir","2":"4"},{"1":"pervaiz","2":"3"},{"1":"raeesa","2":"3"},{"1":"rafiq","2":"2"},{"1":"saima","2":"4"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+<p><strong>Answer:</strong> Summarize with groups makes one row for each group. In this case, we’re grouping by name and everyone has a different name!</p>
+</section><section id="q4-2" class="level2"><h2 class="anchored" data-anchor-id="q4-2">Q4</h2>
+<p><strong>Question:</strong> Create a data frame with the mean and median reading score by sex, as well as the number of students of that sex.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb47"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">scores</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">sex</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarize</a></span><span class="op">(</span></span>
+<span>    mean_reading_score <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">reading_score</span><span class="op">)</span>,</span>
+<span>    median_reading_score <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/median.html">median</a></span><span class="op">(</span><span class="va">reading_score</span><span class="op">)</span>,</span>
+<span>    count <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/context.html">n</a></span><span class="op">(</span><span class="op">)</span></span>
+<span>  <span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["sex"],"name":[1],"type":["chr"],"align":["left"]},{"label":["mean_reading_score"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["median_reading_score"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["count"],"name":[4],"type":["int"],"align":["right"]}],"data":[{"1":"female","2":"4.40","3":"4.0","4":"5"},{"1":"male","2":"2.25","3":"1.5","4":"4"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+</section></section><section id="combining-verbs" class="level1"><h1>Combining verbs</h1>
+<section id="example-7" class="level2"><h2 class="anchored" data-anchor-id="example-7">Example</h2>
+<p><strong>Question:</strong> Select just the name and math_score columns. Then create a new column “math_score_ec” that is a students math score plus 5 extra credit points. Finally, arrange the data frame by math_score_ec from low to high.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb48"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">scores</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">name</span>, <span class="va">math_score</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>math_score_ec <span class="op">=</span> <span class="va">math_score</span> <span class="op">+</span> <span class="fl">5</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html">arrange</a></span><span class="op">(</span><span class="va">math_score_ec</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["name"],"name":[1],"type":["chr"],"align":["left"]},{"label":["math_score"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["math_score_ec"],"name":[3],"type":["dbl"],"align":["right"]}],"data":[{"1":"rafiq","2":"2","3":"7"},{"1":"raeesa","2":"3","3":"8"},{"1":"pervaiz","2":"3","3":"8"},{"1":"munir","2":"4","3":"9"},{"1":"maria","2":"4","3":"9"},{"1":"jamila","2":"4","3":"9"},{"1":"saima","2":"4","3":"9"},{"1":"bobby","2":"5","3":"10"},{"1":"alina","2":"5","3":"10"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+</section><section id="q1-8" class="level2"><h2 class="anchored" data-anchor-id="q1-8">Q1</h2>
+<p><strong>Question:</strong> Select every column except the teacher column. Create a new variable called “mean_score” that is the mean of a student’s math and reading score. Finally, arrange the data frame by mean_score from low to high.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb49"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">scores</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="op">-</span><span class="va">teacher</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>mean_score <span class="op">=</span> <span class="op">(</span><span class="va">math_score</span> <span class="op">+</span> <span class="va">reading_score</span><span class="op">)</span> <span class="op">/</span> <span class="fl">2</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html">arrange</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/desc.html">desc</a></span><span class="op">(</span><span class="va">mean_score</span><span class="op">)</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["name"],"name":[1],"type":["chr"],"align":["left"]},{"label":["school"],"name":[2],"type":["chr"],"align":["left"]},{"label":["sex"],"name":[3],"type":["chr"],"align":["left"]},{"label":["math_score"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["reading_score"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["mean_score"],"name":[6],"type":["dbl"],"align":["right"]}],"data":[{"1":"saima","2":"rural","3":"female","4":"4","5":"5","6":"4.5"},{"1":"alina","2":"rural","3":"female","4":"5","5":"4","6":"4.5"},{"1":"raeesa","2":"rural","3":"female","4":"3","5":"5","6":"4.0"},{"1":"maria","2":"rural","3":"female","4":"4","5":"4","6":"4.0"},{"1":"pervaiz","2":"urban","3":"male","4":"3","5":"5","6":"4.0"},{"1":"jamila","2":"urban","3":"female","4":"4","5":"4","6":"4.0"},{"1":"bobby","2":"urban","3":"male","4":"5","5":"1","6":"3.0"},{"1":"munir","2":"rural","3":"male","4":"4","5":"1","6":"2.5"},{"1":"rafiq","2":"rural","3":"male","4":"2","5":"2","6":"2.0"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+</section><section id="q2-8" class="level2"><h2 class="anchored" data-anchor-id="q2-8">Q2</h2>
+<p><strong>Question:</strong> Remove any students with sami as a teacher, then find the mean math_score by sex.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb50"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">scores</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">teacher</span> <span class="op">!=</span> <span class="st">"sami"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">sex</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarize</a></span><span class="op">(</span>mean_math_score <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">math_score</span><span class="op">)</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["sex"],"name":[1],"type":["chr"],"align":["left"]},{"label":["mean_math_score"],"name":[2],"type":["dbl"],"align":["right"]}],"data":[{"1":"female","2":"4"},{"1":"male","2":"3"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+</section><section id="q3-7" class="level2"><h2 class="anchored" data-anchor-id="q3-7">Q3</h2>
+<p><strong>Question:</strong> Find the min, max, and median reading_score for female students at rural school.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb51"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">scores</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">sex</span> <span class="op">==</span> <span class="st">"female"</span>, <span class="va">school</span> <span class="op">==</span> <span class="st">"rural"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarize</a></span><span class="op">(</span>min_reading_score <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">min</a></span><span class="op">(</span><span class="va">reading_score</span><span class="op">)</span>,</span>
+<span>            max_reading_score <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span><span class="op">(</span><span class="va">reading_score</span><span class="op">)</span>,</span>
+<span>            median_reading_score <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/median.html">median</a></span><span class="op">(</span><span class="va">reading_score</span><span class="op">)</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["min_reading_score"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["max_reading_score"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["median_reading_score"],"name":[3],"type":["dbl"],"align":["right"]}],"data":[{"1":"4","2":"5","3":"4.5"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+</section><section id="q4-3" class="level2"><h2 class="anchored" data-anchor-id="q4-3">Q4</h2>
+<p><strong>Question:</strong> Inspect each of the following code blocks. They both do about the same thing. Which one do you think is preferred from a computer efficiency standpoint?</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb52"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># code block 1</span></span>
+<span><span class="va">scores</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">school</span>, <span class="va">teacher</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarize</a></span><span class="op">(</span>max_math_score <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span><span class="op">(</span><span class="va">math_score</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">school</span> <span class="op">==</span> <span class="st">"rural"</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["school"],"name":[1],"type":["chr"],"align":["left"]},{"label":["teacher"],"name":[2],"type":["chr"],"align":["left"]},{"label":["max_math_score"],"name":[3],"type":["dbl"],"align":["right"]}],"data":[{"1":"rural","2":"fareeha","3":"5"},{"1":"rural","2":"jamil","3":"4"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb53"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># code block 2</span></span>
+<span><span class="va">scores</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">school</span> <span class="op">==</span> <span class="st">"rural"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">teacher</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarize</a></span><span class="op">(</span>max_math_score <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span><span class="op">(</span><span class="va">math_score</span><span class="op">)</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["teacher"],"name":[1],"type":["chr"],"align":["left"]},{"label":["max_math_score"],"name":[2],"type":["dbl"],"align":["right"]}],"data":[{"1":"fareeha","2":"5"},{"1":"jamil","2":"4"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+<p><strong>Answer:</strong> They both get the max math score by teacher for teachers at rural school. The first block calculates the max_math_score for both urban and rural and then filters out urban after that calculation. The second block filters out urban right away. This is preferred because it prevents the computer from making unnecessary calculations.</p>
+</section><section id="challenge-1" class="level2"><h2 class="anchored" data-anchor-id="challenge-1">Challenge</h2>
+<p>Play around with these tools. Write a question or two that you think best exposes a misunderstanding you had or drills down on an important thing to remember. I’d love to add these questions in the future! Feel free to email what you came up with to</p>
+
+
+</section></section><a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/zahedasghar\.github\.io\/d4d\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script><nav class="page-navigation"><div class="nav-page nav-page-previous">
+      <a href="../reference/r-essentials.html" class="pagination-link" aria-label="R essentials">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">R essentials</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../reference/ai-prompts/index.html" class="pagination-link" aria-label="AI Prompt Library">
+        <span class="nav-page-text">AI Prompt Library</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer"><div class="nav-footer">
+    <div class="nav-footer-left">
+<p>School of Economics, Quaid-i-Azam University, Islamabad</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    <div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/Zahedasghar/d4d/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li><li><a href="https://github.com/Zahedasghar/d4d/blob/main/reference/five-verbs-data-wrangling.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li></ul></div></div>
+    <div class="nav-footer-right">
+<p>Built with <a href="https://quarto.org">Quarto</a></p>
+</div>
+  </div>
+</footer>
+
+
+</body></html>
