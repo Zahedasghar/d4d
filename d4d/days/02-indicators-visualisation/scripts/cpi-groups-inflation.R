@@ -7,7 +7,7 @@
 library(tidyverse)
 library(scales)
 
-cpi <- read_csv(here::here("data/cpi_urban_groupwise_tidy_monthly.csv"), show_col_types = FALSE)
+cpi <- read_csv(here::here("d4d/data/cpi_urban_groupwise_tidy_monthly.csv"), show_col_types = FALSE)
 
 
 # ---------------------------------------------------------------------

@@ -1,0 +1,417 @@
+---
+title: "Data Analysis Using R for Evidence-Based Decision-Making"
+subtitle: "Pre-Training Survey — Results in Just Minutes"
+title-block-banner: true
+author: "Data for Development (D4D), School of Economics, QAU"
+date: today
+format:
+  html:
+    theme: default
+    toc: true
+    toc_depth: 2
+    toc_float: true
+    keep-md: false
+    highlight-style: dracula
+execute:
+  warning: false
+  message: false
+  echo: false
+  error: true
+---
+
+```{r}
+#| label: setup
+#| error: false
+library(tidyverse)
+library(googlesheets4)
+library(janitor)
+library(hrbrthemes)
+library(scales)
+library(knitr)
+
+# ---------------------------------------------------------------------------
+# AUTHENTICATION -- cached OAuth, same as the "From Survey to Insights" file
+#
+# gs4_auth(email=) signs in as YOU through gargle's built-in OAuth client,
+# which lives in the tidyverse team's Google Cloud project. Two consequences,
+# both good: the Sheets API is already enabled over there so there is nothing
+# to switch on, and you are the sheet's owner so there is nothing to share.
+#
+# The one change from the older file is cache. cache = FALSE forces a full
+# browser handshake on EVERY render -- fine when you are sitting in RStudio
+# clicking through it, impossible in a background or scheduled render. Caching
+# to .secrets/ means you authorise once and every render after that is silent.
+#
+#   FIRST RUN: a browser opens, you pick g.zahid@gmail.com, you approve.
+#   EVERY RUN AFTER: nothing. It reads the cached token.
+#
+# .secrets/ holds a live token -- add it to .gitignore alongside the .Rproj
+# junk. If the token ever goes stale (password change, revoked access), delete
+# the .secrets folder and the next render re-runs the browser step once.
+#
+# If this report ever has to render somewhere that is NOT your laptop --
+# GitHub Actions, a server, a colleague's machine -- cached OAuth cannot go
+# there and you want a service account instead. That needs the Sheets API
+# enabled on your own Cloud project AND the sheet shared with the service
+# account's client_email. Not needed for a laptop workflow.
+# ---------------------------------------------------------------------------
+
+options(
+  gargle_oauth_cache = ".secrets",
+  gargle_oauth_email = "g.zahid@gmail.com"
+)
+
+gs4_auth(email = "g.zahid@gmail.com", cache = ".secrets")
+
+sheet_url <- "https://docs.google.com/spreadsheets/d/1Ttg8BfByE9BEW7fy0YtLtWwBY7VmV7V0COdr0EgUjNc/edit?gid=1358570388#gid=1358570388"
+
+theme_set(theme_ipsum(base_family = "", axis_title_family = ""))
+navy <- "#0f2440"
+gold <- "#c9a227"
+blue <- "#6CABDD"
+```
+
+```{css}
+body {
+  font-size: 18px;
+}
+```
+
+```{r}
+#| label: read-data
+#| error: false
+survey_responses <- tryCatch(
+  read_sheet(sheet_url) |> clean_names(),
+  error = function(e) {
+    msg <- conditionMessage(e)
+
+    hint <- if (str_detect(msg, "PERMISSION_DENIED|403|does not have permission")) {
+      paste0(
+        "Signed in, but that Google account cannot see this sheet.\n",
+        "Check you approved the browser prompt as g.zahid@gmail.com and not ",
+        "some other signed-in account. Deleting the .secrets folder forces a ",
+        "fresh sign-in."
+      )
+    } else if (str_detect(msg, "404|NOT_FOUND|not found")) {
+      "Sheet not found -- check sheet_url still points at a live sheet."
+    } else if (str_detect(msg, "oauth|token|credential|auth")) {
+      paste0(
+        "Auth failed. If this render is unattended it cannot open a browser: ",
+        "run it once interactively to populate .secrets/, then retry."
+      )
+    } else {
+      "Unrecognised failure; read the original error below."
+    }
+
+    stop("Could not read the sheet.\n\n", hint, "\n\nOriginal error: ", msg)
+  }
+)
+
+n_responses <- nrow(survey_responses)
+today_pretty <- format(Sys.Date(), "%B %d, %Y")
+```
+
+```{r}
+#| label: helpers
+#| error: false
+
+# read_sheet() returns list-columns whenever a column has mixed types (a
+# stray blank in a numeric question is enough). Everything below is plotted
+# as a category, so flatten to character once and stop worrying about it.
+# This also fixes fct_reorder(), which errors on a numeric vector.
+as_chr <- function(x) {
+  if (is.list(x)) {
+    x <- map_chr(x, \(v) if (length(v) == 0 || is.null(v)) NA_character_ else as.character(v)[1])
+  }
+  str_trim(as.character(x))
+}
+
+clean_answers <- function(x) {
+  x <- as_chr(x)
+  discard(x, \(v) is.na(v) | v == "" | str_to_lower(v) %in% c("na", "n/a", "-", "none"))
+}
+
+# Find a column by pattern; returns NA if the question isn't in the form yet.
+pick <- function(pattern) {
+  hit <- str_subset(names(survey_responses), pattern)
+  if (length(hit) > 0) hit[1] else NA_character_
+}
+
+# Single-choice bar chart. ordered = TRUE sorts by the answer label instead
+# of by count -- right for scale questions like "1 - Beginner", "2 - ...".
+bar_single <- function(col, title, fill = blue, ordered = FALSE) {
+  if (is.na(col)) {
+    cat("_Not asked in the form yet._\n\n")
+    return(invisible(NULL))
+  }
+  tbl <- tibble(answer = as_chr(survey_responses[[col]])) |>
+    filter(!is.na(answer), answer != "") |>
+    count(answer, sort = !ordered)
+
+  if (nrow(tbl) == 0) {
+    cat("_No answers yet._\n\n")
+    return(invisible(NULL))
+  }
+
+  tbl <- tbl |>
+    mutate(answer = if (ordered) fct_rev(factor(answer, sort(unique(answer))))
+                    else fct_reorder(answer, n))
+
+  print(
+    ggplot(tbl, aes(answer, n)) +
+      geom_col(fill = fill) +
+      geom_text(aes(label = n), hjust = 1.3, colour = "white", fontface = "bold") +
+      coord_flip() +
+      scale_y_continuous(breaks = breaks_pretty()) +
+      labs(title = title, x = NULL, y = "Responses") +
+      theme_minimal()
+  )
+}
+
+# Multi-select ("select all that apply") -- one row per chosen option.
+# Splits on commas, so an option label containing a comma would be split
+# wrongly. None of the current options do; check if you add one that does.
+bar_multi <- function(col, title, fill = gold) {
+  if (is.na(col)) {
+    cat("_Not asked in the form yet._\n\n")
+    return(invisible(NULL))
+  }
+  tbl <- tibble(raw = as_chr(survey_responses[[col]])) |>
+    filter(!is.na(raw), raw != "") |>
+    mutate(answer = str_split(raw, ",\\s*")) |>
+    unnest(answer) |>
+    mutate(answer = str_trim(answer)) |>
+    filter(answer != "") |>
+    count(answer, sort = TRUE)
+
+  if (nrow(tbl) == 0) {
+    cat("_No answers yet._\n\n")
+    return(invisible(NULL))
+  }
+
+  print(
+    ggplot(tbl, aes(fct_reorder(answer, n), n)) +
+      geom_col(fill = fill) +
+      geom_text(aes(label = n), hjust = 1.3, colour = "white", fontface = "bold") +
+      coord_flip() +
+      scale_y_continuous(breaks = breaks_pretty()) +
+      labs(title = title, x = NULL, y = "Times selected") +
+      theme_minimal()
+  )
+}
+
+quote_answers <- function(col) {
+  if (is.na(col)) {
+    cat("_Not asked in the form yet._\n\n")
+    return(invisible(NULL))
+  }
+  answers <- clean_answers(survey_responses[[col]])
+  cat("_", length(answers), " of ", n_responses, " respondents answered._\n\n", sep = "")
+  walk(answers, \(a) cat("> ", str_replace_all(a, "\n", " "), "\n\n", sep = ""))
+}
+```
+
+```{r}
+#| label: columns
+#| error: false
+# Patterns matched against the real cleaned column names from this form.
+# If you rename a question in Google Forms, update the pattern here --
+# anything that stops matching quietly falls through to "Other Questions".
+org_col     <- pick("organi[sz]ation|department|affiliation")
+role_col    <- pick("job_title|designation")
+exp_col     <- pick("years_of_professional_experience")
+edu_col     <- pick("highest_level_of_education")
+usedr_col   <- pick("have_you_used_r_before")
+skill_col   <- pick("overall_r_skill|skill_level")
+tools_col   <- pick("used_for_data_analysis")
+worked_col  <- pick("already_worked_with")
+ai_col      <- pick("ai_coding_assistant")
+setup_col   <- pick("set_up_on_your_laptop")
+dataset_col <- pick("bring_your_own_dataset")
+comfort_col <- pick("general_computer_skills")
+goals_col   <- pick("get_out_of_this_workshop|expect|hope.*learn")
+help_col    <- pick("anything_specific")
+notes_col   <- pick("anything_else")
+```
+
+# About Our Respondents
+
+As of `r today_pretty`, the pre-training survey has received `r n_responses` responses.
+
+<!--
+ADDING QUESTIONS
+A new question in the form becomes a new column here after clean_names().
+Anything without its own section below appears automatically in "Other
+Questions" at the end, so nothing is ever lost. To promote one, add a
+pick() line in the `columns` chunk and a section here.
+-->
+
+## Organization
+
+```{r}
+#| label: organization
+bar_single(org_col, "Organization")
+```
+
+## Job Title / Designation
+
+```{r}
+#| label: role
+bar_single(role_col, "Job title / designation")
+```
+
+## Years Working With Data
+
+```{r}
+#| label: experience
+bar_single(exp_col, "Years of professional experience working with data", ordered = TRUE)
+```
+
+## Highest Level of Education
+
+```{r}
+#| label: education
+bar_single(edu_col, "Highest level of education completed")
+```
+
+# Where the Room Is Starting From
+
+## Have They Used R Before?
+
+```{r}
+#| label: used-r
+bar_single(usedr_col, "Have you used R before?")
+```
+
+## Self-Rated R Skill
+
+```{r}
+#| label: skill
+bar_single(skill_col, "Self-rated R skill level", ordered = TRUE)
+```
+
+## Software Already Used for Analysis
+
+```{r}
+#| label: tools
+bar_multi(tools_col, "Used for data analysis before")
+```
+
+## R Ecosystem Exposure
+
+```{r}
+#| label: worked-with
+bar_multi(worked_col, "Already worked with")
+```
+
+## AI Coding Assistants
+
+```{r}
+#| label: ai
+bar_single(ai_col, "Used AI coding assistants before?")
+```
+
+## Comfort With General Computer Skills
+
+```{r}
+#| label: comfort
+bar_single(comfort_col, "Comfort installing software / managing files", ordered = TRUE)
+```
+
+# Logistics
+
+## What's Already Installed
+
+```{r}
+#| label: setup-status
+bar_multi(setup_col, "Already set up on their laptop")
+```
+
+These are the numbers that decide how Day 1 morning goes. Anyone missing R or
+RStudio needs to be caught before the session, not during it.
+
+## Bringing Their Own Data
+
+```{r}
+#| label: own-dataset
+bar_single(dataset_col, "Plans to bring their own dataset")
+```
+
+# What They Want
+
+## Priorities for the Workshop
+
+```{r}
+#| label: goals
+bar_multi(goals_col, "What they most want out of the workshop (up to 2 each)")
+```
+
+## Specific Help Requested
+
+```{r}
+#| label: help
+#| output: asis
+quote_answers(help_col)
+```
+
+## Anything Else for the Trainers
+
+```{r}
+#| label: notes
+#| output: asis
+quote_answers(notes_col)
+```
+
+# Other Questions
+
+Any question not given its own section above appears here automatically.
+
+```{r}
+#| label: other-questions
+#| output: asis
+
+named_cols <- c(org_col, role_col, exp_col, edu_col, usedr_col, skill_col,
+                tools_col, worked_col, ai_col, setup_col, dataset_col,
+                comfort_col, goals_col, help_col, notes_col) |>
+  discard(is.na) |>
+  unique()
+
+# Identifying / admin columns are never charted -- they are personal data.
+id_pattern <- "timestamp|time_stamp|submitted|email|e_mail|score|^name$|full_name|phone|cnic|contact"
+
+remaining_cols <- setdiff(
+  names(survey_responses)[!str_detect(names(survey_responses), id_pattern)],
+  named_cols
+)
+
+classify_column <- function(x) {
+  x <- as_chr(x)
+  x <- x[!is.na(x) & x != ""]
+  if (length(x) == 0) return("empty")
+
+  n_unique   <- n_distinct(x)
+  mean_len   <- mean(str_length(x))
+  comma_frac <- mean(str_detect(x, ","))
+  split_vals <- str_split(x, ",\\s*") |> unlist() |> str_trim() |> unique()
+
+  if (mean_len > 60 || (n_unique >= 0.9 * length(x) && mean_len > 30)) return("text")
+  if (comma_frac > 0.15 && length(split_vals) < n_unique) return("multi")
+  "single"
+}
+
+if (length(remaining_cols) == 0) {
+  cat("_Every question has its own section above._\n\n")
+}
+
+walk(remaining_cols, \(col) {
+  type <- classify_column(survey_responses[[col]])
+  if (type == "empty") return(invisible(NULL))
+
+  heading <- str_to_sentence(str_replace_all(col, "_", " "))
+  cat("\n\n## ", heading, "\n\n", sep = "")
+
+  if (type == "text")       quote_answers(col)
+  else if (type == "multi") bar_multi(col, heading)
+  else                      bar_single(col, heading)
+})
+```

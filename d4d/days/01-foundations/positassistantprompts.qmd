@@ -1,0 +1,844 @@
+---
+title: "Prompting Posit Assistant"
+subtitle: "A working companion for the 5-day *Introduction to R, RStudio & Positron* workshop"
+author: "Prof. Dr. Zahid Asghar"
+date: last-modified
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    toc-title: "On this page"
+    number-sections: true
+    embed-resources: true
+    theme: cosmo
+    code-copy: true
+    fig-align: center
+execute:
+  eval: false
+  echo: true
+---
+
+
+
+```{=html}
+<style>
+body { font-family: Georgia, "Gill Sans MT", Calibri, serif; }
+h1, h2, h3, h4 { font-family: "Gill Sans MT", Calibri, sans-serif; color: #2C5F2D; }
+h2 { border-bottom: 2px solid #8B7355; padding-bottom: .25rem; }
+.prompt {
+  background: #F4F7F2;
+  border-left: 5px solid #2C5F2D;
+  padding: .9rem 1.1rem;
+  margin: .8rem 0 .4rem 0;
+  border-radius: 4px;
+  font-family: "Source Code Pro", Consolas, monospace;
+  font-size: .92rem;
+  white-space: pre-wrap;
+  color: #1c1c1c;
+}
+.why {
+  border-left: 5px solid #8B7355;
+  background: #FBF9F6;
+  padding: .55rem 1.1rem;
+  margin: 0 0 1.4rem 0;
+  border-radius: 4px;
+  font-size: .90rem;
+  color: #4a4a4a;
+}
+.why::before { content: "Why this one works inside the IDE — "; font-weight: bold; color: #8B7355; }
+</style>
+```
+
+::: {.callout-note appearance="simple"}
+## How to use this document
+
+Every grey block below is a prompt you can type straight into the Posit Assistant pane
+in **RStudio** or **Positron**. The brown note underneath explains what makes it an
+*IDE* prompt rather than a generic chatbot prompt — that distinction is the whole point
+of this session.
+
+Read the prompts out loud once, then change the file names, column names and variable
+names to your own. A prompt that names *your* objects is worth ten generic ones.
+:::
+
+# Before you type a single prompt
+
+Five minutes of setup buys you four days of better answers.
+
+1. **Open the Assistant.** In RStudio, click the Assistant button in the toolbar
+   (RStudio 2026.04.0 or later; you may be asked to *Install Posit Assistant* the first
+   time). In Positron, the Assistant pane is on the right and became the default AI
+   experience in Positron 2026.07.
+2. **Sign in to a model provider** — Posit AI, or your own Anthropic / OpenAI / Gemini /
+   Bedrock key. Settings live in `~/.posit/assistant/settings.json` globally and
+   `.posit/assistant/settings.json` per project.
+3. **Always work inside an RStudio Project or a Positron workspace folder.** The
+   Assistant reads relative paths. Outside a project it is guessing.
+4. **Type `/trust` once per workspace** so memory files and skills are allowed to load.
+5. **Confirm your session is attached.** The Assistant automatically attaches your active
+   editor file and your live R or Python session. That attachment is the source of its
+   power: it can see your Variables pane, your data frames, your active plot, and it can
+   run code in *your* console. If the attachment is missing, click the paperclip and add
+   **Interpreter Sessions…**
+6. **Set thinking effort.** Off or Low for boilerplate, Medium for wrangling, High for
+   modelling and debugging.
+7. **Start in a safe mode.** Leave permissions at **Normal** for the workshop. Use
+   `/restricted` if you want to confirm every tool call, and keep `/yolo` for the day you
+   trust it and are in a Git repository.
+
+::: {.callout-important}
+## The one habit that separates a good prompt from a bad one
+
+A generic AI tool has to be *told* what your data looks like. Posit Assistant can
+**look**. So never paste a `head()` output into the chat. Say *"look at the data frame
+`pslm` in my session"* instead. Every prompt in this document is built on that difference.
+:::
+
+# The house rules
+
+Before the prompt library, five rules. Teach these on Day 1 morning and refer back to them
+all week.
+
+**Rule 1 — Name the object, don't describe it.** `hies_2024` beats "my household survey
+data". The Assistant can inspect the first; it can only imagine the second.
+
+**Rule 2 — State the destination.** "Write this into `R/01-import.R`" or "add this as a
+new chunk below the setup chunk". An answer that lands in the right file is worth more
+than a better answer in the chat pane.
+
+**Rule 3 — Ask for the check, not just the code.** "…then run it and show me the row
+count before and after" turns a suggestion into evidence.
+
+**Rule 4 — Constrain the dialect.** Say *tidyverse*, say *base R*, say *data.table*.
+Say *no new packages*. Your workshop participants must be able to read the answer.
+
+**Rule 5 — Plan before you build.** For anything longer than one function, open with
+`/plan`. You will review the design, not debug the debris.
+
+---
+
+# Day 1 — Orientation, projects, and getting data in
+
+## Meeting the IDE
+
+::: {.prompt}
+I am completely new to R. In two short paragraphs and no code, explain what the four
+panes of this IDE do and where my code actually runs.
+:::
+::: {.why}
+The Assistant knows which IDE you are in, so it describes the panes in front of you rather
+than a generic screenshot from a blog post.
+:::
+
+::: {.prompt}
+Set up this project the way an experienced R user would. Create the folders, add a
+`.gitignore` suitable for R and Quarto, and create an `AGENTS.md` that records that this
+project uses the tidyverse, Quarto, and British English spelling. Show me the plan first.
+:::
+::: {.why}
+The Assistant writes real files into your real project folder. `AGENTS.md` is then loaded
+automatically at the start of every future conversation in this workspace, so the
+convention sticks for the rest of the week.
+:::
+
+::: {.prompt}
+Check my session: list the packages that are loaded right now, my R version, and tell me
+which of the tidyverse packages I still need to install.
+:::
+::: {.why}
+This is a session query, not a knowledge question. It reads the live interpreter, so the
+answer is about *this* machine in *this* room.
+:::
+
+## First import
+
+::: {.prompt}
+Look at the files in the `data-raw/` folder of this project. For each one, tell me what
+format it is, roughly how big it is, and the single best function to read it into R.
+Don't import anything yet.
+:::
+::: {.why}
+It inspects the actual folder. Participants with different files each get a different,
+correct answer — which is exactly the moment a room stops feeling like a lecture.
+:::
+
+::: {.prompt}
+Import `data-raw/hies_2024.csv` into a tibble called `hies`. Read the first few lines
+first and choose the column types explicitly rather than letting readr guess. Run it, then
+show me `dplyr::glimpse(hies)` and tell me which columns were read as character but look
+numeric.
+:::
+::: {.why}
+Three moves in one: it reads the file header itself, executes in your console, and reports
+back a diagnosis of your specific data. No generic AI can do the middle step.
+:::
+
+::: {.prompt}
+Import every sheet of `data-raw/pbs_tables.xlsx` into a named list of tibbles, keeping the
+sheet names. Show me the dimensions of each sheet in a small summary table.
+:::
+::: {.why}
+Multi-sheet Excel is where beginners lose an hour. The Assistant can open the workbook and
+count the sheets before writing the loop.
+:::
+
+::: {.prompt}
+The file `data-raw/labour_force.dta` is Stata format. Import it, keep the variable labels
+as an attribute, and print a table of variable name, label, and class so I can see what I
+actually have.
+:::
+::: {.why}
+Labelled survey data is the daily reality for economics and statistics participants, and
+the Assistant can read the label attributes out of the live object.
+:::
+
+::: {.prompt}
+This CSV has three junk rows above the real header and a totals row at the bottom. Read
+the file, show me the first 12 raw lines so we agree on what is junk, then write an import
+that skips them and drops the totals row.
+:::
+::: {.why}
+"Show me the raw lines so we agree" is the move to teach. It forces the Assistant to
+evidence its assumption before writing code on top of it.
+:::
+
+::: {.prompt}
+Connect to the DuckDB file `data/pbs.duckdb`, list the tables and their row counts, and
+show me the first 10 rows of the largest one without pulling the whole table into memory.
+:::
+::: {.why}
+The Assistant sees your Connections pane and can query through the live connection, so it
+writes `dplyr` against the database rather than guessing at a schema.
+:::
+
+## When it goes wrong
+
+::: {.prompt}
+(Click "Fix" beside the error in the Console.)
+:::
+::: {.why}
+The Console error actions — **Fix** and **Explain** — are one click, no typing. Fix
+diagnoses the error and proposes a corrected line; Explain walks through what the code was
+trying to do. Show this early; it removes the fear of red text.
+:::
+
+::: {.prompt}
+Explain this error message to someone who has never programmed. Then tell me the two most
+common causes, and check which of them applies in my session.
+:::
+::: {.why}
+The second sentence is the one that matters — it checks *your* environment instead of
+listing possibilities.
+:::
+
+---
+
+# Day 2 — Cleaning and wrangling
+
+## Diagnosis before treatment
+
+::: {.prompt}
+Profile the data frame `hies` in my session. For every column report: type, number of
+missing values, number of distinct values, and for numeric columns the min, median and
+max. Flag anything that looks suspicious and tell me why. Do not fix anything yet.
+:::
+::: {.why}
+The single most useful prompt in this whole document. It reads the object in memory,
+so the report is about your data, and "do not fix anything yet" keeps the participant in
+charge.
+:::
+
+::: {.prompt}
+Look at the character columns in `hies` and tell me which ones are really categorical.
+For each, show me the distinct values sorted by frequency, and point out any that look
+like the same category spelled differently.
+:::
+::: {.why}
+Spotting `"Punjab"`, `"punjab"` and `"PUNJAB "` requires seeing the values. The Assistant
+can tabulate them in your session and bring back the evidence.
+:::
+
+::: {.prompt}
+Check `hies` for duplicate records. First on the id column alone, then on the full row.
+Report the counts, show me three example duplicates, and only then suggest what to do.
+:::
+::: {.why}
+"Report, show examples, then suggest" is a reusable prompt shape. Write it on the
+whiteboard.
+:::
+
+## Fixing
+
+::: {.prompt}
+Clean the column names of `hies` to lower snake_case, but show me a before-and-after
+mapping table first so I can veto any rename I dislike.
+:::
+::: {.why}
+The veto step. Automated renaming silently breaks downstream scripts; a mapping table
+turns a black box into a decision.
+:::
+
+::: {.prompt}
+The column `income` in `hies` is character because it contains commas, currency symbols
+and the string "N/A". Convert it to numeric. Before and after, print how many values are
+NA so I can confirm nothing was silently lost.
+:::
+::: {.why}
+The before/after NA count is the reproducibility habit in miniature — and the Assistant
+runs it, so the numbers are real.
+:::
+
+::: {.prompt}
+The `date_of_interview` column has mixed formats: some dd/mm/yyyy, some yyyy-mm-dd, some
+Excel serial numbers. Show me examples of each pattern from my data, then write a single
+robust parser and report how many rows still fail.
+:::
+::: {.why}
+It samples the actual mess rather than assuming a format, which is the difference between
+code that runs and code that runs *on this file*.
+:::
+
+::: {.prompt}
+Reshape `hies` from wide to long: the columns from `exp_food` through `exp_transport`
+should become `category` and `amount`. Use tidyr, run it, and show me the dimensions
+before and after so I can see the shape change.
+:::
+::: {.why}
+Pivoting is abstract until the participant watches 4,000 × 12 become 48,000 × 3 in their
+own Variables pane.
+:::
+
+::: {.prompt}
+I need to join `hies` to `districts` on district name, but I suspect the names don't
+match. Before joining, show me which names in each table have no partner in the other.
+Then propose a lookup table to fix them.
+:::
+::: {.why}
+The anti-join check before the join. This one prompt prevents the most common silent data
+loss in applied work, and the Assistant can execute it immediately.
+:::
+
+::: {.prompt}
+Rewrite the code I have selected in the editor using modern tidyverse: `.by` instead of
+`group_by()` where it fits, `join_by()` in joins, and the native pipe. Keep the output
+identical and prove it by comparing the result to the original with `waldo::compare()`.
+:::
+::: {.why}
+Selected-code context plus a proof of equivalence. Modernisation without the fear that
+something quietly changed.
+:::
+
+::: {.prompt}
+Turn the cleaning steps we just did into a function called `clean_hies()` in a new file
+`R/clean.R`, with roxygen documentation and defensive checks on the input columns. Then
+source it and confirm it reproduces the object currently in my session.
+:::
+::: {.why}
+The end-of-day move: exploration becomes a file, and the file is verified against the
+session it came from.
+:::
+
+---
+
+# Day 3 — Analysis, graphics and models
+
+## Exploring
+
+::: {.prompt}
+Using the data frame in my session, compute mean and median household expenditure by
+province and by urban/rural, with the number of observations in each cell. Present it as
+a tidy table, then tell me in plain language what stands out.
+:::
+::: {.why}
+Code plus interpretation, grounded in the numbers it just computed rather than in
+plausible-sounding generalities.
+:::
+
+::: {.prompt}
+This survey has a weight column `wt`. Redo the provincial means using the weights, put the
+weighted and unweighted figures side by side, and tell me where they differ most and what
+that implies about the sample.
+:::
+::: {.why}
+Survey weighting is the substantive point for a statistics audience, and the comparison
+table makes the lesson visible instead of theoretical.
+:::
+
+::: {.prompt}
+Suggest three plots that would reveal something genuinely interesting in this data. For
+each, say in one line what question it answers. Then draw the first one.
+:::
+::: {.why}
+It has seen the columns and types, so the suggestions are about your variables — a much
+better teaching moment than "consider a scatter plot".
+:::
+
+## Graphics
+
+::: {.prompt}
+Improve the plot currently showing in my Plots pane: proper axis labels with units, a
+title that states the finding rather than the variables, a colourblind-safe palette, and
+`theme_minimal()`. Explain each change in one line.
+:::
+::: {.why}
+The Assistant can see the **active plot**. "Improve the plot in my Plots pane" is a
+sentence that only makes sense inside this IDE, and it always lands well in a room.
+:::
+
+::: {.prompt}
+Turn this ggplot into a small-multiples version faceted by province, keep the y-axis free,
+and order the facets by median value rather than alphabetically.
+:::
+::: {.why}
+Reordering facets by a statistic requires knowing the statistic; it computes it from your
+data first.
+:::
+
+::: {.prompt}
+Save this figure as `figures/expenditure-by-province.png` at 8 × 5 inches and 300 dpi, and
+also write the ggplot code into `R/fig-expenditure.R` so I can regenerate it.
+:::
+::: {.why}
+Two artefacts, both on disk, both reproducible. The figure alone is not a deliverable.
+:::
+
+## Modelling
+
+::: {.prompt}
+Fit a regression of log expenditure on education, age, household size and province using
+the data in my session. Before you fit, tell me which variables have missing values and
+how many rows the model will actually use. Then fit it and produce a tidy coefficient
+table.
+:::
+::: {.why}
+The row-count warning before fitting. Listwise deletion silently shrinking a sample is the
+classic quiet error, and the Assistant can count it in advance.
+:::
+
+::: {.prompt}
+Run the standard diagnostics on the model object `m1` in my session, show me the plots,
+and tell me in plain language whether any assumption looks violated and what I might do
+about it.
+:::
+::: {.why}
+`m1` is a live object. The Assistant inspects it directly rather than asking you to paste
+`summary()` output.
+:::
+
+::: {.prompt}
+/predictive-modeling-r
+
+Set up a tidymodels workflow to predict poverty status from the variables in my session:
+a recipe with sensible preprocessing, a logistic regression and a random forest, 5-fold
+cross-validation, and a comparison of ROC AUC. Explain each step as you go — my audience
+is new to machine learning.
+:::
+::: {.why}
+`/predictive-modeling-r` invokes the built-in tidymodels skill explicitly, so you get
+Posit's own house patterns rather than whatever the model half-remembers from Stack
+Overflow.
+:::
+
+::: {.prompt}
+Compare the two model objects in my session and produce a single table of coefficients,
+standard errors, R-squared and number of observations, formatted for a report.
+:::
+::: {.why}
+It reads both objects from the environment. Nothing is retyped, so nothing is mistyped.
+:::
+
+---
+
+# Day 4 — Quarto, reproducibility and parameterised reporting
+
+This is the day the Assistant stops being a coding helper and becomes a reporting
+assistant. Slow down here.
+
+## Building the document
+
+::: {.prompt}
+/quarto-authoring
+
+Create a Quarto HTML report at `reports/expenditure-report.qmd` with a floating table of
+contents, code folding on, figure captions, and a setup chunk that loads the tidyverse and
+reads the cleaned data. Leave placeholder sections for Introduction, Data, Findings and
+Conclusion. Do not fill them in yet.
+:::
+::: {.why}
+The `quarto-authoring` skill carries Posit's own Quarto conventions. Invoking it by name
+is more reliable than hoping it triggers on its own.
+:::
+
+::: {.prompt}
+/report
+
+Turn everything we have done in this conversation into a Quarto document: the cleaning
+decisions, the tables, the plots and my reasoning. Keep my commentary, drop the dead ends.
+:::
+::: {.why}
+`/report` is the command participants remember for the rest of their careers. An afternoon
+of exploration becomes a documented `.qmd` in one line — the analysis writes its own
+narrative.
+:::
+
+::: {.prompt}
+Read my `.qmd` and give every code chunk a meaningful label, plus `#| fig-cap:` for
+figures and `#| tbl-cap:` for tables. Then add cross-references in the prose so the text
+says "see @fig-expenditure" instead of "see the figure below".
+:::
+::: {.why}
+It edits the real file in place. Cross-referencing is tedious by hand and instant here.
+:::
+
+::: {.prompt}
+Render this document and, if it fails, read the error, fix it, and render again. Tell me
+what was wrong. Don't ask me to copy the error message — you can see it.
+:::
+::: {.why}
+The render–fail–fix loop, executed by the Assistant in your terminal. This is the single
+most convincing demo of agentic behaviour for a Quarto audience.
+:::
+
+::: {.prompt}
+Rewrite the Findings section of my `.qmd` in plain language for a policy audience,
+keeping every number exactly as computed. Do not invent a figure that is not in the
+results.
+:::
+::: {.why}
+The instruction to preserve computed values is the guardrail. State it every time you ask
+for prose about numbers.
+:::
+
+## Making it reproducible
+
+::: {.prompt}
+Audit this project for reproducibility. Check for absolute file paths, `setwd()`,
+`rm(list = ls())`, hard-coded numbers in the prose that should be inline code, and any
+data file that is read but not present in the repository. Give me a prioritised list of
+fixes.
+:::
+::: {.why}
+It walks your actual project tree. Every participant leaves with a to-do list for their
+own work, which is far more persuasive than a slide of best practices.
+:::
+
+::: {.prompt}
+Find every place in my `.qmd` where I typed a number that was computed in the analysis,
+and replace it with inline R code so it updates when the data changes. Show me each
+replacement for approval.
+:::
+::: {.why}
+This is the definition of a reproducible report, done as a mechanical edit on the real
+document.
+:::
+
+::: {.prompt}
+Set up `renv` for this project, snapshot the current library, and add a short section to
+the README explaining how a colleague would restore the environment.
+:::
+::: {.why}
+It runs the commands and writes the documentation in one pass, so the environment and its
+instructions never drift apart.
+:::
+
+::: {.prompt}
+#changes
+
+Look at what I have changed on this branch and write a commit message: a short subject
+line and a body explaining why, not what.
+:::
+::: {.why}
+`#changes` pulls your recent branch changes into the prompt. There is also a sparkles icon
+in the Source Control commit box that does this in one click.
+:::
+
+## Parameterised reporting
+
+This is the crown of Day 4. Build it in four prompts, in this order.
+
+::: {.prompt}
+/plan
+
+I want to turn `reports/expenditure-report.qmd` into a parameterised report that can be
+rendered separately for each province. Plan the change: what parameters, what has to move
+into the setup chunk, what happens to the title, and how the outputs get named. Ask me
+anything that is ambiguous before you write code.
+:::
+::: {.why}
+`/plan` puts the Assistant into design mode. It explores the file, asks questions, and
+proposes an approach before touching anything — and the participants see that the *design*
+conversation is where the value is.
+:::
+
+::: {.prompt}
+Now implement the plan. Add a `params` block with `province` defaulting to "Punjab", make
+the title dynamic so it reads "Household Expenditure — Punjab", and replace every
+hard-coded province filter with `params$province`. Then render it once with the default to
+prove it still works.
+:::
+::: {.why}
+Implement, then prove. Never accept a parameterisation you have not seen render.
+:::
+
+::: {.prompt}
+Write `render-all.R` that loops over the four provinces, renders the report for each with
+`quarto::quarto_render()`, and writes the output to `reports/output/expenditure-<province>.html`.
+Run it and list the files that were produced.
+:::
+::: {.why}
+The moment one report becomes four is the emotional peak of the workshop. Have the
+Assistant run it live and list the files.
+:::
+
+::: {.prompt}
+Extend `render-all.R` so it also produces a PDF and a Word version of each report, and
+writes a small `index.qmd` linking to all of them. Handle the case where a province has
+too few observations by writing a short note instead of failing.
+:::
+::: {.why}
+Graceful failure is the difference between a demo and a pipeline. Ask for it explicitly.
+:::
+
+::: {.prompt}
+/savememory
+
+Record in this project's memory that reports are parameterised by province, rendered
+through `render-all.R`, and that outputs go to `reports/output/`. Future conversations in
+this project should follow that pattern.
+:::
+::: {.why}
+`/savememory` writes to `AGENTS.md`. Tomorrow morning's conversation starts already
+knowing how this project works — which is what makes the Assistant feel like a colleague
+rather than a stranger.
+:::
+
+---
+
+# The one-hour revision session
+
+Do not lecture. Put these on screen one at a time and let participants type them into
+their own projects. Ten minutes each, six prompts, done.
+
+::: {.prompt}
+Look at my project and tell me, in five bullet points, what this analysis does. Write it
+for someone who has never seen it.
+:::
+
+::: {.prompt}
+Profile the main data frame in my session and tell me the three things I should have
+checked but didn't.
+:::
+
+::: {.prompt}
+Find the weakest piece of code in this project — the part most likely to break when the
+data is updated next quarter — and explain why, without fixing it yet.
+:::
+
+::: {.prompt}
+Render every Quarto file in this project. Report which ones succeed, which fail, and why.
+:::
+
+::: {.prompt}
+Quiz me. Ask five questions about the R code in this project, one at a time, wait for my
+answer, and tell me whether I am right. Start easy and get harder.
+:::
+::: {.why}
+Turning the Assistant into an examiner is the highest-value five minutes of any revision
+hour, and it draws its questions from the participant's own code.
+:::
+
+::: {.prompt}
+/context
+
+Show me what you currently know about my session and how much of it you are using.
+:::
+::: {.why}
+Ending on `/context` demystifies the whole thing. Participants see exactly what was sent
+and stop imagining either magic or surveillance.
+:::
+
+---
+
+# Presentation day
+
+::: {.prompt}
+/quarto-authoring
+
+Turn `reports/expenditure-report.qmd` into a revealjs presentation of about 12 slides.
+Keep the figures, cut the code, and rewrite the prose as spoken bullet points. Use a dark
+green (#2C5F2D) and muted brown (#8B7355) theme with Georgia for body text.
+:::
+::: {.why}
+The report already exists and is already correct. The deck is a rendering of it, not a
+retyping — which is the reproducibility argument made visible.
+:::
+
+::: {.prompt}
+Read my slides and write speaker notes for each one: what to say, roughly how long, and
+the single number I must not forget to mention.
+:::
+
+::: {.prompt}
+Act as a sceptical discussant. Read my analysis and give me the five hardest questions
+someone in the audience could ask, with a one-line answer for each.
+:::
+::: {.why}
+It has read the actual code and results, so the objections are real methodological ones,
+not generic seminar questions.
+:::
+
+---
+
+# A little Python, in the same window
+
+Positron and RStudio both run Python. The Assistant sees whichever session is active — so
+switch the console, and the same prompt shape works.
+
+::: {.prompt}
+Switch my active session to Python. Read the same CSV with pandas, and show me the polars
+version side by side. Then tell me which one you would teach a beginner and why.
+:::
+
+::: {.prompt}
+I have a data frame in my R session and I want to continue in Python. Show me how to move
+it across with reticulate, and confirm the row count matches on both sides.
+:::
+::: {.why}
+Cross-language work is the reason many people move to Positron. The confirmation step is
+what makes it trustworthy.
+:::
+
+::: {.prompt}
+/predictive-modeling-python
+
+Build a scikit-learn pipeline for the same prediction problem we solved with tidymodels
+this morning, and compare the results honestly.
+:::
+
+---
+
+# Anti-patterns
+
+Show these deliberately. A wrong prompt beside a right one teaches faster than either
+alone.
+
+| Don't type this | Type this instead |
+|---|---|
+| "Here is my data: [pastes 40 rows]" | "Profile the data frame `hies` in my session." |
+| "Write code to clean data" | "Column `income` in `hies` is character; convert it to numeric and report the NA count before and after." |
+| "Fix my code" | "Read `R/clean.R`, run it, and tell me why line 34 fails." |
+| "Make a nice plot" | "Improve the plot in my Plots pane: axis units, a finding-based title, colourblind-safe palette." |
+| "Build me a whole dashboard" | "/plan — I want a Shiny dashboard with three tabs. Propose a structure first." |
+| "Is this analysis correct?" | "List the assumptions this analysis makes that I have not tested, then test the two most important." |
+| "Redo everything" | "/compact, then: starting from the cleaned data, ..." |
+
+::: {.callout-warning}
+## Two rules that are not negotiable
+
+**Never let generated code go into a report unrun.** If the Assistant wrote it, execute it
+and look at the output. Posit is explicit that it does not support or assist with
+AI-generated code — the correctness is yours.
+
+**Never send data you are not permitted to send.** Session context includes variable names,
+types and sampled values. For confidential microdata, use `positron.assistant.aiExcludes`
+to exclude files, turn off implicit session context in settings, or work on a synthetic
+extract during the training.
+:::
+
+---
+
+# Appendix A — An `AGENTS.md` to hand out
+
+Put this at the root of the workshop project on Day 1. It loads automatically at the start
+of every conversation in a trusted workspace.
+
+```markdown
+# Project conventions
+
+## Style
+- R only unless I ask for Python. Tidyverse dialect, native pipe `|>`.
+- No new package dependencies without telling me first.
+- British English spelling in prose. Numbers in tables to 1 decimal place.
+
+## Structure
+- `data-raw/` is read-only. Never write to it.
+- Cleaning code lives in `R/`, reports in `reports/`, figures in `figures/`.
+- Cleaned data is written to `data/` as `.rds`.
+
+## Reporting
+- All reports are Quarto. Numbers in prose are inline R code, never typed.
+- Reports are parameterised by province and rendered through `render-all.R`.
+
+## How to behave
+- Show me a plan before changes that touch more than one file.
+- After writing code, run it and show me the output.
+- If my data contradicts your assumption, tell me instead of coding around it.
+```
+
+# Appendix B — A custom skill for house style
+
+Custom skills go in `.posit/assistant/skills/<name>/SKILL.md` for a single project, or
+`~/.posit/assistant/skills/` for all your projects. Project skills override user skills,
+which override the built-ins.
+
+```markdown
+---
+name: pbs-tables
+description: House style for statistical tables in PBS reports. Use whenever
+  producing a table for a report or presentation.
+---
+
+# PBS table style
+
+- Use `gt` for HTML, `flextable` for Word.
+- Title states the finding; subtitle states the source and year.
+- Thousands separators on all counts. One decimal place on percentages.
+- Every table ends with a source note: "Source: Pakistan Bureau of Statistics, <survey>, <year>."
+- Never abbreviate province names.
+```
+
+Then, in any conversation: `/pbs-tables — turn the summary in my session into a report
+table.`
+
+# Appendix C — Slash command cheatsheet
+
+| Command | What it does |
+|---|---|
+| `/plan` | Design first: explores, asks questions, proposes an approach before editing |
+| `/ask` | Read-only mode — questions and exploration, no file changes |
+| `/report` | Turns the conversation into a Quarto document |
+| `/notebook` | Exports the conversation as a Jupyter notebook |
+| `/savememory` | Writes project facts into memory so future sessions inherit them |
+| `/context` | Shows what the Assistant currently knows and the token usage |
+| `/compact` | Summarises a long conversation to free up room |
+| `/microcompact` | Replaces tool results with placeholders — lighter than `/compact` |
+| `/new`, `/clear` | Start fresh, keeping model and settings |
+| `/trust` | Marks the workspace trusted so memory and skills load |
+| `/restricted` | Confirm every tool call — good for teaching |
+| `/yolo` | Run tools without confirmation — only in a Git repository |
+| `/sandbox` | OS-level isolation for shell commands |
+| `/mcp`, `/plugin` | MCP servers and the plugin marketplace |
+| `/quarto-authoring`, `/predictive-modeling-r`, `/predictive-modeling-python`, `/shiny-bslib`, `/r-package-development` | Invoke a built-in skill directly |
+
+Other context shortcuts worth knowing: **`#changes`** pulls recent branch changes into the
+prompt, the **paperclip** attaches files, folders, commits and interpreter sessions, and
+the **eye icon** on an attachment toggles whether it is actually sent.
+
+# Appendix D — The verification ritual
+
+Teach this as a closing habit. After any substantial piece of AI-written code, ask:
+
+::: {.prompt}
+Before I accept this: what assumptions did you make about my data that you did not verify?
+Check each one against my session and tell me which hold.
+:::
+
+If the Assistant cannot verify an assumption, that assumption is your homework. That is the
+honest relationship to build with these tools, and it is the note to end the workshop on.
+
+---
+
+::: {.callout-tip appearance="simple"}
+*Prompts current as of Posit Assistant in RStudio 2026.04+ and Positron 2026.07+, where
+Posit Assistant replaced the earlier Positron Assistant and Databot.*
+:::

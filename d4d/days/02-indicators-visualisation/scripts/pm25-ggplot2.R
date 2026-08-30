@@ -42,13 +42,16 @@ WDIsearch("air pollution")
 
 # pm_data <- get_wdi_data(indicator = INDICATOR)
 # saveRDS(pm_data, "pm_data.rds")
-pm_data <- readRDS(here::here("data/pm_data.rds"))
+pm_data <- readRDS(here::here("data/pm_data.rds"))  ## Again error, read error
+
+pm_data <- readRDS("d4d/data/pm_data.rds")
 
 glimpse(pm_data)
 
 # --- 2. Compute derived objects (wdiexplorer non-plot functions) --------------
 
 pm_valid            <- get_valid_data(pm_data)
+
 pm_diss_mat         <- compute_dissimilarity(pm_data)
 pm_variation        <- compute_variation(pm_data, diss_matrix = pm_diss_mat,
                                          group_var = "region")

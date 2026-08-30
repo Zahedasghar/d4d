@@ -3,7 +3,7 @@ library(readxl)
 library(lubridate)
 
 # Load data
-wide_data <- read_excel(here::here("data/wide_data.xlsx"))
+wide_data <- read_excel(here::here("d4d/data/wide_data.xlsx"))
 
 glimpse(wide_data)
 # Ensure numeric columns
@@ -46,7 +46,7 @@ ggplot(cpi_long, aes(Month, CPI, group = year, color = factor(year))) +
 ggplot(cpi_long, aes(Month, CPI)) +
   geom_boxplot(fill = "lightblue") +
   labs(title = "Seasonality in CPI (Month-wise)")
-wide_df |>
+wide_data |>
   pivot_longer(cols =!year, names_to = "month",values_to = "index_number")  |>
   mutate(date=ym(paste(year, month, sep = "-"))) -> df_long
 
@@ -55,12 +55,15 @@ df_long |> ggplot(aes(x=date,y=index_number))+
   geom_line(linewidth=1)+ labs(x="", y="index number", title = "Month time seires plot of an index",
                                caption = "source: dummy, @zahedasghar")+theme_minimal()
 
-read_excel(here::here("data/wide_data.xlsx")) |> mutate(Dec=as.numeric(Dec)) |> na.omit() |>
+read_excel(here::here("d4d/data/wide_data.xlsx")) |> mutate(Dec=as.numeric(Dec)) |>
+  na.omit() |>
   pivot_longer(cols =!year, names_to = "month",values_to = "index_number") |>
   mutate(date=ym(paste(year, month, sep = "-"))) |> ggplot(aes(x=date,y=index_number))+
   geom_line(linewidth=1)+ labs(x="", y="index number", title = "Month time seires plot of an index",
                                caption = "source: dummy, @zahedasghar")+
-  theme(plot.title = element_text(size = 15)) |> theme_minimal()
+  theme(plot.title = element_text(size = 15))
+
+#|> theme_minimal()
 
 
 

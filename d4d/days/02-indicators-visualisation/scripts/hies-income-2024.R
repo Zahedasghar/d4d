@@ -16,6 +16,12 @@ navy <- "#0f2440"
 gold <- "#c9a227"
 
 income_raw <- read_dta(here("data", "hies", "sec_1b_emp_income.dta"))
+
+
+## Why error
+
+income_raw <- read_dta(here("d4d", "data", "hies", "sec_1b_emp_income.dta"))
+
 weight <- read_dta(here("data", "hies", "weight.dta"))
 hh_info    <- read_dta(here("data", "hies", "section_info.dta"))
 
