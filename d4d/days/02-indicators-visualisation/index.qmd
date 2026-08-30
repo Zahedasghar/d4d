@@ -1,0 +1,61 @@
+---
+title: "Day 2 — Indicators, Prices & Visualisation"
+subtitle: "Tuesday 1 September · 09:30–16:30"
+---
+
+## Where the day goes
+
+From a raw file to a defensible number, and from a defensible number to a chart
+someone will put in a bulletin. The running case studies are **WFP food prices**
+(HDX) and the **PBS urban CPI** — both messy, both real, both Pakistani.
+
+## Sessions
+
+| Time | Session | Material |
+|---|---|---|
+| 09:30–11:15 | **Indicators & professional tables** — rates, ratios, shares; survey weights with `srvyr`; `gt` and `gtsummary` | [`scripts/gt-summary-tables.R`](scripts/gt-summary-tables.R) · [`scripts/gt-tables-basics.R`](scripts/gt-tables-basics.R) · [`scripts/hies-income-2024.R`](scripts/hies-income-2024.R) |
+| 11:30–13:00 | **Prices & inflation — the PBS CPI case study** — base-year splicing, YoY/MoM, dispersion, index numbers | [`01-wfp-prices-pipeline.qmd`](01-wfp-prices-pipeline.qmd) · [`04-index-numbers.qmd`](04-index-numbers.qmd) · [`scripts/tidy-pbs-cpi.R`](scripts/tidy-pbs-cpi.R) · [`scripts/cpi-groups-inflation.R`](scripts/cpi-groups-inflation.R) |
+| 14:00–15:15 | **Static & interactive visualisation** — ggplot2 recap, `plotly`, Lorenz/Gini | [`scripts/nhanes-ggplot-basics.R`](scripts/nhanes-ggplot-basics.R) · [`scripts/nhanes-ggplot-advanced.R`](scripts/nhanes-ggplot-advanced.R) · [`scripts/pm25-ggplot2.R`](scripts/pm25-ggplot2.R) |
+| 15:30–16:30 | **Animated visualisation & AI-assisted plotting** — `gganimate`, OWID style | [`scripts/animated-gif.R`](scripts/animated-gif.R) · [`scripts/temperature-lahore-delhi.R`](scripts/temperature-lahore-delhi.R) · [`scripts/owid-tutorial.R`](scripts/owid-tutorial.R) |
+
+## Walkthroughs
+
+| File | What it is |
+|---|---|
+| [`01-wfp-prices-pipeline.qmd`](01-wfp-prices-pipeline.qmd) | every command in the WFP prices pipeline, slide by slide |
+| [`02-pak-food-prices-workflow.qmd`](02-pak-food-prices-workflow.qmd) | the full analytical workflow — dplyr 1.2.0, ggplot2, `sf` |
+| [`03-combining-prices-markets.qmd`](03-combining-prices-markets.qmd) | joining the two HDX downloads without losing rows |
+| [`04-index-numbers.qmd`](04-index-numbers.qmd) | Laspeyres, Paasche, Fisher, Törnqvist on CPI-style data |
+
+## Scripts in this folder
+
+**Prices and CPI**
+
+- `read-hdx.R` — reading the two WFP files, HXL tag row and all
+- `wfp-food-prices-pipeline.R` — full pipeline: read → clean frames → maps
+- `wfp-prices-walkthrough.R` — the dplyr 1.2.0 / ggplot2 / `sf` walkthrough
+- `wfp-command-index.R` — every command used in the pipeline, grouped by package
+- `tidy-pbs-cpi.R` — PBS indices and growth rates into tidy form
+- `extract-cpi-urban-groupwise.R` — pulling the groupwise table out of the PBS PDF
+- `cpi-groups-inflation.R` — General index plus the twelve major groups
+- `cpi-housing-group.R` — group 04 (housing, water, electricity, gas) in depth
+
+**Indicators and tables**
+
+- `gt-summary-tables.R`, `gt-tables-basics.R`, `gt-bar-defence.R`
+- `hies-income-2024.R` — HIES 2024-25 individual income, survey-weighted
+- `10-useful-commands.R`, `birthweight-pregnancy.R`
+
+**Charts and indicator APIs**
+
+- `nhanes-ggplot-basics.R`, `nhanes-ggplot-advanced.R`, `pm25-ggplot2.R`
+- `wdi-indicators.R`, `wdi-explorer.R`, `wdi-explorer-1.R`, `wdi-explorer-comprehensive.R`
+- `owid-tutorial.R`, `gapminder.R`
+- `animated-gif.R`, `temperature-lahore-delhi.R`
+
+## By 16:30 you should be able to
+
+- state an indicator's numerator, denominator and weight before computing it
+- splice a CPI series across the 2007-08 → 2015-16 base change
+- produce a year-on-year inflation series for the General index and one group
+- build a `gt` table and a faceted chart you would sign your name to

@@ -173,7 +173,7 @@ print(mortality_summary)
 cat("\n=== CHILD HEALTH ANALYSIS ===\n")
 
 # Load data
-birth <- read_sav("Data/SPSS Data/Birth.sav")
+birth <- read_sav(here::here("data/Birth.sav"))
 
 # --- 2.1 Basic Summary ------------------------------------------------
 
@@ -268,7 +268,7 @@ print(p7)
 cat("\n=== MORTALITY ANALYSIS ===\n")
 
 # Load data
-death <- read_sav("Data/SPSS Data/Death.sav")
+death <- read_sav(here::here("data/Death.sav"))
 
 # --- 3.1 Summary Statistics -------------------------------------------
 

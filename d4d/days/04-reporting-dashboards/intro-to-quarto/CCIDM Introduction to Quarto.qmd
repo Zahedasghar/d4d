@@ -1,0 +1,615 @@
+---
+title: "Introduction to Quarto: Quarto’s Capabilities for Work and School"
+author: "Center for Customer Insights and Digital Marketing"
+institute: "Cal Poly Pomona"
+footer: Spring 2025 CCIDM Virtual Workshop Series
+date: "`r Sys.Date()`"
+date-format: "M/D/YYYY"
+format:
+  revealjs:
+    logo: "logos/ccidm-cpp logo.png"
+    theme: theme.scss
+    slide-number: true
+    toc: true
+    toc-depth: 1
+    #chalkboard: true #cannot use with self-contained
+    self-contained: true
+    width: 1300
+    height: 760
+execute:
+  echo: false
+  freeze: true
+---
+
+# Greetings and Introduction of Presenters/Panellists
+
+::::{.incremental}
+-   Moderator: Dr. Jae Jung
+
+-   Presenters/panelists
+    -   Dr. Jae Jung, Professor of Marketing
+    -   Dr. Carsten Lange, Professor of Economics
+    -   Jarrod Griffin, MSDM Student
+    -   Ceren Ural, MSDM Student 
+:::
+
+
+# Learning Outcomes:
+
+After taking this workshop, participants should be able to:
+
+:::{.small-medium-text .incremental}
+1.  Describe how to do literate programming with Quarto
+2.  Learn how to set up and use Quarto within the RStudio IDE.
+3.  List the various output formats of Quarto.
+4.  Describe how to render basic Quarto documents to the various popular document formats.
+5.  Create a document with basic markdown functions.
+6.  Explain the various platforms that host websites and reproducible documents.
+7.  Explain how Quarto can be used for work and school.
+:::
+
+# Overview of Quarto in RStudio by Dr. Jae Min Jung (15 min)
+
+## R and RStudio
+
+::: medium-text
+-   Brief History
+-   Desktop Installation
+    1.  R: <https://www.r-project.org/>
+    2.  RStudio: <https://posit.co/download/rstudio-desktop/>
+
+-   Posit Cloud: <https://posit.cloud/>
+:::
+
+. . .
+
+::: medium-text
+-   R Studio IDE menu (Next slide)
+-   Three major file types in RStudio (Next slide)
+:::
+
+::: notes
+Demonstrate
+:::
+
+## RStudio IDE
+
+-   Four quadrants
+-   Menu
+    -   Tools \> Global Options
+    -   Output location options
+        -   Manually set `working directory`
+        -   Automatic method with the `Rproj` file (Next slide)
+
+## Steps in Preparing for a project
+
+---
+
+### 1. Start a new project
+
+-   Projects are the containers for all of your notebooks.
+
+::: incremental
+```         
+1.  From File, click `new project`
+2.  Select a new or existing directory depending on your needs
+3.  Select your folder that will contain your project.
+4.  Press create project
+```
+:::
+
+-   You should see your `.Rproj` file and others in the `Files` panel
+
+---
+
+### 2. Start a codebook/notebook and save it
+
+-   R Scripts file
+
+-   Rmd file
+
+-   Quarto file
+
+------------------------------------------------------------------------
+
+#### Markdown vs. HTML
+
+::: small-text
+Markdown and HTML are both markup languages used for creating formatted content, but they have distinct characteristics. Here's a summary of their similarities and differences:
+
+| **Feature** | **Markdown** | **HTML** |
+|------------------|---------------------------|---------------------------|
+| Syntax complexity | Simple and easy to read | More complex with specific tags |
+| Learning curve | Low, quick to learn | Steeper, requires more time to master |
+| Readability | Highly readable, even in raw form | Less readable in raw form |
+| Flexibility | Limited formatting options | Highly flexible with extensive formatting |
+| Output | Primarily static content | Dynamic web pages and applications |
+| Supported elements | Basic formatting (headings, lists, links) | Wide range of elements (forms, multimedia) |
+| Conversion | Easily converts to HTML | Cannot be directly converted to Markdown |
+| Collaborative editing | Well-suited for collaboration | Less ideal for collaborative editing |
+| Customization | Limited styling options | Extensive styling with CSS |
+| Use cases | Documentation, simple content | Complex web development, detailed layouts |
+| Browser support | Requires conversion to HTML | Natively supported by browsers |
+| Extensibility | Limited, varies by flavor | Highly extensible with JavaScript |
+:::
+
+---
+
+### 3. Start literate coding
+
+## What is Quarto?
+
+::: small-medium-text
+-   Quarto is an open-source technical publishing system designed for creating a wide variety of documents and publications (<https://quarto.org/>)
+:::
+
+. . .
+
+::: small-medium-text
+-   Support multiple coding languages:
+    -   R, Python, Julia, ObservableJS
+-   Supported by multiple IDEs
+    -   RStdudio, VS Code, Jupyter, Neovim
+:::
+
+. . .
+
+::: small-medium-text
+-   Publish to multiple hosting services
+    -   QaurtoPub, GitHub Pages, Posit Connect, Netlify, Hugging Face, etc.
+:::
+
+. . .
+
+::: small-medium-text
+-   Great for **reproducible research/publications/documents**.
+:::
+
+------------------------------------------------------------------------
+
+@fig-compare is from [YouTube video](https://www.youtube.com/watch?v=8qR0wtJEDX4) by Christophe Dervieux, *Posit PBC*.
+
+![](images/word_LaTeX_MD.png){#fig-compare fig-align="center"}
+
+---
+
+### Quarto Work Flow Basics (Demo)
+
+-   How to start it and save it (e.g., test.qmd)
+-   Rendering it:
+-   Source vs. visual tab interface
+-   r4ds: <https://r4ds.hadley.nz/quarto#quarto-basics>
+
+::: notes
+demonstrate it
+:::
+
+---
+
+### Three Areas in Quarto File
+
+-   Detailed tutorials available at [the official Quarto site](https://quarto.org/docs/get-started/hello/rstudio.html)
+
+------------------------------------------------------------------------
+
+#### 1. Yaml header
+
+An YAML header demarcated by three dashes (`---`) on either end.
+
+```         
+---
+title: "Module 1 Introduction to R, RStudio, and Qurto"
+author: "Jae Jung"
+date: '`r format(Sys.time())`'
+format: 
+  html: 
+    toc: true
+    toc-depth: 4
+    embed-resources: true
+editor: visual
+execute: 
+  freeze: auto
+---
+```
+
+------------------------------------------------------------------------
+
+#### 2. Code chunk
+
+```{{r}}
+#| label: demo-code-chunk
+#| include: true
+
+#install.packages("tidyverse")
+#install.packages("palmerpenguins")
+library(tidyverse)
+library(palmerpenguins)
+```
+
+------------------------------------------------------------------------
+
+#### 3. Markdown text area
+
+::: incremental
+-   Text area is all the canvas area within qmd file other than Yaml header and code chun areas.
+
+-   Quarto uses markdown syntax for text.
+
+-   You can use text area for typing prose as you would normally do in MS Word or Google Doc.
+
+    -   Text with formatting: section headers, hyperlinks, an embedded image, and an inline code chunk.
+
+-   You can also style it: e.g., **Bold**; *Italicize*
+:::
+
+------------------------------------------------------------------------
+
+::: {.callout-tip .incremental title="Coding Tips"}
+[**Be Careful**]{.red-text}: do **not** ***code*** in the **text area**.
+
+-   It is possible to type the code and run in the text area.
+-   However, it won't be read and rendered into a document.
+-   During the rendering, RStudio will be in an auto-pilot mode and will treat everything in the text area as a text except for `in-line code`.
+:::
+
+## Qurto Interface
+
+### Visual editor
+
+-   Easier to those who are familiar with MS Word or Google Doc.
+-   To add something; press `ctrl/commnad` + `/`
+-   Adding table by hand is cumbersome.
+-   Adding an figure/image
+
+------------------------------------------------------------------------
+
+### Source editor
+
+-   Easier to those who are familiar with R Script file or Rmd file.
+-   Useful for debugging any Quarto syntax errors since it’s often easier to catch these in plain text.
+-   Handy reference sheet available at the RStudio menu:
+    -   *Help \> Markdown Quick Reference*
+
+## Literate Programming in Quarto
+
+---
+
+### Basic Operations
+
+::: small-medium-text
+In the following code chunk, you will learn some basic operations in R.
+
+```{r}
+#| label: Basic-Operation
+#| eval: false
+1+1
+2*2 # *: multiplication
+2^3 # ^: use carrot to raise the base to the power of the following number.
+
+# creating an object
+message <- "Hello WOrld!" 
+
+message = "Hello WOrld!" # equal sign also works.
+
+# to print,
+print(message)
+
+# to print, print function is necessary. You can just type the object and run it.
+message
+
+# An object can be any type: e.g., strings and numbers
+number <- 7 
+
+max(2,5,90,30) # maximum
+
+min(2,5,90,30) # minimum
+```
+
+```{{r}}
+#| label: Basic-Operation
+1+1
+2*2 # *: multiplication
+2^3 # ^: use carrot to raise the base to the power of the following number.
+
+# creating an object
+message <- "Hello WOrld!" 
+
+message = "Hello WOrld!" # equal sign also works.
+
+# to print,
+print(message)
+
+# to print, print function is necessary. You can just type the object and run it.
+message
+
+# An object can be any type: e.g., strings and numbers
+number <- 7 
+
+max(2,5,90,30) # maximum
+
+min(2,5,90,30) # minimum
+```
+:::
+
+---
+
+### Coding Styles {#sec-coding-styles}
+
+```{r}
+#| code-fold: false
+
+#install.packages("tidyverse")
+#install.packages("palmerpenguins")
+library(tidyverse)
+library(palmerpenguins)
+```
+
+:::: medium-text
+::: panel-tabset
+#### Base R way of coding
+
+```{r}
+#| code-fold: false
+#| echo: true
+
+head(penguins)
+mean(penguins$bill_length_mm, na.rm = TRUE)
+```
+
+#### Tidyverse way of coding
+
+```{r}
+#| code-fold: false
+#| echo: true
+
+penguins |> 
+  head()
+penguins |> 
+  pull(bill_length_mm) |> 
+  mean(na.rm = TRUE)
+```
+:::
+::::
+
+---
+
+### Pipe Operator
+
+::: {.callout-tip .incremental}
+-   R has multiple ways to accomplish the same goal.
+
+-   `|>` is called `native pipe operator`. It works the same as `%>%`, which came from `mgrittr` package that revolutionized the way we code in R, paving the trend for the modern data science in R.
+
+-   The pipe operator is one important difference between `base R` and `Tidyverse` in how we code.
+:::
+
+## Quarto Document Types
+
+---
+
+### HTML
+
+```         
+---
+title: "Testing for Word document"
+format: html
+editor: visual
+---
+```
+
+---
+
+### PDF
+
+-   In order to create PDFs you will need to install a recent distribution of [LaTeX](https://www.latex-project.org/).
+
+-   Use TinyTeX (which is based on TexLive), which you can install with the following command:
+
+    ``` bash
+    Terminal
+    ```
+
+    ``` bash
+    quarto install tinytex
+    ```
+
+------------------------------------------------------------------------
+
+```         
+---
+title: "Testing for Word document"
+format: pdf
+editor: visual
+---
+```
+
+---
+
+### MS Word
+
+```         
+---
+title: "Testing for Word document"
+format: docx
+editor: visual
+---
+```
+
+---
+
+### Revealjs Presentation
+
+```         
+---
+title: "Testing for Presentation"
+format: revealjs
+editor: visual
+---
+```
+
+---
+
+### Dashboard
+
+```         
+---
+title: "Testing for Presentation"
+format: dashboard
+editor: visual
+---
+```
+
+## Multiple Formats Option
+
+```         
+---
+title: "Housing Prices"
+author: "Your Name"
+highlight-style: pygments
+format:
+  html: 
+    code-fold: true
+    html-math-method: katex
+  pdf:
+    geometry: 
+      - top=30mm
+      - left=30mm
+  docx: default
+---
+```
+
+## More resources
+
+-   [Introduction to Literate Programming](https://jaejungca.github.io/introduction-to-literate-programming-with-quarto/)
+
+# Quarto Markdown Demonstration by Jarrod Griffin (15 min)
+
+## Text Formatting and Structure
+
+-   **Text Formatting:**
+    -   **Bold:** `**bold text**`
+    -   *Italics:* `*italic text*`
+    -   `Inline code:` `` `code` ``
+-   **Headings:**
+    -   `# Heading 1`
+    -   `## Heading 2`
+    -   `### Heading 3`
+
+## Lists and Organization
+
+-   **Unordered Lists:**
+    -   Item A
+    -   Item B
+        -   Nested Item B.1
+-   **Ordered Lists:**
+    1.  First item
+    2.  Second item
+        1.  Sub-item 2.1
+
+## Links and Images
+
+-   **Hyperlinks:**
+    -   Example: [Quarto Website](https://quarto.org)
+-   **Embedding Images:**
+    -   **Local image:** `![](path/to/your-image.png)`
+    -   **Online image:** `![](https://via.placeholder.com/150)`
+
+## Callout Blocks and Blockquotes
+
+::: callout-note
+**Note:** Callout blocks are great for drawing attention to important details.
+:::
+
+> **Blockquote:**\
+> "Markdown is a lightweight markup language that you can use to add formatting elements to plaintext text."
+
+## IDs and Cross-Referencing
+
+---
+
+### Section with an ID {#my-section}
+
+-   You can assign **IDs** to sections like above.
+-   **Cross-Reference:**\
+    See [this section](#my-section) later in the document.
+-   You can also reference tables and figures:
+    -   For example, refer to Table @tbl-example below.
+
+## Tables
+
+| Header 1 | Header 2 |
+|----------|----------|
+| Cell 1   | Cell 2   |
+| Cell 3   | Cell 4   |
+
+: **Simple Table:**{#tbl-example}
+
+**Complex Table with Alignment:**
+
+| Left Align | Center Align | Right Align |
+|:-----------|:------------:|------------:|
+| Cell A     |    Cell B    |      Cell C |
+| Cell D     |    Cell E    |      Cell F |
+
+## YAML Header vs. Local Chunk Settings
+
+-   **Global Settings:** Defined in the YAML header.
+-   **Local Chunk Settings:** Override global settings for specific code chunks.
+-   <https://rstudio.github.io/cheatsheets/quarto.pdf>
+
+```{r}
+#| echo: true
+plot(cars)
+```
+
+------------------------------------------------------------------------
+
+```{r}
+#| echo: true
+#| fig-width: 6
+#| fig-height: 4
+plot(cars)
+```
+
+## Live Demo: Rendering and Output
+
+-   **Render to HTML/PDF:**\
+    Use the Quarto CLI or your IDE to render this document.
+
+-   **Observe:**
+
+    -   How the markdown and code chunks are processed.
+
+    -   The integrated output of R code and formatted text.
+
+# Publishing on the web by Dr. Carsten Lange (15 min)
+
+1.  Creating html, PDFs and PowerPoints with Quarto
+    -   For detailed domonstration of [How to install tinyTex](https://www.youtube.com/watch?v=OUWOx80eJqk), click the link.
+2.  Creating a Website for your Documents and Slides with Quarto
+3.  Easy Publishing with `Netlify`  
+
+
+# Panel Discussion and Q&A Moderated by Dr. Jung (15 min)
+
+-   panelists
+    -   Dr. Carsten Lange, Professor of Economics
+    -   Jarrod Griffin, MSDM Student
+    -   Ceren Ural, MSDM Student 
+
+## Questions
+
+:::{.incremental}
+1. How can professors use Quarto for their teaching and research? 
+2. Looking back to your job prior to coming back to graduate school, how would you have used Quarto at your work?
+3. What is the difference between various websites (Quarto pub, Github, Netlify, etc.) hosting platforms that support Quarto? 
+4. Audience, free to ask your question!
+:::
+
+# Next Workshops:
+
+-  Workshop #2: "In-depth Interactive Report Authoring with Quarto"
+
+-  Workshop #3: "Design Stunning and Effective Presentation Slides Using Quarto"
+
+-  Workshop #4: "Creating Websites/Blogs and Job Market Portfolio with Quarto"  

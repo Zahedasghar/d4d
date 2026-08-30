@@ -1,0 +1,350 @@
+---
+title: "Index Numbers in R"
+subtitle: "Laspeyres, Paasche, Fisher & Törnqvist — with Pakistani CPI-style data"
+author: "Data for Development (D4D) | School of Economics, QAU"
+format:
+  revealjs:
+    theme: [default, d4d-theme.scss]
+    slide-number: true
+    footer: "D4D Workshop | Index Numbers in R"
+    code-line-numbers: true
+    incremental: false
+    embed-resources: true
+execute:
+  echo: true
+  warning: false
+  message: false
+---
+
+## Session objectives {.smaller}
+
+By the end of this session, participants will be able to:
+
+- Explain why a single "average price" is not enough to measure inflation
+- Calculate **Laspeyres**, **Paasche**, **Fisher**, and **Törnqvist** price indices by hand and in R
+- Recognise the **substitution bias** built into fixed-basket indices
+- Reproduce PBS-style CPI hazards: base-year switches, unstable commodity codes, unit mismatches
+- Use the `IndexNumR` package for chained and multilateral indices
+
+::: {.pk-hazard}
+**Why this matters for PBS/P&D work:** every headline inflation number you report — CPI, SPI, WPI — is an index number. If you can't defend the formula, you can't defend the number.
+:::
+
+---
+
+## Why not just average prices? {.smaller}
+
+A naive "average price change" mixes up two things that must be kept separate:
+
+- **Price change** — did wheat get more expensive?
+- **Weight** — how much wheat does a typical household actually buy?
+
+A price index is a **weighted average of price relatives**, where the weights come from expenditure shares in a reference period.
+
+::: {.callout-note}
+This is exactly what PBS does in the CPI: fix a **basket** (from HIES expenditure data), then track how much it would cost over time.
+:::
+
+**Standard references** (cite these in any workshop or report):
+
+- ILO, IMF, OECD, UN, World Bank (2020). *Consumer Price Index Manual: Concepts and Methods.* IMF.
+- Balk, B.M. (2008). *Price and Quantity Index Numbers.* Cambridge University Press.
+- Diewert, W.E. (1976). "Exact and Superlative Index Numbers." *Journal of Econometrics*, 4(2), 115–145.
+
+---
+
+## Illustrative dataset {.smaller}
+
+Structured like a PBS CPI bulletin extract: commodity groups, base-period (`p0`, `q0`) and current-period (`p1`, `q1`) prices/quantities.
+
+::: {.pk-hazard}
+**Note:** this is illustrative sample data built to mirror PBS bulletin structure for teaching — not published PBS figures. Swap in a real bulletin extract for the actual workshop run.
+:::
+
+```{r}
+#| label: setup
+library(tidyverse)
+
+basket <- tibble(
+  commodity_group = c("Wheat flour", "Rice", "Sugar", "Cooking oil",
+                       "Pulses (masoor)", "Milk", "Electricity charges",
+                       "Transport fare"),
+  p0 = c(95, 145, 118, 410, 220, 130, 6.5, 40),
+  q0 = c(20, 8, 6, 4, 3, 30, 250, 60),
+  p1 = c(112, 162, 135, 445, 245, 142, 7.8, 46),
+  q1 = c(18, 9, 6, 4, 3, 29, 240, 58)
+)
+
+basket
+```
+
+---
+
+## Audit before you calculate {.smaller}
+
+Standard practice: **never** compute an index before auditing the inputs. PBS-grade habit, not optional.
+
+```{r}
+#| label: audit
+# Any missing prices or non-positive quantities will silently corrupt the index
+basket |>
+  summarise(
+    n_rows = n(),
+    any_na_price = anyNA(c(p0, p1)),
+    any_na_qty   = anyNA(c(q0, q1)),
+    any_nonpositive_price = any(c(p0, p1) <= 0),
+    any_nonpositive_qty   = any(c(q0, q1) <= 0)
+  )
+```
+
+::: {.pk-hazard}
+**PBS-specific version of this audit:** check that commodity descriptions (not numeric codes) match across periods — codes are unstable across the 2007-08 → 2015-16 base-year change.
+:::
+
+---
+
+## Laspeyres price index {.smaller}
+
+Fixes the **base-period basket** (`q0`) and asks: what would it cost today?
+
+$$
+L = \frac{\sum p_1 q_0}{\sum p_0 q_0} \times 100
+$$
+
+```{r}
+#| label: laspeyres
+laspeyres <- basket |>
+  summarise(L = sum(p1 * q0) / sum(p0 * q0) * 100)
+
+laspeyres
+```
+
+- Easy to compute and update (weights fixed)
+- **Overstates** inflation: assumes households keep buying the same basket even as relative prices shift
+- This is the formula most national CPIs actually publish month-to-month
+
+---
+
+## Paasche price index {.smaller}
+
+Fixes the **current-period basket** (`q1`) instead.
+
+$$
+P = \frac{\sum p_1 q_1}{\sum p_0 q_1} \times 100
+$$
+
+```{r}
+#| label: paasche
+paasche <- basket |>
+  summarise(P = sum(p1 * q1) / sum(p0 * q1) * 100)
+
+paasche
+```
+
+- **Understates** inflation: assumes households had already substituted away from goods that got relatively more expensive
+- Rarely published in real time — needs current-period quantities, which usually arrive with a lag (e.g. from HIES)
+
+---
+
+## Laspeyres vs Paasche — the substitution gap {.smaller}
+
+```{r}
+#| label: compare-lp
+bind_rows(
+  tibble(index = "Laspeyres", value = laspeyres$L),
+  tibble(index = "Paasche",   value = paasche$P)
+)
+```
+
+::: {.callout-important}
+**Laspeyres ≥ Paasche** whenever quantities and prices move in opposite directions (the usual case) — this gap *is* the substitution bias, formalised by Diewert (1976).
+:::
+
+Neither is "wrong" — they answer different questions. This is why a **superlative** index (below) is preferred when both weight sets are available.
+
+---
+
+## Fisher Ideal Index {.smaller}
+
+The geometric mean of Laspeyres and Paasche — splits the difference symmetrically.
+
+$$
+F = \sqrt{L \times P}
+$$
+
+```{r}
+#| label: fisher
+fisher <- sqrt(laspeyres$L * paasche$P)
+fisher
+```
+
+- Satisfies more of the axiomatic "index number tests" (time reversal, factor reversal) than either component alone
+- Used by the US BEA for chain-weighted GDP; recommended in the CPI Manual (2020) as a **superlative** index
+
+---
+
+## Törnqvist Index {.smaller}
+
+A weighted geometric mean of price relatives, using **average expenditure shares** across the two periods.
+
+$$
+\ln T = \sum_i \bar{w}_i \ln\!\left(\frac{p_{1i}}{p_{0i}}\right), \quad
+\bar{w}_i = \frac{s_{0i} + s_{1i}}{2}
+$$
+
+```{r}
+#| label: tornqvist
+tornqvist <- basket |>
+  mutate(
+    s0 = (p0 * q0) / sum(p0 * q0),
+    s1 = (p1 * q1) / sum(p1 * q1),
+    w_bar = (s0 + s1) / 2,
+    log_rel = w_bar * log(p1 / p0)
+  ) |>
+  summarise(T = exp(sum(log_rel)) * 100)
+
+tornqvist
+```
+
+Also **superlative** (Diewert, 1976) — very close numerically to Fisher in most real datasets.
+
+---
+
+## All four, side by side {.smaller}
+
+```{r}
+#| label: all-four
+tibble(
+  Index = c("Laspeyres", "Paasche", "Fisher", "Törnqvist"),
+  Value = c(laspeyres$L, paasche$P, fisher, tornqvist$T)
+) |>
+  mutate(Value = round(Value, 2))
+```
+
+```{r}
+#| label: plot-four
+#| fig-height: 3.2
+tibble(
+  Index = c("Laspeyres", "Paasche", "Fisher", "Törnqvist"),
+  Value = c(laspeyres$L, paasche$P, fisher, tornqvist$T)
+) |>
+  ggplot(aes(x = Index, y = Value, fill = Index)) +
+  geom_col(width = 0.6) +
+  geom_hline(yintercept = 100, linetype = "dashed") +
+  scale_fill_manual(values = c("#0f2440", "#c9a227", "#7a8ba0", "#8a6d1c")) +
+  labs(y = "Index (base = 100)", x = NULL) +
+  theme_minimal(base_size = 14) +
+  theme(legend.position = "none")
+```
+
+---
+
+## Pakistan-specific hazards {.smaller}
+
+::: {.pk-hazard}
+**Commodity codes are unstable.** PBS revised the CPI basket and codes at the 2007-08 → 2015-16 base-year change. Always join across periods on **description text**, not numeric codes — then audit with `anti_join()` to catch anything that fails to match.
+:::
+
+::: {.pk-hazard}
+**Units differ across sources.** WFP price bulletins mix KG, 20KG, 500G and Litre units for the same commodity. Reconcile to a common unit **before** any price averaging, or the index is meaningless.
+:::
+
+::: {.pk-hazard}
+**Provincial coverage gaps.** Islamabad sometimes appears unlabeled (e.g. as a bare code) in provincial breakdowns — check factor levels with `as_factor()` before aggregating by province.
+:::
+
+```{r}
+#| label: audit-pattern
+#| eval: false
+# The pattern to teach every time, before any join:
+intersect(names(pbs_period_a), names(pbs_period_b))
+anti_join(pbs_period_a, pbs_period_b, by = "commodity_description")
+```
+
+---
+
+## Chained indices {.smaller}
+
+Fixed-base indices drift as the basket ages. **Chaining** links period-to-period movements instead of comparing everything back to one distant base.
+
+$$
+\text{Chained}_t = \text{Chained}_{t-1} \times \frac{I_{t-1,t}}{100}
+$$
+
+```{r}
+#| label: chain-demo
+# Three periods of Laspeyres link relatives (illustrative)
+link_relatives <- tibble(period = 2:4, link_index = c(103.2, 101.8, 104.5))
+
+link_relatives |>
+  mutate(chained_index = 100 * cumprod(link_index / 100))
+```
+
+Trade-off: chaining tracks current consumption patterns more closely, but **chain drift** can appear if prices oscillate (e.g. seasonal food items) rather than trend.
+
+---
+
+## Using `IndexNumR` {.smaller}
+
+For real multi-period, multi-product panels, don't hand-roll the loops — `IndexNumR` (White) implements Laspeyres, Paasche, Fisher, Törnqvist, and **GEKS** multilateral indices.
+
+```{r}
+#| label: indexnumr-setup
+#| eval: false
+install.packages("IndexNumR")
+library(IndexNumR)
+```
+
+```{r}
+#| label: indexnumr-reshape
+#| eval: false
+# IndexNumR expects long format: period, product ID, price, quantity
+panel <- basket |>
+  mutate(product_id = row_number()) |>
+  pivot_longer(cols = c(p0, p1, q0, q1),
+               names_to = c(".value", "period"),
+               names_pattern = "([a-z]+)(\\d)") |>
+  mutate(period = as.integer(period) + 1L)
+
+price_index(panel, pvar = "p", qvar = "q",
+            pervar = "period", prodID = "product_id",
+            indexMethod = "fisher")
+```
+
+**Reference:** White, G. *IndexNumR: An R Package for Index Number Calculation.* CRAN.
+
+---
+
+## Hands-on exercise {.smaller}
+
+Using `basket` (or a real PBS/WFP extract you bring):
+
+1. Recompute Laspeyres and Paasche **swapping** which period supplies the weights — confirm the substitution-bias inequality holds
+2. Add a fifth commodity where price **falls** between periods — does Laspeyres still exceed Paasche?
+3. Reshape `basket` into long format and reproduce the Fisher index using `IndexNumR::price_index()`
+4. **Stretch:** chain three periods of your own link relatives and plot the chained series with `ggplot2`
+
+::: {.callout-note}
+Print every audit step. If a number looks wrong, the fix is almost always in the join or the unit conversion — not the formula.
+:::
+
+---
+
+## References {.smaller}
+
+- International Labour Organization, IMF, OECD, UN, World Bank (2020). *Consumer Price Index Manual: Concepts and Methods.* International Monetary Fund.
+- Balk, B.M. (2008). *Price and Quantity Index Numbers: Models for Measuring Aggregate Change and Difference.* Cambridge University Press.
+- Diewert, W.E. (1976). "Exact and Superlative Index Numbers." *Journal of Econometrics*, 4(2), 115–145.
+- White, G. *IndexNumR: An R Package for Index Number Calculation.* CRAN: `https://cran.r-project.org/package=IndexNumR`
+- Pakistan Bureau of Statistics. *Consumer Price Index* methodology notes and bulletins. `https://www.pbs.gov.pk`
+
+---
+
+## Wrap-up {.smaller}
+
+- An index number is a **weighted average of price relatives** — the weights are the whole story
+- **Laspeyres** (fixed base basket) is what gets published monthly; **Paasche** needs current weights and lags
+- **Fisher** and **Törnqvist** are *superlative* — the workshop standard when both weight sets exist
+- For Pakistani data specifically: **audit joins on description text**, **reconcile units first**, **never trust a numeric commodity code across base-year changes**
+
+**Next session:** applying this pipeline to a real PBS CPI bulletin extract, end to end.

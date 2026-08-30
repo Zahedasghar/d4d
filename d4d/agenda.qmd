@@ -1,80 +1,103 @@
 ---
 title: "Workshop Agenda"
-subtitle: "Demographic Analysis Using R — five days"
+subtitle: "Data Analysis, Automation & Evidence-Based Decision-Making with AI-Augmented R Workflows"
 date: today
 ---
 
 ::: {.callout-note}
 ## This is the authoritative agenda
-Four earlier agenda documents existed in the repository and disagreed with each other
-on which topics belonged to which day. They are preserved in `archive/agendas/` for
-reference. Edit **this** file when the schedule changes.
+It follows the SDPI × D4D schedule of 24 August 2026. Earlier agenda documents that
+disagreed with each other are preserved in `archive/agendas/`. Edit **this** file when
+the schedule changes.
 :::
 
-**Timing:** Monday–Thursday 10:00–16:30 · Friday 09:30–13:00
+**Dates:** 31 August – 4 September 2026
+**Timing:** Monday–Thursday 09:30–16:30 · Friday 09:30–13:00 (closes before Jummah)
+**Trainer:** Prof. Dr. Zahid Asghar, School of Economics, QAU · **Organisers:** SDPI & D4D
 **Audience:** researchers and analysts in social science, health, economics and policy
 **Prerequisite:** none — Day 1 assumes no prior R
 
----
-
-## Day 1 — Foundations & Data Import
-
-| Time | Session | Material |
-|---|---|---|
-| 10:00–11:30 | R, Positron and the project workflow; Git basics | [`01-rstudio-git-session`](days/01-foundations/01-rstudio-git-session.qmd) |
-| 11:45–13:00 | Reading `.sav` / `.dta` / `.xlsx`; the five verbs | [`import-alifailan.R`](days/01-foundations/scripts/import-alifailan.R) |
-| 14:00–15:15 | Messy data: janitor, missingness, wide ↔ long | [`clean-dirty-excel.R`](days/01-foundations/scripts/clean-dirty-excel.R) |
-| 15:30–16:30 | First look at NHANES / PDHS structure | [`02-demographic-analysis-nhanes`](days/01-foundations/02-demographic-analysis-nhanes.qmd) |
-
-## Day 2 — Exploratory Analysis & Visualisation
-
-| Time | Session | Material |
-|---|---|---|
-| 10:00–11:30 | Publication tables with `gt` and `gtsummary` | [`gt-summary-tables.R`](days/02-eda-visualisation/scripts/gt-summary-tables.R) |
-| 11:45–13:00 | ggplot2 from first principles | [`nhanes-ggplot-basics.R`](days/02-eda-visualisation/scripts/nhanes-ggplot-basics.R) |
-| 14:00–15:15 | Live indicator data: WDI and Our World in Data APIs | [`wdi-indicators.R`](days/02-eda-visualisation/scripts/wdi-indicators.R) |
-| 15:30–16:30 | Chart critique and redesign | [`gt-bar-defence.R`](days/02-eda-visualisation/scripts/gt-bar-defence.R) |
-
-## Day 3 — Modelling & Spatial Analysis
-
-| Time | Session | Material |
-|---|---|---|
-| 10:00–11:30 | Linear and logistic regression, interpreted for policy | [`linear-regression.R`](days/03-modelling-spatial/scripts/linear-regression.R) |
-| 11:45–13:00 | Weighted demographic indicators from DHS/MICS | [`01-dhs-model-datasets`](days/03-modelling-spatial/01-dhs-model-datasets.qmd) |
-| 14:00–15:15 | Pakistan boundaries, joins and choropleths | [`pakistan-district-choropleth.R`](days/03-modelling-spatial/scripts/pakistan-district-choropleth.R) |
-| 15:30–16:30 | Interactive maps with leaflet | [`pakistan-maps-geoboundaries.R`](days/03-modelling-spatial/scripts/pakistan-maps-geoboundaries.R) |
-
-## Day 4 — Reporting & Dashboards
-
-| Time | Session | Material |
-|---|---|---|
-| 10:00–11:30 | Quarto: documents, slides, cross-references | [`01-quarto-basics`](days/04-reporting-dashboards/01-quarto-basics.qmd) |
-| 11:45–13:00 | Parameterised reports — one template, thirty districts | [`02-parameterised-reports`](days/04-reporting-dashboards/02-parameterised-reports.qmd) |
-| 14:00–15:15 | Dashboards | [`penguin-dashboard.Rmd`](days/04-reporting-dashboards/dashboards/penguin-dashboard.Rmd) |
-| 15:30–16:30 | Publishing to GitHub Pages | `quarto publish gh-pages` |
-
-## Day 5 — AI-Assisted Analysis & Capstone
-
-| Time | Session | Material |
-|---|---|---|
-| 09:30–10:45 | Prompting for data work: the CRISP structure | [`01-data-prompt-manual`](days/05-ai-workflows/01-data-prompt-manual.qmd) |
-| 11:00–12:00 | Prompt library; debugging and code-review prompts | [`02-ai-prompts-library`](days/05-ai-workflows/02-ai-prompts-library.qmd) |
-| 12:00–13:00 | Capstone presentations and certificates | — |
+Breaks each full day: tea 11:15–11:30, lunch 13:00–14:00, tea 15:15–15:30.
 
 ---
 
-## Capstone project
+## Day 1 — Foundations, Data Acquisition & AI Toolkit {#day1}
 
-An individual analysis demonstrating the full arc:
+**Monday 31 August** · [day page](days/01-foundations/index.qmd)
 
-- import and clean a survey dataset
-- produce at least one weighted estimate
+| Time | Session | Material |
+|---|---|---|
+| 09:30–10:00 | Opening: roadmap, introductions, returning-vs-new poll | [`00-orientation`](days/01-foundations/00-orientation.qmd) |
+| 10:00–11:15 | R and Positron fundamentals; project workflow with `here::here()`; tidyverse recap | [`01-r-fundamentals`](days/01-foundations/01-r-fundamentals.qmd), [`02-rstudio-git-session`](days/01-foundations/02-rstudio-git-session.qmd) |
+| 11:30–13:00 | Data acquisition: CSV/Excel, `haven` labels, WDI and HDX APIs, `pdftools`, `rvest` | [`03-data-import-export`](days/01-foundations/03-data-import-export.qmd), [`import-alifailan.R`](days/01-foundations/scripts/import-alifailan.R) |
+| 14:00–15:15 | AI toolkit setup; AI-assisted cleaning and recoding, reviewed critically | [AI prompt library](reference/ai-prompts/index.qmd), [`clean-dirty-excel.R`](days/01-foundations/scripts/clean-dirty-excel.R) |
+| 15:30–16:30 | AI-assisted wrangling: `case_when()`, `.by=`, `join_by()`, pivots | [`04-dplyr-wrangling-floods`](days/01-foundations/04-dplyr-wrangling-floods.qmd) |
+
+*Homework: bring one dataset you regularly work with — Days 2–4 use it.*
+
+## Day 2 — Indicators, Prices & Visualisation {#day2}
+
+**Tuesday 1 September** · [day page](days/02-indicators-visualisation/index.qmd)
+
+| Time | Session | Material |
+|---|---|---|
+| 09:30–11:15 | Key indicators; survey design with `srvyr`; tables with `gt` / `gtsummary` | [`gt-summary-tables.R`](days/02-indicators-visualisation/scripts/gt-summary-tables.R), [`hies-income-2024.R`](days/02-indicators-visualisation/scripts/hies-income-2024.R) |
+| 11:30–13:00 | Price & inflation — PBS CPI case study: base-year splicing, YoY/MoM, dispersion, index numbers | [`01-wfp-prices-pipeline`](days/02-indicators-visualisation/01-wfp-prices-pipeline.qmd), [`04-index-numbers`](days/02-indicators-visualisation/04-index-numbers.qmd), [`tidy-pbs-cpi.R`](days/02-indicators-visualisation/scripts/tidy-pbs-cpi.R) |
+| 14:00–15:15 | Static and interactive visualisation; Lorenz curves and the Gini | [`nhanes-ggplot-basics.R`](days/02-indicators-visualisation/scripts/nhanes-ggplot-basics.R) |
+| 15:30–16:30 | Animated visualisation with `gganimate`; AI-assisted plotting | [`animated-gif.R`](days/02-indicators-visualisation/scripts/animated-gif.R), [`temperature-lahore-delhi.R`](days/02-indicators-visualisation/scripts/temperature-lahore-delhi.R) |
+
+## Day 3 — Spatial Analysis & Statistical Modelling {#day3}
+
+**Wednesday 2 September** · [day page](days/03-modelling-spatial/index.qmd)
+
+| Time | Session | Material |
+|---|---|---|
+| 09:30–11:15 | Linear and logistic regression; `svyglm` with survey weights; diagnostics | [`linear-regression.R`](days/03-modelling-spatial/scripts/linear-regression.R), [`01-dhs-model-datasets`](days/03-modelling-spatial/01-dhs-model-datasets.qmd) |
+| 11:30–13:00 | Spatial data and mapping — WFP food prices; `sf`, boundary joins, `tmap` | [`pakistan-district-choropleth.R`](days/03-modelling-spatial/scripts/pakistan-district-choropleth.R) |
+| 14:00–15:15 | Interactive maps with `leaflet`; `mapview` for exploration | [`pakistan-maps-geoboundaries.R`](days/03-modelling-spatial/scripts/pakistan-maps-geoboundaries.R) |
+| 15:30–16:30 | Applied policy modelling; affordability from price and wage series; AI-assisted debugging | [`survey-health-indicators.R`](days/03-modelling-spatial/scripts/survey-health-indicators.R) |
+
+## Day 4 — Automation & Reproducible Reporting {#day4}
+
+**Thursday 3 September** · [day page](days/04-reporting-dashboards/index.qmd)
+
+| Time | Session | Material |
+|---|---|---|
+| 09:30–11:15 | Quarto essentials; cross-references; HTML, PDF and Word output | [`01-quarto-basics`](days/04-reporting-dashboards/01-quarto-basics.qmd), [`02-quarto-document-writing`](days/04-reporting-dashboards/02-quarto-document-writing.qmd) |
+| 11:30–13:00 | Parameterised reports; looped rendering with `purrr::walk()` | [`03-parameterised-reports`](days/04-reporting-dashboards/03-parameterised-reports.qmd) |
+| 14:00–15:15 | Quarto dashboards: value boxes, tabs, embedded maps | [`penguin-dashboard.Rmd`](days/04-reporting-dashboards/dashboards/penguin-dashboard.Rmd) |
+| 15:30–16:30 | AI-assisted dashboard development; publishing with `quarto publish gh-pages` | [`04-odi-report`](days/04-reporting-dashboards/04-odi-report.qmd), [`trade-report/`](days/04-reporting-dashboards/trade-report/) |
+
+## Day 5 — Revision, Presentations & Close {#day5}
+
+**Friday 4 September · 09:30–13:00** · [day page](days/05-revision-presentations/index.qmd)
+
+| Time | Session | Material |
+|---|---|---|
+| 09:30–10:30 | **Revision — the week in one hour.** Acquire → wrangle → measure → see → model/map → report, plus open Q&A | [`01-week-in-review`](days/05-revision-presentations/01-week-in-review.qmd) |
+| 10:30–10:45 | Tea | — |
+| 10:45–12:45 | Group presentations | [`02-group-presentation-brief`](days/05-revision-presentations/02-group-presentation-brief.qmd) |
+| 12:45–13:00 | Evaluation, certificates, closing remarks | — |
+
+::: {.callout-important}
+Day 5 teaches nothing new. The revision slot is **one hour**; anything that needs longer
+goes on the follow-up list rather than into the hour.
+:::
+
+---
+
+## Group project
+
+An analysis demonstrating the full arc, presented on Day 5:
+
+- import and clean a dataset — survey, price or administrative
+- produce at least one correctly weighted or correctly deflated estimate
 - one publication-quality table and one chart
 - a model **or** a map
-- delivered as a rendered Quarto report
+- delivered as a rendered Quarto report, reproducible from the project folder
 
 ## Materials provided
 
-Workshop data pack (PDHS, PSLM, MICS), Pakistan shapefiles, all scripts in this
-repository, the prompt libraries in `days/05-ai-workflows/`, and a certificate of
-completion.
+The workshop data pack (`data/` — PDHS, HIES 2024-25, MICS, WFP prices, PBS CPI,
+Pakistan shapefiles), every script in this repository, the
+[AI prompt library](reference/ai-prompts/index.qmd), and a certificate of completion.

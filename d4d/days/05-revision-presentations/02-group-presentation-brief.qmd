@@ -1,0 +1,38 @@
+---
+title: "Group Presentation Brief"
+subtitle: "Day 5, 10:45–12:45 · 10 minutes per group + 5 minutes questions"
+---
+
+## What to present
+
+Each group presents the analysis it built during the week. Five things, in this order:
+
+1. **The question** — the research question or policy decision the analysis serves
+2. **The data** — source, coverage, and the one thing that was awkward about it
+3. **The approach** — which verbs, which model or map, and why that one
+4. **The AI angle** — where an assistant helped, where it was wrong, and how you caught it
+5. **The finding** — one live table, chart or map, and what a decision-maker should do about it
+
+## Format
+
+- 10 minutes presenting, 5 minutes questions
+- Present from a rendered Quarto output, not slides written from scratch
+- Everything must run from the project folder with `here::here()` paths
+
+## What the panel looks for
+
+| | |
+|---|---|
+| **Reproducibility** | Someone else can run it and get the same numbers |
+| **Correct measurement** | Weights, base years and units are right |
+| **Honest uncertainty** | Confidence intervals or caveats where they belong |
+| **Clarity for non-technical readers** | The finding survives being read by a policy officer |
+| **Critical use of AI** | The assistant was checked, not trusted |
+
+## Checklist before you present
+
+- [ ] The project opens from `d4d.Rproj` and renders end to end
+- [ ] No absolute paths, no `setwd()`
+- [ ] Every chart has a source line
+- [ ] Any survey estimate uses the survey design
+- [ ] One slide names what you would do next with more time

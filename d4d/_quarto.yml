@@ -7,10 +7,13 @@ project:
     - setup.qmd
     - days/**/*.qmd
     - reference/*.qmd
+    - reference/ai-prompts/*.qmd
     - talks/*.qmd
     # Not rendered: kept as source only
     - "!archive/**"
     - "!instructor/**"
+    - "!days/**/trade-report/**"
+    - "!days/**/intro-to-quarto/**"
     - "!README.md"
     - "!REORGANISATION-REPORT.md"
 
@@ -21,7 +24,7 @@ execute:
 
 website:
   title: "Data for Development"
-  description: "5-day workshop — demographic analysis with R, Quarto and AI-assisted workflows"
+  description: "5-day workshop — data analysis, automation and evidence-based decision-making with AI-augmented R workflows (31 Aug – 4 Sep 2026)"
   site-url: "https://zahedasghar.github.io/d4d/"
   repo-url: "https://github.com/Zahedasghar/d4d"
   repo-actions: [issue, source]
@@ -38,16 +41,16 @@ website:
         file: setup.qmd
       - text: "Days"
         menu:
-          - text: "Day 1 — Foundations & Data Import"
+          - text: "Day 1 — Foundations, Data Acquisition & AI Toolkit"
             file: days/01-foundations/index.qmd
-          - text: "Day 2 — EDA & Visualisation"
-            file: days/02-eda-visualisation/index.qmd
-          - text: "Day 3 — Modelling & Spatial"
+          - text: "Day 2 — Indicators, Prices & Visualisation"
+            file: days/02-indicators-visualisation/index.qmd
+          - text: "Day 3 — Spatial Analysis & Statistical Modelling"
             file: days/03-modelling-spatial/index.qmd
-          - text: "Day 4 — Reporting & Dashboards"
+          - text: "Day 4 — Automation & Reproducible Reporting"
             file: days/04-reporting-dashboards/index.qmd
-          - text: "Day 5 — AI-Assisted Workflows"
-            file: days/05-ai-workflows/index.qmd
+          - text: "Day 5 — Revision, Presentations & Close"
+            file: days/05-revision-presentations/index.qmd
       - text: "Reference"
         file: reference/r-essentials.qmd
     right:
@@ -58,39 +61,55 @@ website:
     style: docked
     search: true
     contents:
-      - section: "Day 1 — Foundations"
+      - section: "Day 1 — Foundations & Acquisition"
         contents:
           - days/01-foundations/index.qmd
-          - days/01-foundations/01-rstudio-git-session.qmd
-          - days/01-foundations/02-demographic-analysis-nhanes.qmd
-          - days/01-foundations/03-demographic-analysis-workbook.qmd
-      - section: "Day 2 — EDA & Visualisation"
+          - days/01-foundations/00-orientation.qmd
+          - days/01-foundations/01-r-fundamentals.qmd
+          - days/01-foundations/02-rstudio-git-session.qmd
+          - days/01-foundations/03-data-import-export.qmd
+          - days/01-foundations/04-dplyr-wrangling-floods.qmd
+          - days/01-foundations/05-demographic-analysis-nhanes.qmd
+          - days/01-foundations/06-demographic-analysis-workbook.qmd
+      - section: "Day 2 — Indicators, Prices & Visualisation"
         contents:
-          - days/02-eda-visualisation/index.qmd
-      - section: "Day 3 — Modelling & Spatial"
+          - days/02-indicators-visualisation/index.qmd
+          - days/02-indicators-visualisation/01-wfp-prices-pipeline.qmd
+          - days/02-indicators-visualisation/02-pak-food-prices-workflow.qmd
+          - days/02-indicators-visualisation/03-combining-prices-markets.qmd
+          - days/02-indicators-visualisation/04-index-numbers.qmd
+      - section: "Day 3 — Spatial & Modelling"
         contents:
           - days/03-modelling-spatial/index.qmd
           - days/03-modelling-spatial/01-dhs-model-datasets.qmd
-      - section: "Day 4 — Reporting & Dashboards"
+      - section: "Day 4 — Automation & Reporting"
         contents:
           - days/04-reporting-dashboards/index.qmd
           - days/04-reporting-dashboards/01-quarto-basics.qmd
-          - days/04-reporting-dashboards/02-parameterised-reports.qmd
-          - days/04-reporting-dashboards/03-odi-report.qmd
-          - days/04-reporting-dashboards/04-r-user-group.qmd
-      - section: "Day 5 — AI-Assisted Workflows"
+          - days/04-reporting-dashboards/02-quarto-document-writing.qmd
+          - days/04-reporting-dashboards/03-parameterised-reports.qmd
+          - days/04-reporting-dashboards/04-odi-report.qmd
+          - days/04-reporting-dashboards/05-project-outline.qmd
+          - days/04-reporting-dashboards/06-demographic-survey-outline.qmd
+          - days/04-reporting-dashboards/07-r-user-group.qmd
+      - section: "Day 5 — Revision & Presentations"
         contents:
-          - days/05-ai-workflows/index.qmd
-          - days/05-ai-workflows/01-data-prompt-manual.qmd
-          - days/05-ai-workflows/02-ai-prompts-library.qmd
-          - days/05-ai-workflows/03-ai-prompts-library-full.qmd
-          - days/05-ai-workflows/04-master-data-prompt-pack.qmd
-          - days/05-ai-workflows/05-prompt-cheatsheet-poster.qmd
+          - days/05-revision-presentations/index.qmd
+          - days/05-revision-presentations/01-week-in-review.qmd
+          - days/05-revision-presentations/02-group-presentation-brief.qmd
       - section: "Reference"
         contents:
           - reference/r-essentials.qmd
           - reference/five-verbs-data-wrangling.qmd
           - reference/dummy-variable-regression.qmd
+      - section: "AI prompt library"
+        contents:
+          - reference/ai-prompts/index.qmd
+          - reference/ai-prompts/01-data-prompt-manual.qmd
+          - reference/ai-prompts/02-ai-prompts-library.qmd
+          - reference/ai-prompts/03-ai-prompts-library-full.qmd
+          - reference/ai-prompts/04-master-data-prompt-pack.qmd
+          - reference/ai-prompts/05-prompt-cheatsheet-poster.qmd
 
   page-footer:
     left: "School of Economics, Quaid-i-Azam University, Islamabad"

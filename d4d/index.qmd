@@ -1,6 +1,6 @@
 ---
 title: "Data for Development"
-subtitle: "Demographic Analysis Using R — a five-day workshop"
+subtitle: "Data analysis, automation and evidence-based decision-making with AI-augmented R workflows"
 author: "Prof. Dr. Zahid Asghar · School of Economics, Quaid-i-Azam University"
 date: today
 toc: false
@@ -16,11 +16,14 @@ report. Not five disconnected topics — one pipeline, assembled a piece at a ti
 ::: {.g-col-12 .g-col-md-6}
 ### The analytical arc
 
-1. **Import & wrangle** survey data that arrives messy
-2. **Explore** it with tables and charts that survive peer review
-3. **Model** it, with weights, and map it
-4. **Report** it in Quarto — parameterised, so it re-runs next year
-5. **Accelerate** all of the above with AI assistants you can actually trust
+1. **Acquire & wrangle** data that arrives messy — files, APIs, PDFs *(Day 1)*
+2. **Measure & see** — indicators, weights, CPI splicing, tables and charts *(Day 2)*
+3. **Model & map** it, with the right weights and the right CRS *(Day 3)*
+4. **Report** it in Quarto — parameterised, so it re-runs next month *(Day 4)*
+5. **Present** it, after one hour of revision *(Day 5)*
+
+AI assistance runs through every day, not a day of its own — see the
+[prompt library](reference/ai-prompts/index.qmd).
 :::
 
 ::: {.g-col-12 .g-col-md-6}
@@ -28,7 +31,7 @@ report. Not five disconnected topics — one pipeline, assembled a piece at a ti
 
 - R ≥ 4.3 and [Positron](https://positron.posit.co) (or RStudio)
 - Quarto ≥ 1.4
-- The workshop data pack (`data/`)
+- The workshop data pack (`data/`), including HIES 2024-25, PDHS, WFP prices and PBS CPI
 - No prior R required — Day 1 starts from zero
 
 See [Setup](setup.qmd) before Day 1.
@@ -42,7 +45,8 @@ See [Setup](setup.qmd) before Day 1.
 |---|---|
 | [**Agenda**](agenda.qmd) | Day-by-day session plan and timings |
 | [**Setup**](setup.qmd) | Install R, Positron, Quarto and the packages |
-| [**Day 1**](days/01-foundations/index.qmd) | Foundations and data import |
+| [**Day 1**](days/01-foundations/index.qmd) | Foundations, data acquisition and the AI toolkit |
+| [**Prompt library**](reference/ai-prompts/index.qmd) | AI prompts, used every day |
 | [**Reference**](reference/r-essentials.qmd) | Cheat sheets to keep open while you work |
 
 : {tbl-colwidths="[22,78]"}

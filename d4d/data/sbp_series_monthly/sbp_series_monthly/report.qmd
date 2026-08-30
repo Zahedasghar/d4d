@@ -1,0 +1,95 @@
+---
+title: "SBP EasyData — Monthly Series Report"
+date: today
+format:
+  html:
+    theme: cosmo
+    embed-resources: true
+    toc: true
+    code-fold: true
+    fig-width: 8
+    fig-height: 4.5
+execute:
+  echo: false
+  warning: false
+---
+
+```{r setup}
+library(tidyverse)
+library(gt)
+library(here)
+
+source(here("R", "00_config.R"))
+
+navy <- "#0f2440"
+gold <- "#c9a227"
+
+if (!file.exists(path_master)) {
+  stop("No data yet -- run R/01_fetch_series.R (or run_monthly_update.R) first.")
+}
+
+df <- read_csv(path_master, show_col_types = FALSE) |>
+  mutate(observation_date = as.Date(observation_date))
+```
+
+## Snapshot
+
+```{r snapshot}
+df |>
+  summarise(
+    latest_date = max(observation_date),
+    .by = label
+  ) |>
+  left_join(
+    df |> slice_max(observation_date, by = label) |>
+      select(label, observation_value),
+    by = "label"
+  ) |>
+  gt() |>
+  cols_label(
+    label              = "Series",
+    latest_date        = "Latest observation",
+    observation_value  = "Latest value"
+  ) |>
+  fmt_number(columns = observation_value, decimals = 2) |>
+  tab_style(
+    style = cell_fill(color = navy),
+    locations = cells_column_labels()
+  ) |>
+  tab_style(
+    style = cell_text(color = "white", weight = "bold"),
+    locations = cells_column_labels()
+  )
+```
+
+## Trends
+
+```{r trends, results='asis'}
+for (lbl in unique(df$label)) {
+  cat("###", lbl, "\n\n")
+
+  p <- df |>
+    filter(label == lbl) |>
+    ggplot(aes(observation_date, observation_value)) +
+    geom_line(colour = navy, linewidth = 1) +
+    geom_point(colour = gold, size = 1.5) +
+    labs(x = NULL, y = NULL, title = lbl) +
+    theme_minimal(base_family = "Georgia") +
+    theme(plot.title = element_text(face = "bold", colour = navy))
+
+  print(p)
+  cat("\n\n")
+}
+```
+
+## Data notes
+
+- Source: SBP EasyData API (`https://easydata.sbp.org.pk`), one series
+  per row in `R/00_config.R`'s `series_registry`.
+- Each run fetches only observations newer than what's already in
+  `sbp_series_master.csv` (or backfills from `default_start_date` for a
+  brand-new series) -- never duplicates.
+- The API's response column names aren't documented publicly; the fetch
+  script detects the date/value columns by pattern rather than assuming
+  exact names, and audits what it finds on every run (see console output
+  of `01_fetch_series.R`).

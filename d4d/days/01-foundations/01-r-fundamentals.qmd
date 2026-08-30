@@ -1,0 +1,256 @@
+---
+title: "Introduction to R"
+subtitle: "Pakistan District MPI, 2019-20"
+author: "D4D | Data for Development"
+format:
+  revealjs:
+    theme: [default, d4d_theme.scss]
+    slide-number: true
+    transition: fade
+    code-line-numbers: true
+    highlight-style: github
+---
+
+## Today's Data
+
+Pakistan District-level MPI, 2019-20 — 127 districts
+
+Three core variables:
+
+- **mpi** — overall poverty score (higher = poorer)
+- **h_incidence** — H: % of population that is poor
+- **a_intensity** — A: average deprivation among the poor
+
+Relationship: **MPI = H × A / 100**
+
+---
+
+## Step 1: Load Tools
+
+```{r}
+#| eval: false
+#| echo: true
+library(tidyverse)
+```
+
+One package. Everything we need today lives inside it.
+
+---
+
+## Step 2: Import Data
+
+```{r}
+#| eval: false
+#| echo: true
+mpi <-  here::here("data", "pakistan_mpi_district_2019_20.csv")  # check file path)
+```
+
+`read_csv()` reads the file and stores it as `mpi`.
+
+---
+
+## Step 3: First Look at the Data
+
+```{r}
+#| eval: false
+#| echo: true
+dim(mpi)        # rows x columns
+str(mpi)        # column names and types
+head(mpi)       # first 6 rows
+glimpse(mpi)    # compact structure view
+```
+
+Run these four commands on every new dataset.
+
+---
+
+## Step 4: Further Inspection
+
+```{r}
+#| eval: false
+#| echo: true
+tail(mpi)       # last 6 rows
+summary(mpi)    # min / mean / max for numeric columns
+```
+
+---
+
+## Step 5: Standardise Column Names
+
+```{r}
+#| eval: false
+#| echo: true
+mpi <- mpi |> janitor::clean_names()
+names(mpi)
+```
+
+Good practice for every imported dataset, regardless of source.
+
+---
+
+## Step 6: Focus on the Three Core Variables
+
+```{r}
+#| eval: false
+#| echo: true
+mpi |>
+  select(district, mpi, h_incidence, a_intensity) |>
+  head(10)
+```
+
+`select()` narrows the data to the columns we need.
+
+---
+
+## Step 7: Rank Districts by MPI
+
+```{r}
+#| eval: false
+#| echo: true
+mpi |>
+  select(district, province, mpi) |>
+  arrange(desc(mpi)) |>
+  head(10)
+```
+
+`arrange(desc())` sorts from highest to lowest.
+
+---
+
+## Step 8: Filter by Province
+
+```{r}
+#| eval: false
+#| echo: true
+mpi |>
+  filter(province == "Balochistan") |>
+  select(district, mpi, h_incidence, a_intensity) |>
+  arrange(desc(mpi))
+```
+
+`filter()` keeps only rows meeting a condition.
+
+---
+
+## Step 9: Province-Level Averages
+
+```{r}
+#| eval: false
+#| echo: true
+mpi |>
+  summarise(
+    avg_mpi = mean(mpi),
+    avg_h   = mean(h_incidence),
+    avg_a   = mean(a_intensity),
+    .by = province
+  ) |>
+  arrange(desc(avg_mpi))
+```
+
+`.by =` groups without a separate `group_by()` / `ungroup()` pair.
+
+---
+
+## Step 10: Build a Plot — The Canvas
+
+```{r}
+#| eval: false
+#| echo: true
+ggplot(mpi, aes(x = h_incidence, y = a_intensity))
+```
+
+No geometry mapped yet — this produces an empty canvas.
+
+---
+
+## Step 10: Build a Plot — Add Points
+
+```{r}
+#| eval: false
+#| echo: true
+ggplot(mpi, aes(x = h_incidence, y = a_intensity)) +
+  geom_point()
+```
+
+Each point now represents one district.
+
+---
+
+## Step 10: Build a Plot — Style and Label
+
+```{r}
+#| eval: false
+#| echo: true
+ggplot(mpi, aes(x = h_incidence, y = a_intensity, color = province)) +
+  geom_point(size = 2) +
+  theme_minimal() +
+  labs(
+    title    = "District-Level MPI Components, 2019-20",
+    subtitle = "Each point represents one district",
+    x        = "H: Incidence of poverty (%)",
+    y        = "A: Intensity of deprivation",
+    color    = "Province"
+  )
+```
+
+---
+
+## Step 11: Bar Chart of the 10 Poorest Districts
+
+```{r}
+#| eval: false
+#| echo: true
+top10 <- mpi |>
+  arrange(desc(mpi)) |>
+  head(10)
+
+ggplot(top10, aes(x = reorder(district, mpi), y = mpi, fill = province)) +
+  geom_col() +
+  coord_flip() +
+  theme_minimal() +
+  labs(
+    title = "10 Poorest Districts by MPI Score (2019-20)",
+    x = NULL,
+    y = "MPI Score"
+  )
+```
+
+---
+
+## Step 12: Export Outputs
+
+```{r}
+#| eval: false
+#| echo: true
+province_summary <- mpi |>
+  summarise(
+    avg_mpi = mean(mpi),
+    avg_h   = mean(h_incidence),
+    avg_a   = mean(a_intensity),
+    .by = province
+  )
+
+write_csv(province_summary, "province_mpi_summary.csv")
+ggsave("top10_poorest_districts.png", width = 8, height = 5)
+```
+
+---
+
+## Summary of Commands Covered
+
+| Task       | Commands |
+|------------|----------|
+| Import     | `read_csv()` |
+| Inspect    | `dim()`, `str()`, `head()`, `tail()`, `glimpse()`, `summary()` |
+| Clean      | `clean_names()` |
+| Transform  | `select()`, `filter()`, `arrange()`, `summarise()`, `.by` |
+| Visualize  | `ggplot()`, `geom_point()`, `geom_col()`, `theme_minimal()` |
+| Export     | `write_csv()`, `ggsave()` |
+
+---
+
+## Next
+
+Same workflow, any column in the dataset.
+
+**Try it yourself:** repeat Steps 6–9 using `pop_share` or `n_poor_thousands`.

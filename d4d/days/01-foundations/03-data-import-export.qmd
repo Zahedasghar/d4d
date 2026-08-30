@@ -1,0 +1,408 @@
+---
+title: "Communicating Better With Data: Import, Export & APIs in R"
+subtitle: "Pakistan Social Datasets — PSLM, ASER, LFS, PDHS, MICS"
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    code-fold: true
+    df-print: paged
+execute:
+  echo: true
+  warning: false
+  message: false
+  eval: false
+---
+
+# 1. Introduction
+
+Data communication begins long before charts or dashboards.
+It starts from one fundamental skill: **getting data in and out of your analytical environment** — cleanly, reproducibly, and transparently.
+
+In Pakistan’s context, major datasets appear in **various formats**:
+
+| Dataset  | Institution                   | File Format         | Notes                                  |
+| -------- | ----------------------------- | ------------------- | -------------------------------------- |
+| **PSLM** | Pakistan Bureau of Statistics | Excel, CSV          | Often merged from district-level files |
+| **ASER** | ASER Pakistan                 | Excel, CSV          | Education indicators                   |
+| **LFS**  | PBS                           | Stata (`.dta`), CSV | Microdata often obtained via request   |
+| **MICS** | UNICEF                        | Stata (`.dta`)      | Standardized sampling                  |
+| **PDHS** | NIPS & DHS                    | Stata (`.dta`)      | Includes household & individual files  |
+
+This chapter teaches you how to work with these formats efficiently in **R**, with **Python** and **Stata** guidance provided in sidebars.
+
+---
+
+# 2. Getting Started in R
+
+```{r}
+# Load core packages
+library(readr)      # CSV
+library(readxl)     # Excel
+library(haven)      # Stata, SPSS, SAS
+library(jsonlite)   # JSON
+library(httr)       # API calls
+library(dplyr)      
+library(tidyr)
+library(ggplot2)
+```
+
+If you prefer a **one-shot loader**, you can use:
+
+```{r}
+install.packages("pacman")
+pacman::p_load(readr, readxl, haven, jsonlite, httr, dplyr, tidyr, ggplot2)
+```
+
+---
+
+# 3. Importing Data
+
+## 3.1 Importing CSV: Example PSLM & ASER
+
+Assume PSLM district-level file saved as:
+
+```
+data/pslm_2020_district.csv
+```
+
+```{r}
+pslm <- read_csv("data/pslm_2020_district.csv")
+head(pslm)
+```
+
+### ASER Example
+
+```{r}
+aser <- read_csv("data/ASER_2023_school_data.csv")
+glimpse(aser)
+```
+
+---
+
+### 📌 *Python Equivalent (sidebar)*
+
+```python
+import pandas as pd
+pslm = pd.read_csv("data/pslm_2020_district.csv")
+```
+
+### 📌 *Stata Equivalent (sidebar)*
+
+```stata
+import delimited "data/pslm_2020_district.csv", clear
+```
+
+---
+
+## 3.2 Importing Excel: PSLM & ASER
+
+Many Pakistan datasets arrive as Excel with multiple sheets.
+
+```{r}
+pslm_xlsx <- read_excel("data/PSLM_2020.xlsx", sheet = "Districts")
+head(pslm_xlsx)
+```
+
+To list the sheets:
+
+```{r}
+excel_sheets("data/PSLM_2020.xlsx")
+```
+
+---
+
+### Example: Import ASER Village-Level File
+
+```{r}
+aser_village <- read_excel("data/ASER_2023.xlsx", sheet = 3)
+glimpse(aser_village)
+```
+
+---
+
+## 3.3 Importing Stata Data: PDHS, LFS, MICS
+
+PBS LFS, MICS, and PDHS usually come as `.dta`.
+
+```{r}
+lfs <- haven::read_dta("data/LFS_2020.dta")
+glimpse(lfs)
+```
+
+### Example: PDHS Household File
+
+```{r}
+pdhs <- read_dta("data/PKIR71FL.DTA")
+summary(pdhs$v012)   # Age of respondent
+```
+
+---
+
+### 📌 Python Sidebar
+
+```python
+import pyreadstat
+lfs, meta = pyreadstat.read_dta("data/LFS_2020.dta")
+```
+
+### 📌 Stata Sidebar
+
+```stata
+use "data/LFS_2020.dta", clear
+```
+
+---
+
+## 3.4 Importing JSON: Population Census API, Custom Sources
+
+Assume a JSON file containing district indicators:
+
+```json
+{
+  "district": "Lahore",
+  "literacy_rate": 74.2,
+  "sample": 12000
+}
+```
+
+Load in R:
+
+```{r}
+json_data <- jsonlite::fromJSON("data/district_literacy.json")
+json_data
+```
+
+---
+
+## 3.5 APIs & Web Data Access: Example with Pakistan Open Data API
+
+Let’s use **Open Data Pakistan** (a mock API for demonstration).
+
+```{r}
+url <- "https://api.pakopendata.pk/v1/education/pslm?district=Lahore"
+
+response <- httr::GET(url)
+content <- httr::content(response, as = "parsed")
+content$data
+```
+
+Create a data frame:
+
+```{r}
+df_api <- as.data.frame(content$data)
+df_api
+```
+
+---
+
+### Real Example: Fetching JSON from a URL
+
+```{r}
+url_json <- "https://raw.githubusercontent.com/datasets/population/master/data/population.json"
+pop <- jsonlite::fromJSON(url_json)
+head(pop)
+```
+
+---
+
+# 4. Exporting Data
+
+## 4.1 Export CSV (PSLM example)
+
+```{r}
+write_csv(pslm, "output/pslm_cleaned.csv")
+```
+
+---
+
+## 4.2 Export Excel
+
+```{r}
+library(writexl)
+write_xlsx(list("pslm" = pslm, "aser" = aser), "output/pakistan_data.xlsx")
+```
+
+---
+
+## 4.3 Export Stata
+
+```{r}
+write_dta(pslm, "output/pslm_cleaned.dta")
+```
+
+---
+
+## 4.4 Export JSON
+
+```{r}
+jsonlite::write_json(pslm, "output/pslm_cleaned.json", pretty = TRUE)
+```
+
+---
+
+# 5. Data Transformation & Cleaning
+
+*(With examples from PSLM, ASER, PDHS)*
+
+## 5.1 Cleaning District Names (PSLM)
+
+```{r}
+pslm <- pslm %>%
+  mutate(
+    district = stringr::str_to_title(district),
+    province = stringr::str_to_title(province)
+  )
+```
+
+---
+
+## 5.2 Creating Indicators (PDHS Example)
+
+Modern contraceptive use:
+
+```{r}
+pdhs <- pdhs %>%
+  mutate(
+    modern_use = ifelse(v313 == 1, 1, 0)
+  )
+```
+
+---
+
+## 5.3 Summarising Literacy by District (ASER)
+
+```{r}
+aser_summary <- aser %>%
+  group_by(District) %>%
+  summarise(
+    literacy_rate = mean(reading_level >= 2, na.rm = TRUE)
+  )
+```
+
+---
+
+# 6. Visualizing Data for Communication
+
+## 6.1 PSLM: Female Literacy by Province
+
+```{r}
+ggplot(pslm, aes(x = province, y = female_literacy)) +
+  geom_col(fill = "#2E86C1") +
+  theme_minimal() +
+  labs(
+    title = "Female Literacy Across Provinces — PSLM 2020",
+    x = "",
+    y = "%"
+  )
+```
+
+---
+
+## 6.2 ASER: Children Who Can Read a Story
+
+```{r}
+ggplot(aser_summary, aes(x = reorder(District, literacy_rate),
+                         y = literacy_rate)) +
+  geom_col(fill = "#D35400") +
+  coord_flip() +
+  labs(
+    title = "ASER 2023 — Literacy (Story Level)",
+    x = "District",
+    y = "Proportion"
+  ) +
+  theme_bw()
+```
+
+---
+
+# 7. Working With Large Datasets
+
+### (LFS, PDHS, PSLM microdata)
+
+Large microdata from PBS or DHS often exceed memory.
+
+## 7.1 Use `data.table::fread`
+
+```{r}
+library(data.table)
+lfs_fast <- fread("data/LFS_2020_large.csv")
+```
+
+## 7.2 Use Arrow for parquet datasets
+
+```{r}
+library(arrow)
+lfs_arrow <- read_parquet("data/LFS2020.parquet")
+```
+
+---
+
+# 8. Building Reproducible Workflows in Positron
+
+### Key Principles:
+
+1. **Use `here::here()` for paths**
+2. **Use Quarto projects**
+3. **Separate raw and cleaned data**
+4. **Document everything**
+5. **Use version control (Git/GitHub)**
+
+### Example folder structure:
+
+```
+project/
+ ├── data_raw/
+ ├── data_clean/
+ ├── scripts/
+ ├── analysis/
+ ├── quarto/
+ └── outputs/
+```
+
+---
+
+# 9. Summary Checklist
+
+This chapter covered:
+
+✔ Importing: CSV, XLSX, DTA, JSON
+✔ Exporting to: CSV, XLSX, JSON, DTA
+✔ APIs & Web Data
+✔ Pakistan datasets (PSLM, ASER, LFS, PDHS, MICS)
+✔ Cleaning & transforming data
+✔ Visual communication with ggplot2
+✔ Reproducible workflows in Positron
+
+---
+
+# 10. Exercises (Pakistan-Data Focus)
+
+### **Exercise 1: Import & Clean PSLM**
+
+* Import PSLM 2020 CSV file
+* Clean district and province names
+* Create literacy summary table
+
+### **Exercise 2: Import PDHS Individual File**
+
+* Load `.dta` file
+* Create indicator for modern contraceptive use
+* Create summary by province
+
+### **Exercise 3: Fetch JSON from a URL**
+
+* Use JSON API
+* Convert to data frame
+* Plot a bar chart
+
+---
+
+If you'd like, I can also provide:
+
+✅ A **PDF Quarto version**
+✅ A **full book chapter + exercises**
+✅ Additional chapters (Exploratory Data Analysis, Mapping Pakistan, Dashboarding with Quarto)
+✓ Or convert this into **Slides (Revealjs)**
+
+Would you like the next chapter: **"Exploratory Data Analysis with Pakistani Social Datasets"?**

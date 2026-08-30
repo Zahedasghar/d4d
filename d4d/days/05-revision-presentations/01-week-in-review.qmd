@@ -1,0 +1,119 @@
+---
+title: "The Week in One Hour"
+subtitle: "Revision — Day 5, 09:30–10:30"
+format:
+  revealjs:
+    theme: [default, ../02-indicators-visualisation/d4d-navy-gold.scss]
+    slide-number: true
+    footer: "d4d · Week in review"
+    transition: fade
+    scrollable: true
+execute:
+  echo: true
+  eval: false
+---
+
+## The only diagram that matters
+
+```
+  acquire  →  wrangle  →  measure  →  see  →  model / map  →  report
+   Day 1       Day 1       Day 2      Day 2      Day 3         Day 4
+```
+
+Everything you ran this week sits on one of those six arrows. If you can name which
+arrow a task belongs to, you already know which function family to reach for.
+
+## 1 · Acquire — Day 1
+
+```r
+readr::read_csv("data/pbs_cpi_raw.csv") |> janitor::clean_names()
+haven::read_dta(here::here("data/hies/sec_1b_emp_income.dta"))   # keeps labels
+haven::read_sav(here::here("data/Fertility.sav"))
+WDI::WDI(country = "PK", indicator = "SP.DYN.TFRT.IN")
+pdftools::pdf_text("data/pdf/cpi_urban_groupwise.pdf")           # PBS bulletins
+rvest::read_html(url) |> rvest::html_table()
+```
+
+**The habit:** `here::here()`, never `setwd()`. Then `glimpse()` before anything else.
+
+## 2 · Wrangle — Day 1
+
+```r
+df |>
+  filter(province %in% c("Punjab", "Sindh")) |>
+  mutate(real = nominal / cpi * 100,
+         band = case_when(age < 15 ~ "child", age < 65 ~ "working", .default = "older")) |>
+  summarise(mean_real = mean(real, na.rm = TRUE), n = n(), .by = c(province, year)) |>
+  left_join(markets, by = join_by(market_id))
+```
+
+`pivot_longer()` / `pivot_wider()` when the shape is wrong, not the data.
+
+## 3 · Measure — Day 2
+
+```r
+# survey-weighted, never raw means on complex surveys
+srvyr::as_survey_design(df, ids = psu, strata = stratum, weights = wt) |>
+  srvyr::summarise(tfr = survey_mean(tfr, vartype = "ci"))
+
+# CPI: splice across the 2007-08 -> 2015-16 base change, then YoY
+cpi |> mutate(yoy = index / lag(index, 12) * 100 - 100, .by = group)
+```
+
+Index numbers: Laspeyres, Paasche, Fisher, Törnqvist — and why the base year matters.
+
+## 4 · See — Day 2
+
+```r
+ggplot(df, aes(date, yoy, colour = group)) +
+  geom_line(linewidth = 0.6) +
+  scale_y_continuous(labels = scales::label_percent(scale = 1)) +
+  facet_wrap(~ group) +
+  labs(title = "...", caption = "Source: PBS") +
+  theme_minimal(base_size = 12)
+```
+
+`plotly::ggplotly()` for hover · `gganimate` for time · `gt`/`gtsummary` for tables.
+
+## 5 · Model & map — Day 3
+
+```r
+svyglm(stunted ~ wealth + mother_edu + urban, design = dsn, family = quasibinomial())
+sf::st_read("data/shape_file/District_Boundary.shp") |>
+  left_join(indicator, by = join_by(district)) |>
+  tmap::tm_shape() + tmap::tm_polygons("value", style = "quantile")
+```
+
+Always check the CRS and the join key before blaming the map.
+
+## 6 · Report — Day 4
+
+```r
+quarto::quarto_render("report.qmd", execute_params = list(province = "Sindh"))
+purrr::walk(provinces, \(p) quarto_render("report.qmd",
+                                          output_file = glue::glue("{p}.html"),
+                                          execute_params = list(province = p)))
+```
+
+One template, thirty outputs. This is the habit that pays for the week.
+
+## The five errors that cost you the most time
+
+1. Working directory — fixed by opening `d4d.Rproj` and using `here::here()`
+2. Unweighted estimates from a complex survey
+3. Joining on a district name whose spelling differs between the two files
+4. A CRS mismatch in a spatial join
+5. Accepting AI-generated code without running the checks on the slide below
+
+## Reviewing AI output — the four checks
+
+- Does it **run** on your data, not the assistant's imagined data?
+- Do the **row counts** before and after each step make sense?
+- Are the **units** and the **base year** what you think they are?
+- Would you defend every line of it in a seminar?
+
+If the answer to any of these is "not sure", the code is not finished.
+
+## Open floor
+
+Bring the one thing that is still broken in your own project.

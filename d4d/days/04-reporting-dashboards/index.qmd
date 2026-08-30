@@ -1,37 +1,37 @@
 ---
-title: "Day 4 — Reporting & Dashboards"
-subtitle: "Write it once, re-run it forever"
+title: "Day 4 — Automation & Reproducible Reporting"
+subtitle: "Thursday 3 September · 09:30–16:30"
 ---
 
 ## Where the day goes
 
-The analysis is done. Today it becomes something a colleague can read and a machine
-can regenerate next year with one command.
+The analysis is done. Today it becomes something you can hand over — and re-run next
+month without touching the code.
 
 ## Sessions
 
-| # | Session | Material |
+| Time | Session | Material |
 |---|---|---|
-| 1 | Quarto: documents, slides, cross-references | [`01-quarto-basics.qmd`](01-quarto-basics.qmd) |
-| 2 | Parameterised reports — one template, many districts | [`02-parameterised-reports.qmd`](02-parameterised-reports.qmd), [`scripts/render-parameterised.R`](scripts/render-parameterised.R) |
-| 3 | Dashboards | [`dashboards/penguin-dashboard.Rmd`](dashboards/penguin-dashboard.Rmd) |
-| 4 | Publishing | `quarto publish gh-pages` |
+| 09:30–11:15 | **Professional reports with Quarto** — YAML, chunks, cross-references, HTML/PDF/Word | [`01-quarto-basics.qmd`](01-quarto-basics.qmd) · [`02-quarto-document-writing.qmd`](02-quarto-document-writing.qmd) · [`intro-to-quarto/`](intro-to-quarto/) |
+| 11:30–13:00 | **Parameterised reports** — one template, thirty districts, `purrr::walk()` | [`03-parameterised-reports.qmd`](03-parameterised-reports.qmd) · [`scripts/render-parameterised.R`](scripts/render-parameterised.R) |
+| 14:00–15:15 | **Dashboards** — value boxes, tabs, embedded maps and plots | [`dashboards/penguin-dashboard.Rmd`](dashboards/penguin-dashboard.Rmd) · `dashboards/aawaam-stats-app.html` |
+| 15:30–16:30 | **AI-assisted dashboard development & publishing** — troubleshooting, then `quarto publish gh-pages` | [`04-odi-report.qmd`](04-odi-report.qmd) · [AI prompt library](../../reference/ai-prompts/index.qmd) |
 
-## Also here
+## Worked report examples
 
-- `03-odi-report.qmd` — a worked report in the ODI house style
-- `04-r-user-group.qmd` — the R user group talk
-- `scripts/animated-gif.R` — animation with `gganimate` and `magick`
+| File | What it is |
+|---|---|
+| [`04-odi-report.qmd`](04-odi-report.qmd) | a finished analytical report end to end |
+| [`trade-report/`](trade-report/) | a production PBS trade report — Quarto + Typst template, with its parser |
+| [`05-project-outline.qmd`](05-project-outline.qmd) | scaffold for structuring your own project report |
+| [`06-demographic-survey-outline.qmd`](06-demographic-survey-outline.qmd) | the same, for a demographic survey write-up |
+| [`07-r-user-group.qmd`](07-r-user-group.qmd) | slide deck built in Quarto, as a format example |
 
-## The parameterised report idea
+Outputs from the trade report live in `../../outputs/pbs-trade/`.
 
-One `.qmd` with a `params:` block, plus a `purrr::walk()` loop over district names,
-produces thirty district reports. That is the whole trick, and it is the single
-highest-return thing in this workshop for anyone who produces recurring outputs.
+## By 16:30 you should be able to
 
-## What you should be able to do by 16:30
-
-- render one source document to HTML, PDF and slides
-- parameterise a report and batch-render it
-- build a dashboard from an existing analysis
-- publish the result to a URL you can share
+- render one document to HTML, PDF and Word without changing the body
+- parameterise a report and render it once per province in a single `walk()`
+- build a dashboard with value boxes, a map and a table
+- publish the result to GitHub Pages

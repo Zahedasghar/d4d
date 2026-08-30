@@ -1,0 +1,31 @@
+---
+title: "AI Prompt Library"
+subtitle: "Cross-cutting reference — used every day of the workshop"
+---
+
+AI assistance is not a separate day. It runs through the whole week: cleaning code on
+Day 1, table and chart code on Day 2, debugging spatial joins on Day 3, drafting report
+narrative on Day 4. This folder is the reference you keep open while that happens.
+
+## Contents
+
+| File | What it is |
+|---|---|
+| [`01-data-prompt-manual.qmd`](01-data-prompt-manual.qmd) | prompting for data work — the CRISP structure |
+| [`02-ai-prompts-library.qmd`](02-ai-prompts-library.qmd) | the working library: EDA, modelling, mapping, debugging |
+| [`03-ai-prompts-library-full.qmd`](03-ai-prompts-library-full.qmd) | the long form, with worked examples |
+| [`04-master-data-prompt-pack.qmd`](04-master-data-prompt-pack.qmd) | copy-paste pack for a full analysis |
+| [`05-prompt-cheatsheet-poster.qmd`](05-prompt-cheatsheet-poster.qmd) | one-page poster to print |
+
+## Where it is used
+
+- **Day 1, 14:00–16:30** — toolkit setup, AI-assisted cleaning and wrangling
+- **Day 2, 15:30–16:30** — prompting for `ggplot2` and summary tables
+- **Day 3, 15:30–16:30** — debugging CRS and join errors; translating coefficients
+- **Day 4, 15:30–16:30** — dashboard troubleshooting and report narrative
+
+::: {.callout-warning}
+## The rule that makes this safe
+Generated code is a draft. Run it on **your** data, check the row counts before and
+after every step, confirm the units and base year, and be ready to defend every line.
+:::

@@ -1,35 +1,48 @@
 ---
-title: "Day 1 — Foundations & Data Import"
-subtitle: "From a blank console to a cleaned survey dataset"
+title: "Day 1 — Foundations, Data Acquisition & the AI Toolkit"
+subtitle: "Monday 31 August · 09:30–16:30"
 ---
 
 ## Where the day goes
 
-You arrive with no R. You leave having read a PDHS-style `.sav` file, cleaned its
-column names, reshaped it, and committed the result to Git.
+You arrive with no R. You leave having read a `.sav`, a `.dta`, an `.xlsx` and a live
+API series, cleaned the column names, reshaped the frame, and driven part of it with
+an AI assistant you checked rather than trusted.
 
 ## Sessions
 
-| # | Session | Material |
+| Time | Session | Material |
 |---|---|---|
-| 1 | R, Positron, projects and Git | [`01-rstudio-git-session.qmd`](01-rstudio-git-session.qmd) |
-| 2 | Import: `.sav`, `.dta`, `.xlsx`, `.csv` | [`scripts/import-alifailan.R`](scripts/import-alifailan.R) |
-| 3 | Messy data: `janitor`, missingness, wide ↔ long | [`scripts/clean-dirty-excel.R`](scripts/clean-dirty-excel.R), [`scripts/wide-to-long.R`](scripts/wide-to-long.R) |
-| 4 | First look at survey structure | [`02-demographic-analysis-nhanes.qmd`](02-demographic-analysis-nhanes.qmd) |
-| — | Practice workbook (take home) | [`03-demographic-analysis-workbook.qmd`](03-demographic-analysis-workbook.qmd) |
+| 09:30–10:00 | Opening, roadmap, quick poll | [`00-orientation.qmd`](00-orientation.qmd) |
+| 10:00–11:15 | **R and Positron fundamentals** — objects, types, functions, projects, `here::here()` | [`01-r-fundamentals.qmd`](01-r-fundamentals.qmd) · [`scripts/r-fundamentals.R`](scripts/r-fundamentals.R) · [`02-rstudio-git-session.qmd`](02-rstudio-git-session.qmd) |
+| 11:30–13:00 | **Data acquisition beyond clean downloads** — CSV/Excel, `haven` labels, APIs, `pdftools`, `rvest` | [`03-data-import-export.qmd`](03-data-import-export.qmd) · [`scripts/import-alifailan.R`](scripts/import-alifailan.R) · [`scripts/import-alifailan-part2.R`](scripts/import-alifailan-part2.R) |
+| 14:00–15:15 | **AI toolkit + AI-assisted cleaning** — Positron Assistant, Copilot, `chattr`, `gander` | [AI prompt library](../../reference/ai-prompts/index.qmd) · [`scripts/clean-dirty-excel.R`](scripts/clean-dirty-excel.R) |
+| 15:30–16:30 | **AI-assisted wrangling** — filter, `case_when()`, `.by=`, `join_by()`, pivots | [`04-dplyr-wrangling-floods.qmd`](04-dplyr-wrangling-floods.qmd) · [`scripts/wide-to-long.R`](scripts/wide-to-long.R) |
+
+## Take home
+
+- [`05-demographic-analysis-nhanes.qmd`](05-demographic-analysis-nhanes.qmd) — first look at survey structure
+- [`06-demographic-analysis-workbook.qmd`](06-demographic-analysis-workbook.qmd) — practice workbook
+- `handouts/getting-started-with-r.pdf` and `handouts/demographic-analysis-using-r.pdf`
+- **Homework:** bring one dataset you actually work with. Days 2–4 use it.
 
 ## Scripts in this folder
 
-- `import-alifailan.R` — reading each of the four common file formats
-- `clean-dirty-excel.R` — `janitor::clean_names()` and friends on a real messy sheet
-- `wide-to-long.R` — `pivot_longer()` / `pivot_wider()`
-- `create-practice-data.R` — generates the synthetic practice dataset
-- `data-packages-fundamentals.R` — the package ecosystem, oriented
+| Script | What it does |
+|---|---|
+| `r-fundamentals.R` | first script for new users, on the district MPI 2019-20 file |
+| `import-alifailan.R` | reading each of the four common file formats |
+| `import-alifailan-part2.R` | the follow-on cleaning and recoding pass |
+| `clean-dirty-excel.R` | `janitor::clean_names()` and friends on a real messy sheet |
+| `wide-to-long.R` | `pivot_longer()` / `pivot_wider()` |
+| `create-practice-data.R` | generates the synthetic practice dataset |
+| `data-packages.R`, `data-packages-fundamentals.R` | the package ecosystem, oriented |
 
-## What you should be able to do by 16:30
+## By 16:30 you should be able to
 
 - open a project and explain why `here::here()` beats `setwd()`
 - read a labelled `.sav` file and keep the labels
 - rename 40 columns in one line
 - describe what is missing in a dataset before analysing it
+- write a prompt that produces cleaning code, and name two ways to check that code
 - make one commit and push it
